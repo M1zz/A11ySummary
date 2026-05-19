@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@400;500;700&family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
+<title>Part V · 부록 — Apple Accessibility</title>
+<style>
+  :root {
+    --bg: #f6f3ee;
+    --bg-deep: #ece7dd;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a48;
+    --ink-faint: #807d77;
+    --rule: #d8d2c4;
+    --paper: #fbfaf6;
+    --accent: #c83a1a;
+    --accent-2: #1f4d39;
+    --accent-3: #245a8a;
+    --accent-4: #8a5e1c;
+    --tag-vision: #245a8a;
+    --tag-hearing: #1f4d39;
+    --tag-motor: #c83a1a;
+    --tag-speech: #8a5e1c;
+    --tag-cog: #5a2a6a;
+    --tag-new: #b81d6b;
+    --code-bg: #181612;
+    --code-ink: #eee7d4;
+    --shadow: 0 1px 0 rgba(0,0,0,.04), 0 30px 60px -40px rgba(0,0,0,.18);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Manrope", "Pretendard", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: 17.5px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ===== Layout ===== */
+  .shell {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    max-width: 1380px;
+    margin: 0 auto;
+    min-height: 100vh;
+  }
+  aside.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 48px 28px 60px 40px;
+    border-right: 1px solid var(--rule);
+    background: var(--bg);
+  }
+  main { padding: 48px 64px 120px; max-width: 980px; }
+
+  @media (max-width: 920px) {
+    .shell { grid-template-columns: 1fr; }
+    aside.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--rule); padding: 24px; }
+    main { padding: 32px 24px 80px; }
+  }
+
+  /* ===== TOC ===== */
+  .toc .brand {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 900;
+    font-size: 25px;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+  .toc .brand em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .toc .sub {
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: var(--ink-faint);
+    margin-bottom: 32px;
+  }
+  .toc h4 {
+    font-family: "Manrope", sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .15em;
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin: 28px 0 10px;
+    font-weight: 700;
+  }
+  .toc ul { list-style: none; padding: 0; margin: 0; }
+  .toc li { margin: 0; }
+  .toc a {
+    display: block;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 15.5px;
+    padding: 6px 0;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -12px;
+    transition: all .15s ease;
+  }
+  .toc a:hover { color: var(--accent); border-left-color: var(--accent); }
+  .toc .meta {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 40px;
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 900;
+    font-size: clamp(40px, 5.5vw, 68px);
+    line-height: 1.02;
+    letter-spacing: -.025em;
+    margin: 0 0 18px;
+  }
+  h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .lede {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-size: 21px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    max-width: 700px;
+    margin: 0;
+  }
+  .credits {
+    margin-top: 28px;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: .05em;
+  }
+  .credits span + span::before { content: " · "; margin: 0 6px; color: var(--rule); }
+
+  /* ===== Sections ===== */
+  section { margin-bottom: 72px; scroll-margin-top: 32px; }
+  h2 {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 700;
+    font-size: 38px;
+    letter-spacing: -.02em;
+    line-height: 1.1;
+    margin: 0 0 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+  h2 .num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  h2 + .section-lede {
+    color: var(--ink-soft);
+    font-size: 16px;
+    max-width: 680px;
+    margin: 0 0 28px;
+  }
+  h3 {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -.015em;
+    margin: 36px 0 12px;
+    line-height: 1.2;
+  }
+  h4 {
+    font-family: "Manrope", sans-serif;
+    font-weight: 700;
+    font-size: 15.5px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--ink);
+    margin: 24px 0 10px;
+  }
+
+  p { margin: 0 0 14px; }
+  p, li { color: var(--ink); }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 6px; }
+
+  a.inline {
+    color: var(--accent-3);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  /* ===== Cards / Feature blocks ===== */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 16px 0 24px;
+  }
+  .card {
+    background: var(--paper);
+    padding: 20px 22px;
+  }
+  .card .name {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 700;
+    font-size: 17px;
+    margin: 0 0 4px;
+    letter-spacing: -.01em;
+  }
+  .card .en {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: .04em;
+    margin-bottom: 8px;
+  }
+  .card p { font-size: 15.5px; color: var(--ink-soft); margin: 0; line-height: 1.55; }
+  .card .tag {
+    margin-bottom: 10px;
+  }
+  .tag {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    padding: 3px 7px;
+    border-radius: 2px;
+    color: #fff;
+  }
+  .tag.vision { background: var(--tag-vision); }
+  .tag.hearing { background: var(--tag-hearing); }
+  .tag.motor { background: var(--tag-motor); }
+  .tag.speech { background: var(--tag-speech); }
+  .tag.cog { background: var(--tag-cog); }
+  .tag.new { background: var(--tag-new); }
+  .tag.os { background: var(--ink); }
+
+  /* ===== Code ===== */
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 18px 20px;
+    margin: 14px 0 22px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+    box-shadow: var(--shadow);
+  }
+  pre .c { color: #7a8a78; font-style: italic; }
+  pre .k { color: #ff9d6b; }
+  pre .s { color: #b8d99a; }
+  pre .t { color: #88c4ff; }
+  pre .n { color: #f0c674; }
+  pre .p { color: #c9a3ff; }
+  code:not(pre code) {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.88em;
+    background: var(--bg-deep);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  /* ===== Tables ===== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 28px;
+    font-size: 15.5px;
+    background: var(--paper);
+  }
+  th, td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  th {
+    font-family: "Manrope", sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: .1em;
+    color: var(--ink-faint);
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--rule);
+  }
+  td code {
+    background: transparent;
+    padding: 0;
+    color: var(--accent-3);
+    font-size: 12.5px;
+  }
+
+  /* ===== Callouts ===== */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--paper);
+    padding: 14px 18px;
+    margin: 16px 0 22px;
+    font-size: 15.5px;
+    color: var(--ink-soft);
+  }
+  .callout strong {
+    color: var(--ink);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+  }
+  .callout.note { border-left-color: var(--accent-3); }
+  .callout.warn { border-left-color: var(--accent); }
+  .callout.tip  { border-left-color: var(--accent-2); }
+  .callout.new  { border-left-color: var(--tag-new); }
+
+  /* ===== Pill / availability ===== */
+  .avail {
+    display: inline-flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin: -2px 0 12px;
+  }
+  .avail span {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    color: var(--ink-soft);
+    background: var(--paper);
+  }
+
+  /* ===== Decorative rule ===== */
+  .dingbat {
+    text-align: center;
+    color: var(--ink-faint);
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    margin: 60px 0 40px;
+    font-size: 15.5px;
+  }
+  .dingbat::before, .dingbat::after {
+    content: "—";
+    margin: 0 14px;
+    color: var(--rule);
+  }
+
+  /* footer */
+  footer.colophon {
+    border-top: 1px solid var(--rule);
+    padding-top: 28px;
+    margin-top: 60px;
+    font-size: 13px;
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+  footer.colophon strong { color: var(--ink); }
+
+  /* Modifier cards (annotated examples) */
+  .modifiers { margin: 16px 0 28px; }
+  .modifier-card {
+    border-left: 3px solid var(--accent-3);
+    background: var(--paper);
+    padding: 16px 20px;
+    margin: 0 0 10px;
+    border-radius: 0 4px 4px 0;
+  }
+  .modifier-card .m-name {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14.5px;
+    color: var(--accent);
+    background: transparent;
+    padding: 0;
+    display: block;
+    margin: 0 0 12px;
+    font-weight: 600;
+    word-break: break-word;
+    border-radius: 0;
+  }
+  .modifier-card .m-name .s { color: #4a7a3f; }
+  .modifier-card .m-name .n { color: #8a5e1c; }
+  .modifier-card .m-name .k { color: var(--ink-soft); }
+  .modifier-card dl.m-rows {
+    display: grid;
+    grid-template-columns: 78px 1fr;
+    gap: 8px 16px;
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .modifier-card dt {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: var(--ink-faint);
+    font-weight: 700;
+    padding-top: 4px;
+    margin: 0;
+    font-family: "Manrope", sans-serif;
+    white-space: nowrap;
+  }
+  .modifier-card dd { margin: 0; }
+  .modifier-card dd strong { color: var(--ink); font-weight: 600; }
+  .modifier-card .vo {
+    display: inline-block;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px;
+    background: var(--bg-deep);
+    color: var(--ink);
+    padding: 1px 8px;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+  }
+
+  /* Nested TOC sub-items */
+  .toc ul.subs {
+    margin: 2px 0 8px;
+    padding: 0;
+    list-style: none;
+  }
+  .toc ul.subs a {
+    font-size: 13.5px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-left: 24px;
+    color: var(--ink-faint);
+    line-height: 1.45;
+    font-weight: 400;
+  }
+
+
+  .why {
+    border-left: 3px solid var(--accent);
+    padding: 12px 0 12px 18px;
+    margin: 14px 0 18px;
+    color: var(--ink-soft);
+    font-size: 17px;
+    line-height: 1.65;
+    background: linear-gradient(to right, rgba(200,58,26,0.05), transparent 50%);
+  }
+  .why strong {
+    color: var(--accent);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 700;
+    font-family: "Manrope", sans-serif;
+  }
+
+  /* Top navigation across pages */
+  .top-nav {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(246,243,238,0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .top-nav .home {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    color: var(--ink);
+    letter-spacing: -.01em;
+  }
+  .top-nav .home em { color: var(--accent); font-style: italic; font-weight: 400; }
+  .top-nav nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  .top-nav nav a {
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-family: "Manrope", sans-serif;
+    font-weight: 500;
+    letter-spacing: .02em;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .top-nav nav a:hover { color: var(--accent); }
+  .top-nav nav a.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+  /* Index page part cards */
+  .part-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 18px;
+    margin: 28px 0 40px;
+  }
+  .part-card {
+    display: block;
+    padding: 26px 28px 30px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .part-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 36px -16px rgba(0,0,0,.18);
+    border-color: var(--accent);
+  }
+  .part-card .pnum {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .part-card .ptitle {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: -.015em;
+    margin: 0 0 10px;
+    line-height: 1.1;
+  }
+  .part-card .ptitle em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .part-card .pdesc {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  /* Scrollbar */
+  aside.toc::-webkit-scrollbar { width: 6px; }
+  aside.toc::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+</style>
+</head>
+<body>
+<header class="top-nav">
+  <a href="index.html" class="home">Apple <em>Accessibility</em></a>
+  <nav><a href="index.html">개요</a><a href="part-i.html">I · 사용자 기능</a><a href="part-ii.html">II · 개발자 API</a><a href="part-iii.html">III · 기능 × SwiftUI</a><a href="part-iv.html">IV · 피쳐별 레시피</a><a href="part-v.html" class="active">V · 부록</a></nav>
+</header>
+<div class="shell">
+  <aside class="toc">
+    <div class="brand">Apple <em>Accessibility</em></div>
+    <div class="sub">Part V · 부록</div>
+
+    <h4>이 페이지</h4>
+    <ul>
+  <li><a href="#cheatsheet">치트시트</a></li>
+  <li><a href="#refs">공식 레퍼런스</a></li>
+</ul>
+
+    <div class="meta">A reference notebook<br>compiled May 2026 · devkoan</div>
+  </aside>
+  <main>
+<header class="hero">
+      <div class="eyebrow">A Field Manual / Part V</div>
+      <h1><em>부록</em></h1>
+      <p class="lede">실무에서 가장 자주 빠뜨리는 12가지 체크리스트와, Apple 공식 레퍼런스 모음.</p>
+    </header>
+
+
+    <!-- ===================== CHEATSHEET ===================== -->
+    <section id="cheatsheet">
+      <h2><span class="num">32</span> 치트시트</h2>
+      <p class="section-lede">실무에서 가장 자주 빠뜨리는 12가지.</p>
+      <ol>
+        <li>장식용 이미지에 <code>.accessibilityHidden(true)</code> / <code>isAccessibilityElement = false</code></li>
+        <li>의미를 담은 이미지에 <code>accessibilityLabel</code></li>
+        <li>버튼 모양이 없는 탭 영역에 <code>.isButton</code> trait 추가</li>
+        <li>슬라이더·스테퍼 커스텀이면 <code>.adjustable</code> + increment/decrement</li>
+        <li>스와이프 액션을 <code>accessibilityCustomActions</code>로도 노출</li>
+        <li>모달을 띄울 때 <code>UIAccessibility.post(notification: .screenChanged, …)</code></li>
+        <li>긴급 안내는 announcement priority <code>.high</code></li>
+        <li>Dynamic Type에서 가로 → 세로 레이아웃 전환 (<code>typeSize.isAccessibilitySize</code>)</li>
+        <li>Reduce Motion에서 spring → linear/none</li>
+        <li>색 외의 단서 추가 (아이콘·텍스트·패턴) — Differentiate Without Color</li>
+        <li>WCAG 4.5:1 (본문) / 3:1 (대형 텍스트) 이상 대비</li>
+        <li>Voice Control 사용자를 위해 <code>accessibilityUserInputLabels</code>에 한국어·영어 별칭 함께 등록</li>
+      </ol>
+    </section>
+
+    <!-- ===================== REFS ===================== -->
+    <section id="refs">
+      <h2><span class="num">33</span> 공식 레퍼런스</h2>
+      <ul>
+        <li><a class="inline" href="https://developer.apple.com/accessibility/">developer.apple.com/accessibility</a> — 허브</li>
+        <li><a class="inline" href="https://developer.apple.com/documentation/accessibility">Accessibility Framework Reference</a></li>
+        <li><a class="inline" href="https://developer.apple.com/documentation/uikit/uiaccessibility">UIAccessibility</a></li>
+        <li><a class="inline" href="https://developer.apple.com/documentation/swiftui/view-accessibility">SwiftUI · View Accessibility</a></li>
+        <li><a class="inline" href="https://developer.apple.com/documentation/appkit/nsaccessibility">NSAccessibility</a></li>
+        <li><a class="inline" href="https://developer.apple.com/design/human-interface-guidelines/accessibility">HIG · Accessibility</a></li>
+        <li><a class="inline" href="https://developer.apple.com/videos/all-videos/?q=accessibility">WWDC Accessibility 세션 전체</a> — 매년 6~10개 세션 업데이트</li>
+        <li><a class="inline" href="https://www.apple.com/accessibility/">apple.com/accessibility</a> — 사용자 관점</li>
+      </ul>
+    </section>
+
+    <footer class="colophon">
+      <strong>Colophon.</strong> 이 문서는 Apple 공식 문서 및 2025년 5월 Apple 보도자료 ("Apple unveils powerful accessibility features coming later this year") 를 기준으로 정리되었습니다. iOS 19 / macOS 16 / watchOS 12 / visionOS 3 / tvOS 19 사이클을 포함합니다. — Compiled May 2026.
+    </footer>
+
+  
+  </main>
+</div>
+</body>
+</html>
