@@ -864,12 +864,12 @@ Text(<span class="s">"건너뛰기"</span>)
 
     <!-- ===================== HEARING RECIPES ===================== -->
     <section id="recipes-hearing">
-      <h2><span class="num">28</span> Hearing 피쳐 레시피</h2>
-      <p class="section-lede">청각 카테고리는 앱 측 구현 포인트가 적다. 두 가지만 챙기면 된다 — 자막 트랙과 Music Haptics.</p>
+      <h2><span class="num">28</span> <span data-en="Hearing Feature Recipes">Hearing 피쳐 레시피</span></h2>
+      <p class="section-lede" data-en="The Hearing category has few app-side implementation points. There are only two things to get right — caption tracks and Music Haptics.">청각 카테고리는 앱 측 구현 포인트가 적다. 두 가지만 챙기면 된다 — 자막 트랙과 Music Haptics.</p>
 
       <h3 id="rx-captions">Closed Captions / Live Captions 기여</h3>
       <div><span class="tag hearing">Hearing</span></div>
-      <p>영상·오디오의 자막. <strong>잃는 사용자.</strong> 청각 장애·난청, 소음 환경, 외국어 학습자.</p>
+      <p data-en="Captions for video and audio content. <strong>Who loses out.</strong> Users who are deaf or hard of hearing, people in noisy environments, and language learners.">영상·오디오의 자막. <strong>잃는 사용자.</strong> 청각 장애·난청, 소음 환경, 외국어 학습자.</p>
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="k">import</span> AVKit
@@ -882,14 +882,14 @@ SubtitleView(text: currentLine)
     .accessibilityLabel(currentLine)              <span class="c">// VoiceOver도 읽음</span>
 </pre>
 
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; Burning captions into the video as an image means the system Live Captions cannot read them and the user cannot turn them off or resize them. Always embed as a separate caption track (SRT · WebVTT · CMAF).">
         <strong>자주 빠뜨리는 것</strong>
         자막을 영상에 burn-in(이미지로 굽기)으로 그려 넣으면 시스템 Live Captions가 읽지 못하고 사용자가 자막을 끄거나 크기를 조절할 수도 없다. 반드시 별도 caption 트랙(SRT·WebVTT·CMAF)으로 임베드.
       </div>
 
       <h3 id="rx-music-haptics">Music Haptics 통합</h3>
       <div><span class="tag hearing">Hearing</span></div>
-      <p>자체 음악 플레이어에서 시스템 Music Haptics 트랙을 재생. <strong>잃는 사용자.</strong> 청각 장애·난청, 그리고 햅틱으로 음악을 즐기는 모든 사용자.</p>
+      <p data-en="Play the system Music Haptics track from within your own music player app. <strong>Who loses out.</strong> Users who are deaf or hard of hearing, and anyone who enjoys feeling music through haptics.">자체 음악 플레이어에서 시스템 Music Haptics 트랙을 재생. <strong>잃는 사용자.</strong> 청각 장애·난청, 그리고 햅틱으로 음악을 즐기는 모든 사용자.</p>
 <pre><span class="k">import</span> MusicHaptics
 
 <span class="k">struct</span> PlayerView: View {
@@ -916,18 +916,18 @@ SubtitleView(text: currentLine)
 }
 </pre>
 
-      <h3>시스템 전용 — 앱 구현 없음</h3>
-      <p><strong>Live Captions(시스템 와이드) · Sound Recognition · Name Recognition · Live Listen · MFi Hearing Devices · Background Sounds · Mono Audio · RTT.</strong> 우리 앱이 할 일은 (1) 정확한 <code>AVAudioSession</code> 카테고리 설정으로 시스템이 오디오 맥락을 이해하게 돕고, (2) 알림음·신호음에 항상 시각적 등가물을 동반.</p>
+      <h3 data-en="System-Only — No App Implementation Required">시스템 전용 — 앱 구현 없음</h3>
+      <p data-en="<strong>Live Captions (system-wide) · Sound Recognition · Name Recognition · Live Listen · MFi Hearing Devices · Background Sounds · Mono Audio · RTT.</strong> Your app's job is: (1) set the correct &lt;code&gt;AVAudioSession&lt;/code&gt; category so the system understands your audio context, and (2) always pair notification sounds and tones with a visual equivalent."><strong>Live Captions(시스템 와이드) · Sound Recognition · Name Recognition · Live Listen · MFi Hearing Devices · Background Sounds · Mono Audio · RTT.</strong> 우리 앱이 할 일은 (1) 정확한 <code>AVAudioSession</code> 카테고리 설정으로 시스템이 오디오 맥락을 이해하게 돕고, (2) 알림음·신호음에 항상 시각적 등가물을 동반.</p>
     </section>
 
     <!-- ===================== MOBILITY RECIPES ===================== -->
     <section id="recipes-mobility">
-      <h2><span class="num">29</span> Mobility 피쳐 레시피</h2>
-      <p class="section-lede">손·팔의 자유로운 사용이 어려운 사용자들. 입력 수단이 키보드·스위치·시선·음성 등 다층으로 갈라지므로, 같은 동작에 여러 경로를 함께 제공하는 것이 핵심이다.</p>
+      <h2><span class="num">29</span> <span data-en="Mobility Feature Recipes">Mobility 피쳐 레시피</span></h2>
+      <p class="section-lede" data-en="Users who have difficulty freely using their hands and arms. Because input methods span keyboards, switches, eye tracking, voice, and more, the key is providing multiple paths to the same action.">손·팔의 자유로운 사용이 어려운 사용자들. 입력 수단이 키보드·스위치·시선·음성 등 다층으로 갈라지므로, 같은 동작에 여러 경로를 함께 제공하는 것이 핵심이다.</p>
 
       <h3 id="rx-switch">Switch Control</h3>
       <div><span class="tag motor">Mobility</span></div>
-      <p>외부 스위치(또는 카메라·머리·BCI)로 UI를 스캐닝하며 조작. <strong>잃는 사용자.</strong> ALS, 척수 손상, 중증 운동 장애.</p>
+      <p data-en="Controls the UI by scanning with an external switch (or camera, head tracking, or BCI). <strong>Who loses out.</strong> Users with ALS, spinal cord injuries, and severe motor impairments.">외부 스위치(또는 카메라·머리·BCI)로 UI를 스캐닝하며 조작. <strong>잃는 사용자.</strong> ALS, 척수 손상, 중증 운동 장애.</p>
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="c">// VoiceOver용 구현(label/traits/actions)이 그대로 적용된다</span>
@@ -946,17 +946,17 @@ VStack { Avatar(); Name(); Role(); Actions() }
 .accessibilityCustomContent(<span class="s">"우선순위"</span>, item.priority.name)
 </pre>
 
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; If the primary cell action is swipe-only (e.g., delete only via a left swipe), Switch Control users can never reach that feature. Always provide the same action via &lt;code&gt;.accessibilityAction&lt;/code&gt;.">
         <strong>자주 빠뜨리는 것</strong>
         셀의 핵심 동작이 swipe-only(예: 좌우 스와이프로만 삭제 가능)인 경우 Switch Control 사용자는 영원히 그 기능에 도달할 수 없다. 반드시 <code>.accessibilityAction</code>으로 동일 동작 제공.
       </div>
 
       <h4 data-en="Verification">검증</h4>
-      <p>Settings → Accessibility → Switch Control에서 "Camera" 스위치(머리 움직임 좌우)를 등록해 켜면 추가 하드웨어 없이 테스트할 수 있다.</p>
+      <p data-en="In Settings → Accessibility → Switch Control, register the &quot;Camera&quot; switch (left/right head movement) to test without any additional hardware.">Settings → Accessibility → Switch Control에서 "Camera" 스위치(머리 움직임 좌우)를 등록해 켜면 추가 하드웨어 없이 테스트할 수 있다.</p>
 
       <h3 id="rx-voice-control">Voice Control</h3>
       <div><span class="tag motor">Mobility</span></div>
-      <p>음성 명령으로 UI 조작. <strong>잃는 사용자.</strong> 손 사용이 어렵거나 음성을 선호하는 사용자, 핸즈프리 환경.</p>
+      <p data-en="Controls the UI through voice commands. <strong>Who loses out.</strong> Users who have difficulty using their hands or prefer voice, and anyone in a hands-free environment.">음성 명령으로 UI 조작. <strong>잃는 사용자.</strong> 손 사용이 어렵거나 음성을 선호하는 사용자, 핸즈프리 환경.</p>
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="c">// 화면에 보이는 텍스트 라벨이 1순위 명령어가 된다</span>
@@ -971,42 +971,42 @@ Button { delete() } label: { Image(systemName: <span class="s">"trash"</span>) }
 <pre>.accessibilityInputLabels([<span class="s">"삭제"</span>, <span class="s">"휴지통"</span>, <span class="s">"trash"</span>, <span class="s">"delete"</span>])
 </pre>
 
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; When a screen has multiple buttons with the same name, the system falls back to &quot;show numbers&quot; mode, degrading usability. Use &lt;code&gt;accessibilityInputLabels&lt;/code&gt; to give each button a distinct alias.">
         <strong>자주 빠뜨리는 것</strong>
         한 화면에 같은 이름의 버튼이 여러 개 있으면 시스템이 "1, 2, 3 번 보기"로 강제 전환되어 사용성이 떨어진다. <code>accessibilityInputLabels</code>로 구분되는 별칭을 줘야 한다.
       </div>
 
       <h4 data-en="Verification">검증</h4>
-      <p>Settings → Accessibility → Voice Control 켜기. "Show names"로 라벨 오버레이를, "Show numbers"로 그리드 모드를 확인.</p>
+      <p data-en="Enable Settings → Accessibility → Voice Control. Use &quot;Show names&quot; to verify label overlays, and &quot;Show numbers&quot; to check grid mode.">Settings → Accessibility → Voice Control 켜기. "Show names"로 라벨 오버레이를, "Show numbers"로 그리드 모드를 확인.</p>
 
       <h3 id="rx-touch">AssistiveTouch · Touch Accommodations</h3>
       <div><span class="tag motor">Mobility</span></div>
-      <p>가상 버튼으로 시스템 동작 대체, 또는 터치 감도·홀드 시간 조정. <strong>잃는 사용자.</strong> 미세 동작·정밀 제어 어려움, 떨림·경직.</p>
+      <p data-en="Replaces system gestures with on-screen buttons, or adjusts touch sensitivity and hold duration. <strong>Who loses out.</strong> Users who have difficulty with fine motor control or precision, or who experience tremors or rigidity.">가상 버튼으로 시스템 동작 대체, 또는 터치 감도·홀드 시간 조정. <strong>잃는 사용자.</strong> 미세 동작·정밀 제어 어려움, 떨림·경직.</p>
 <pre>Button { ... } label: { Image(systemName: <span class="s">"xmark"</span>) }
     .frame(minWidth: <span class="n">44</span>, minHeight: <span class="n">44</span>)         <span class="c">// HIG 최소 hit target</span>
     .contentShape(Rectangle())                        <span class="c">// 시각 그대로, 히트만 확장</span>
 </pre>
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; Interactions that rely solely on rapid consecutive taps (double-tap), precision drag (slider), or simultaneous multi-touch (pinch to zoom). All need single-tap alternatives (&lt;code&gt;.accessibilityAction&lt;/code&gt;, +/− buttons, keyboard shortcuts).">
         <strong>자주 빠뜨리는 것</strong>
         빠른 연속 탭(double-tap), 정밀 드래그(슬라이더), 동시 멀티터치(핀치 줌)에만 의존하는 인터랙션. 모두 단일 탭 대체 경로(<code>.accessibilityAction</code>, +/− 버튼, 키보드 단축키)와 함께 제공.
       </div>
 
       <h3 id="rx-eye">Eye Tracking · Head Tracking</h3>
       <div><span class="tag motor">Mobility</span></div>
-      <p>시선·머리 움직임으로 포인터 제어. <strong>잃는 사용자.</strong> 사지마비, 중증 운동 장애.</p>
+      <p data-en="Controls the pointer via eye gaze or head movement. <strong>Who loses out.</strong> Users with quadriplegia and severe motor impairments.">시선·머리 움직임으로 포인터 제어. <strong>잃는 사용자.</strong> 사지마비, 중증 운동 장애.</p>
 <pre>InteractiveTile()
     .focusable(<span class="k">true</span>)
     .hoverEffect(.automatic)                          <span class="c">// 응시 피드백 — 거의 공짜</span>
     .frame(minWidth: <span class="n">60</span>, minHeight: <span class="n">60</span>)         <span class="c">// 시선 떨림 고려</span>
 </pre>
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; Without visual feedback on hover, the user cannot tell &quot;where is my gaze right now.&quot; &lt;code&gt;.hoverEffect&lt;/code&gt; can be added to nearly every interactive element at virtually no cost.">
         <strong>자주 빠뜨리는 것</strong>
         호버 시 시각 피드백이 없으면 사용자는 "지금 어디를 보고 있는지" 알 수 없다. <code>.hoverEffect</code>는 거의 모든 인터랙티브 요소에 거의 공짜로 추가 가능하다.
       </div>
 
       <h3 id="rx-fka">Full Keyboard Access</h3>
       <div><span class="tag motor">Mobility</span></div>
-      <p>외장 키보드만으로 모든 화면 탐색·조작. <strong>잃는 사용자.</strong> 키보드 전용 사용자, 그리고 외장 키보드를 스위치로 매핑해 쓰는 모든 Switch Control 사용자.</p>
+      <p data-en="Navigate and operate all screens using only an external keyboard. <strong>Who loses out.</strong> Keyboard-only users, and all Switch Control users who map external keyboard keys as their switches.">외장 키보드만으로 모든 화면 탐색·조작. <strong>잃는 사용자.</strong> 키보드 전용 사용자, 그리고 외장 키보드를 스위치로 매핑해 쓰는 모든 Switch Control 사용자.</p>
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="k">enum</span> Field { <span class="k">case</span> id, pw }
@@ -1027,14 +1027,14 @@ Form {
 .focusSection()                                       <span class="c">// macOS/tvOS/visionOS 그룹</span>
 </pre>
 
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Synchronize Both Focus Systems&lt;/strong&gt; &lt;code&gt;@FocusState&lt;/code&gt; (keyboard) and &lt;code&gt;@AccessibilityFocusState&lt;/code&gt; (VoiceOver / Switch Control) are separate systems. On error, move both to the error message so both keyboard users and VoiceOver users are immediately notified.">
         <strong>두 포커스 동기화</strong>
         <code>@FocusState</code>(키보드)와 <code>@AccessibilityFocusState</code>(VoiceOver / Switch Control)는 별개 시스템이다. 에러 발생 시 둘 다 에러 메시지로 이동시켜야 키보드 사용자와 VoiceOver 사용자 모두에게 즉시 인지된다.
       </div>
 
       <h3 id="rx-vocal-shortcuts">Vocal Shortcuts · Back Tap</h3>
       <div><span class="tag motor">Mobility</span></div>
-      <p>사용자가 녹음한 짧은 발성, 또는 기기 뒷면 탭으로 액션 실행. <strong>잃는 사용자.</strong> 다양한 모빌리티, 그리고 단축 진입을 원하는 모든 사용자.</p>
+      <p data-en="Execute actions via a short recorded utterance or by tapping the back of the device. <strong>Who loses out.</strong> Users with various mobility needs, and anyone who wants fast shortcut access.">사용자가 녹음한 짧은 발성, 또는 기기 뒷면 탭으로 액션 실행. <strong>잃는 사용자.</strong> 다양한 모빌리티, 그리고 단축 진입을 원하는 모든 사용자.</p>
 
       <h4 data-en="Implementation — Expose Actions via App Intent">구현 — App Intent로 액션 노출</h4>
 <pre><span class="k">import</span> AppIntents
@@ -1049,17 +1049,17 @@ Form {
     }
 }
 </pre>
-      <p>사용자는 Settings → Accessibility → Vocal Shortcuts 또는 Touch → Back Tap에서 이 인텐트를 자신만의 트리거에 바인딩한다. 같은 인텐트가 Siri·Shortcuts·Spotlight·홈 위젯에서도 재사용된다.</p>
+      <p data-en="The user binds this intent to their own trigger in Settings → Accessibility → Vocal Shortcuts or Touch → Back Tap. The same intent is reused by Siri, Shortcuts, Spotlight, and Home Screen widgets.">사용자는 Settings → Accessibility → Vocal Shortcuts 또는 Touch → Back Tap에서 이 인텐트를 자신만의 트리거에 바인딩한다. 같은 인텐트가 Siri·Shortcuts·Spotlight·홈 위젯에서도 재사용된다.</p>
     </section>
 
     <!-- ===================== SPEECH RECIPES ===================== -->
     <section id="recipes-speech">
-      <h2><span class="num">30</span> Speech 피쳐 레시피</h2>
-      <p class="section-lede">발화 보조 카테고리. SwiftUI는 입력 UI만 담당하고 본체는 AVFoundation. AAC(Augmentative and Alternative Communication) 앱을 만들 때 가장 직접적으로 통합된다.</p>
+      <h2><span class="num">30</span> <span data-en="Speech Feature Recipes">Speech 피쳐 레시피</span></h2>
+      <p class="section-lede" data-en="The speech augmentation category. SwiftUI handles only the input UI; the heavy lifting is done by AVFoundation. Most directly integrated when building AAC (Augmentative and Alternative Communication) apps.">발화 보조 카테고리. SwiftUI는 입력 UI만 담당하고 본체는 AVFoundation. AAC(Augmentative and Alternative Communication) 앱을 만들 때 가장 직접적으로 통합된다.</p>
 
       <h3 id="rx-personal-voice">Personal Voice 사용</h3>
       <div><span class="tag speech">Speech</span></div>
-      <p>사용자가 학습시킨 자신의 합성 음성으로 발화. <strong>잃는 사용자.</strong> ALS·후두암 등으로 발화 능력을 잃을 위험이 있거나 이미 잃은 사용자.</p>
+      <p data-en="Speaks using a synthesized voice the user has trained to sound like themselves. <strong>Who loses out.</strong> Users who are at risk of losing or have already lost the ability to speak, such as those with ALS or laryngeal cancer.">사용자가 학습시킨 자신의 합성 음성으로 발화. <strong>잃는 사용자.</strong> ALS·후두암 등으로 발화 능력을 잃을 위험이 있거나 이미 잃은 사용자.</p>
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="k">import</span> AVFoundation
@@ -1097,14 +1097,14 @@ Form {
 }
 </pre>
 
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Required Configuration&lt;/strong&gt; Without &lt;code&gt;NSPersonalVoiceUsageDescription&lt;/code&gt; in Info.plist, the authorization request itself will fail. Apple does not approve Personal Voice use for general TTS purposes outside of AAC apps.">
         <strong>필수 설정</strong>
         Info.plist에 <code>NSPersonalVoiceUsageDescription</code>이 없으면 인증 요청 자체가 실패한다. Apple은 AAC가 아닌 일반 TTS 목적의 Personal Voice 사용을 승인하지 않는다.
       </div>
 
       <h3 id="rx-live-speech">Live Speech 자체 구현</h3>
       <div><span class="tag speech">Speech</span></div>
-      <p>시스템 Live Speech와 별개로, 우리 앱이 자체 AAC 인터페이스를 제공할 때. <strong>잃는 사용자.</strong> 일시적 발화 보조가 필요한 모든 사용자(수술 후 회복, 후두염 등).</p>
+      <p data-en="When your app provides its own AAC interface, independent of the system Live Speech. <strong>Who loses out.</strong> Anyone who needs temporary speech assistance (post-surgery recovery, laryngitis, etc.).">시스템 Live Speech와 별개로, 우리 앱이 자체 AAC 인터페이스를 제공할 때. <strong>잃는 사용자.</strong> 일시적 발화 보조가 필요한 모든 사용자(수술 후 회복, 후두염 등).</p>
 <pre>FavoritePhrasesView()                              <span class="c">// 즐겨찾기 문장 그리드</span>
     .accessibilityShowsLargeContentViewer()        <span class="c">// 시력 보조도 함께</span>
 
@@ -1117,18 +1117,18 @@ Button(phrase) {
 .frame(maxWidth: .infinity, minHeight: <span class="n">80</span>)
 </pre>
 
-      <h3>시스템 전용 — 앱 구현 없음</h3>
-      <p><strong>Listen for Atypical Speech · Hold for Siri.</strong> <code>SFSpeechRecognizer</code>와 시스템 Siri가 자동으로 사용자 설정을 따른다. STT를 정직하게 사용하기만 하면 자동 혜택.</p>
+      <h3 data-en="System-Only — No App Implementation Required">시스템 전용 — 앱 구현 없음</h3>
+      <p data-en="<strong>Listen for Atypical Speech · Hold for Siri.</strong> &lt;code&gt;SFSpeechRecognizer&lt;/code&gt; and the system Siri automatically follow the user's settings. You benefit automatically just by using STT honestly."><strong>Listen for Atypical Speech · Hold for Siri.</strong> <code>SFSpeechRecognizer</code>와 시스템 Siri가 자동으로 사용자 설정을 따른다. STT를 정직하게 사용하기만 하면 자동 혜택.</p>
     </section>
 
     <!-- ===================== COGNITIVE RECIPES ===================== -->
     <section id="recipes-cognitive">
-      <h2><span class="num">31</span> Cognitive 피쳐 레시피</h2>
-      <p class="section-lede">인지 부담·전정 자극·읽기 어려움을 줄이고 단순화하는 카테고리. 환경 변수 분기와 App 구조 자체에서 결정된다.</p>
+      <h2><span class="num">31</span> <span data-en="Cognitive Feature Recipes">Cognitive 피쳐 레시피</span></h2>
+      <p class="section-lede" data-en="The category for reducing cognitive load, vestibular stimulation, and reading difficulty. These decisions are made through environment-value branching and the structure of the app itself.">인지 부담·전정 자극·읽기 어려움을 줄이고 단순화하는 카테고리. 환경 변수 분기와 App 구조 자체에서 결정된다.</p>
 
       <h3 id="rx-assistive-access">Assistive Access</h3>
       <div><span class="tag cog">Cognitive</span></div>
-      <p>큰 버튼·단일 작업·하이콘트라스트의 단순화된 모드. <strong>잃는 사용자.</strong> 지적·발달 장애, 인지 부담이 큰 사용자, 그리고 일시적으로 단순화된 인터페이스가 도움되는 모든 상황.</p>
+      <p data-en="A simplified mode with large buttons, single tasks, and high contrast. <strong>Who loses out.</strong> Users with intellectual or developmental disabilities, users with high cognitive load, and any situation where a simplified interface helps temporarily.">큰 버튼·단일 작업·하이콘트라스트의 단순화된 모드. <strong>잃는 사용자.</strong> 지적·발달 장애, 인지 부담이 큰 사용자, 그리고 일시적으로 단순화된 인터페이스가 도움되는 모든 상황.</p>
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="k">@main</span>
@@ -1154,14 +1154,14 @@ Button(phrase) {
 }
 </pre>
 
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Design Principles&lt;/strong&gt; Assistive Access UI must follow: (1) one task per screen, (2) controls at least 1/3 of screen width, (3) simple verbs (&quot;Make a Call&quot;), (4) always-visible back/exit. Modals, deep navigation, and fine gestures are all prohibited.">
         <strong>설계 원칙</strong>
         Assistive Access UI는 (1) 한 화면 한 작업, (2) 화면 폭의 1/3 이상의 큰 컨트롤, (3) 단순한 동사("전화 걸기"), (4) 항상 보이는 되돌리기·종료. 모달·딥 네비게이션·미세 제스처는 모두 금지.
       </div>
 
       <h3 id="rx-reduce-motion">Reduce Motion</h3>
       <div><span class="tag cog">Cognitive</span></div>
-      <p>애니메이션·모션 축소. <strong>잃는 사용자.</strong> 전정 장애, 멀미, ADHD·자폐로 인한 자극 민감, 광 민감성 발작 위험.</p>
+      <p data-en="Reduces animations and motion. <strong>Who loses out.</strong> Users with vestibular disorders, motion sickness, stimulus sensitivity from ADHD or autism, and those at risk of photosensitive seizures.">애니메이션·모션 축소. <strong>잃는 사용자.</strong> 전정 장애, 멀미, ADHD·자폐로 인한 자극 민감, 광 민감성 발작 위험.</p>
 <pre><span class="k">@Environment</span>(\.accessibilityReduceMotion) <span class="k">var</span> reduce
 
 <span class="c">// 1. 단일 애니메이션 게이팅</span>
@@ -1180,32 +1180,32 @@ withTransaction(txn) { state.toggle() }
     AnimatedHero()                                  <span class="c">// 패럴랙스·바운스</span>
 }
 </pre>
-      <div class="callout warn">
+      <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; Indiscriminate use of &lt;code&gt;.transition(.slide)&lt;/code&gt;, &lt;code&gt;.matchedGeometryEffect&lt;/code&gt;, auto-playing carousels, and parallax scrolling. All require environment-value branching.">
         <strong>자주 빠뜨리는 것</strong>
         무분별한 <code>.transition(.slide)</code>·<code>.matchedGeometryEffect</code>·자동 캐러셀·패럴랙스 스크롤. 모두 환경값 분기 필요.
       </div>
 
       <h3 id="rx-crossfade">Cross-Fade Transitions</h3>
       <div><span class="tag cog">Cognitive</span></div>
-      <p>슬라이드 전환을 페이드로. <strong>잃는 사용자.</strong> 전정 자극에 민감한 사용자(Reduce Motion과 별개의 토글).</p>
+      <p data-en="Replaces slide transitions with fades. <strong>Who loses out.</strong> Users sensitive to vestibular stimulation (a separate toggle from Reduce Motion).">슬라이드 전환을 페이드로. <strong>잃는 사용자.</strong> 전정 자극에 민감한 사용자(Reduce Motion과 별개의 토글).</p>
 <pre><span class="k">@Environment</span>(\.accessibilityPrefersCrossFadeTransitions) <span class="k">var</span> fade
 
 <span class="c">// SwiftUI NavigationStack은 자동 — 직접 구현한 전환만 분기 필요</span>
 .transition(fade ? .opacity : .slide)
 </pre>
 
-      <h3 id="rx-animated-images">Animated Images 정책</h3>
+      <h3 id="rx-animated-images" data-en="Animated Images Policy">Animated Images 정책</h3>
       <div><span class="tag cog">Cognitive</span></div>
-      <p>GIF·Lottie 자동 재생 여부. <strong>잃는 사용자.</strong> 광 민감성, 집중력 이슈, 인지 부담.</p>
+      <p data-en="Whether GIFs and Lottie animations auto-play. <strong>Who loses out.</strong> Users with light sensitivity, attention issues, and cognitive load.">GIF·Lottie 자동 재생 여부. <strong>잃는 사용자.</strong> 광 민감성, 집중력 이슈, 인지 부담.</p>
 <pre><span class="k">@Environment</span>(\.accessibilityPlayAnimatedImages) <span class="k">var</span> play
 
 GIFView(url: gif, isAnimating: play)
 LottieView(animation: anim, isPlaying: play)
 </pre>
 
-      <h3 id="rx-guided">Guided Access 통합 (UIKit 브릿지)</h3>
+      <h3 id="rx-guided" data-en="Guided Access Integration (UIKit Bridge)">Guided Access 통합 (UIKit 브릿지)</h3>
       <div><span class="tag cog">Cognitive</span></div>
-      <p>특정 앱·기능에 잠금. <strong>잃는 사용자.</strong> 자폐 스펙트럼, ADHD, 또는 학부모·치료사가 학생·환자에게 한정된 환경을 제공해야 하는 모든 경우.</p>
+      <p data-en="Locks the device to a specific app or feature set. <strong>Who loses out.</strong> Users on the autism spectrum, those with ADHD, and any case where a parent or therapist needs to provide a restricted environment for a student or patient.">특정 앱·기능에 잠금. <strong>잃는 사용자.</strong> 자폐 스펙트럼, ADHD, 또는 학부모·치료사가 학생·환자에게 한정된 환경을 제공해야 하는 모든 경우.</p>
 <pre><span class="k">class</span> AppDelegate: NSObject, UIApplicationDelegate, UIGuidedAccessRestrictionDelegate {
     <span class="k">func</span> guidedAccessRestrictionIdentifiers() -> [String]? {
         [<span class="s">"com.app.chat"</span>, <span class="s">"com.app.purchase"</span>]
@@ -1227,17 +1227,17 @@ LottieView(animation: anim, isPlaying: play)
 
       <h3 id="rx-reader">Accessibility Reader 친화</h3>
       <div><span class="tag cog">Cognitive</span></div>
-      <p>시스템 와이드 리더 모드(2025). <strong>잃는 사용자.</strong> 난독증, 읽기 학습 중인 사용자, 노안.</p>
+      <p data-en="System-wide reader mode (2025). <strong>Who loses out.</strong> Users with dyslexia, those learning to read, and users with presbyopia.">시스템 와이드 리더 모드(2025). <strong>잃는 사용자.</strong> 난독증, 읽기 학습 중인 사용자, 노안.</p>
 <pre>Text(article.body)
     .accessibilityTextContentType(.narrative)     <span class="c">// 본문 컨텍스트 명시</span>
 
 Text(code)
     .accessibilityTextContentType(.sourceCode)
 </pre>
-      <p>본문을 <code>Text</code>로 깔끔히 노출하고 컨텐츠 타입을 명시하면 Accessibility Reader가 자동으로 사용자 환경에 맞춰 재조판한다. <strong>텍스트를 이미지로 굽거나 그래픽 위에 그리지 않는 것</strong>이 가장 중요한 원칙.</p>
+      <p data-en="Expose body text cleanly via &lt;code&gt;Text&lt;/code&gt; and declare the content type, and Accessibility Reader will automatically reflow it for the user's preferences. <strong>Never burn text into images or draw it on top of graphics</strong> — that is the single most important principle.">본문을 <code>Text</code>로 깔끔히 노출하고 컨텐츠 타입을 명시하면 Accessibility Reader가 자동으로 사용자 환경에 맞춰 재조판한다. <strong>텍스트를 이미지로 굽거나 그래픽 위에 그리지 않는 것</strong>이 가장 중요한 원칙.</p>
 
-      <h3>시스템 전용 — 앱 구현 없음</h3>
-      <p><strong>Vehicle Motion Cues · Background Sounds(시스템).</strong> 모션이 강한 화면에서 Reduce Motion을 잘 따르고, 모션 발생 영역에 시각적 닻을 함께 두는 것으로 기여한다.</p>
+      <h3 data-en="System-Only — No App Implementation Required">시스템 전용 — 앱 구현 없음</h3>
+      <p data-en="<strong>Vehicle Motion Cues · Background Sounds (system).</strong> Contribute by respecting Reduce Motion on motion-heavy screens and placing a visual anchor in any area where motion occurs."><strong>Vehicle Motion Cues · Background Sounds(시스템).</strong> 모션이 강한 화면에서 Reduce Motion을 잘 따르고, 모션 발생 영역에 시각적 닻을 함께 두는 것으로 기여한다.</p>
     </section>
 
     
