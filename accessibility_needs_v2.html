@@ -170,6 +170,13 @@
     content: "✓"; color: white; font-size: 12px; font-weight: 600;
   }
   .cond-label { flex: 1; }
+  .prog-badge {
+    display: inline-block; font-size: 9.5px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .07em;
+    background: var(--warn-bg); color: var(--warn-text);
+    padding: 2px 6px; border-radius: 4px; margin-left: 7px;
+    vertical-align: middle;
+  }
   .cond-none {
     margin-top: 4px;
     font-size: 13px;
@@ -992,7 +999,17 @@ const featureLinks = {
   'Braille Access': 'https://support.apple.com/guide/iphone/use-braille-access-with-a-braille-display-iph5953d3c7a/ios',
   'Sensory Alerts': 'https://support.apple.com/en-us/111774',
   'Closed Captions': 'https://support.apple.com/guide/iphone/subtitles-and-captions-iph3e2e23d1/ios',
-  'FaceTime': 'https://support.apple.com/guide/iphone/iph7801d5771'
+  'FaceTime': 'https://support.apple.com/guide/iphone/iph7801d5771',
+  'Guided Access': 'https://support.apple.com/guide/iphone/guided-access-iph7fad0d166/ios',
+  'Voice Control': 'https://support.apple.com/guide/iphone/use-voice-control-iph2c21a3c88/ios',
+  'AssistiveTouch': 'https://support.apple.com/guide/iphone/assistivetouch-iph96b21954/ios',
+  'Touch Accommodations': 'https://support.apple.com/guide/iphone/touch-accommodations-iph77d6b0c/ios',
+  'Eye Tracking': 'https://support.apple.com/en-us/111773',
+  'Dictation': 'https://support.apple.com/guide/iphone/use-dictation-iph2c0030c0/ios',
+  'Focus': 'https://support.apple.com/guide/iphone/set-up-a-focus-iph7613f0b/ios',
+  'Assistive Access': 'https://support.apple.com/guide/iphone/assistive-access-iphe27491a34/ios',
+  'Apple Intelligence Writing': 'https://www.apple.com/apple-intelligence/',
+  'Safari Reader': 'https://support.apple.com/guide/iphone/hide-ads-and-distractions-in-safari-iphdc30e3b86/ios'
 };
 function featureLink(name) {
   return featureLinks[name] || FEATURES_PAGE[currentLang] || FEATURES_PAGE.en;
@@ -1163,7 +1180,9 @@ function renderSurveyForm() {
       const isSelected = selectedConditions.has(c.id);
       html += '<button type="button" class="cond' + (isSelected?' selected':'') + '" data-cid="' + c.id + '">';
       html += '<span class="cond-check"></span>';
-      html += '<span class="cond-label">' + c[currentLang] + '</span>';
+      const progLabel = currentLang === 'ko' ? '진행성' : 'progressive';
+      const progBadge = c.progressive ? '<span class="prog-badge">' + progLabel + '</span>' : '';
+      html += '<span class="cond-label">' + c[currentLang] + progBadge + '</span>';
       html += '</button>';
     });
     html += '</div></div>';

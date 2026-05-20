@@ -1468,6 +1468,24 @@ document.querySelectorAll('.lang-btn').forEach(btn => {
   btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
 });
 
+// Apply stored language to [data-en] nav elements on page load
+// (setLanguage() guards against same-lang calls, so we init directly)
+(function() {
+  document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('[data-en]').forEach(function(el) {
+    if (!el.dataset.ko) el.dataset.ko = el.innerHTML;
+    el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.ko;
+  });
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  var t0 = UI[lang];
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.dataset.i18n;
+    if (t0[key] !== undefined) el.innerHTML = t0[key];
+  });
+})();
+
 // ============ STATS ============
 function updateStats(visibleIds) {
   const visNodes = visibleIds ? visibleIds.size : nodes.length;
