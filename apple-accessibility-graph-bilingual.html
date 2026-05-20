@@ -392,6 +392,20 @@
     font-family: var(--font-mono);
     letter-spacing: 0.02em;
   }
+  .detail-link-btn {
+    display: flex; align-items: center; gap: 6px;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: var(--detail-color, #5B8DEF);
+    color: #fff;
+    border: none; border-radius: 8px;
+    font-size: 12.5px; font-weight: 500;
+    font-family: var(--font-body);
+    cursor: pointer; text-decoration: none;
+    width: 100%; justify-content: center;
+    transition: opacity 0.15s;
+  }
+  .detail-link-btn:hover { opacity: 0.85; }
 
   /* ============ GRAPH NODE STYLES ============ */
   .node circle {
@@ -620,6 +634,64 @@ const UI = {
     detailNodeId: '노드 ID',
     tierLabels: { 0:'루트', 1:'카테고리', 2:'기능', 3:'하위 기능' }
   }
+};
+
+// ============ FEATURE LINKS ============
+const FEATURE_LINKS = {
+  'root':                         'https://www.apple.com/accessibility/',
+  'cat-vision':                   'https://www.apple.com/accessibility/vision/',
+  'cat-hearing':                  'https://www.apple.com/accessibility/hearing/',
+  'cat-speech':                   'https://www.apple.com/accessibility/speech/',
+  'cat-mobility':                 'https://www.apple.com/accessibility/mobility/',
+  'cat-cognitive':                'https://www.apple.com/accessibility/cognitive/',
+  'voiceover':                    'https://support.apple.com/guide/iphone/turn-on-and-practice-voiceover-iph3e2e415f/ios',
+  'magnifier':                    'https://support.apple.com/guide/iphone/magnify-nearby-objects-iph10ee73db/ios',
+  'read-speak-settings':          'https://support.apple.com/guide/iphone/hear-iphone-read-text-aloud-iph96b214b0/ios',
+  'display-settings':             'https://support.apple.com/guide/iphone/change-the-display-and-text-size-iph3e2e1fb0/ios',
+  'vehicle-motion':               'https://support.apple.com/en-us/104892',
+  'motion-settings':              'https://support.apple.com/guide/iphone/reduce-screen-motion-iphfe2c4532/ios',
+  'zoom':                         'https://support.apple.com/guide/iphone/zoom-iph3e2e367e/ios',
+  'hover':                        'https://support.apple.com/guide/iphone/view-a-larger-version-of-typed-text-iph3e2e484d/ios',
+  'iwork':                        'https://www.apple.com/iwork/accessibility/',
+  'audio-descriptions':           'https://support.apple.com/guide/iphone/use-audio-descriptions-iph3e2e4f62/ios',
+  'quickly-toggle-settings':      'https://support.apple.com/guide/iphone/customize-accessibility-shortcut-iphe0f65c15/ios',
+  'accessibility-reader':         'https://support.apple.com/guide/iphone/accessibility-reader-iph3e2e32a0/ios',
+  'braille-access':               'https://support.apple.com/guide/iphone/use-braille-displays-iph3e2e3fdc/ios',
+  'hearing-health':               'https://support.apple.com/en-us/111775',
+  'made-for-iphone-hearing-devices': 'https://support.apple.com/guide/iphone/pair-mfi-hearing-devices-iph3e2e23d9/ios',
+  'music-haptics':                'https://support.apple.com/guide/iphone/music-haptics-iph9f5cda77e/ios',
+  'audio-settings':               'https://support.apple.com/guide/iphone/change-audio-settings-iph3e2e38a4/ios',
+  'sound-recognition':            'https://support.apple.com/guide/iphone/recognize-sounds-iph0f117f87/ios',
+  'facetime':                     'https://support.apple.com/guide/iphone/facetime-accessibility-iph3e2e34ad/ios',
+  'live-listen':                  'https://support.apple.com/guide/iphone/use-live-listen-iph828080d98/ios',
+  'sensory-alerts':               'https://support.apple.com/guide/iphone/set-visual-and-vibration-alerts-iph3e2e2eed/ios',
+  'rtt':                          'https://support.apple.com/guide/iphone/make-and-receive-rtt-calls-iph3e2e6b2/ios',
+  'closed-captions':              'https://support.apple.com/guide/iphone/use-closed-captions-and-sdi-iph3e2e23d9/ios',
+  'transcriptions':               'https://support.apple.com/guide/iphone/transcriptions-iph26b7f7498/ios',
+  'noise-app':                    'https://support.apple.com/guide/watch/noise-notifications-apd00a43a769/watchos',
+  'live-captions':                'https://support.apple.com/guide/iphone/live-captions-iph0f65bcba1/ios',
+  'background-sounds':            'https://support.apple.com/guide/iphone/play-background-sounds-iph0f66f0d0d/ios',
+  'siri':                         'https://support.apple.com/guide/iphone/use-siri-iph83aad8922/ios',
+  'live-speech':                  'https://support.apple.com/guide/iphone/live-speech-iph41e83f9d/ios',
+  'personal-voice':               'https://support.apple.com/guide/iphone/personal-voice-iph3bbb2eaa/ios',
+  'vocal-shortcuts':              'https://support.apple.com/guide/iphone/vocal-shortcuts-iph2e0ba49f/ios',
+  'switch-control':               'https://support.apple.com/guide/iphone/use-switch-control-iph3e2e31a6/ios',
+  'voice-control':                'https://support.apple.com/guide/iphone/use-voice-control-iph2c21a3c88/ios',
+  'eye-tracking':                 'https://support.apple.com/en-us/111773',
+  'head-tracking':                'https://support.apple.com/guide/iphone/head-tracking-iph7d4498db8/ios',
+  'assistive-touch':              'https://support.apple.com/guide/iphone/assistivetouch-iph96b21954/ios',
+  'touch-settings':               'https://support.apple.com/guide/iphone/touch-accommodations-iph77d6b0c/ios',
+  'hardware-keyboard':            'https://support.apple.com/guide/iphone/external-keyboards-iph8b9f9c9f/ios',
+  'accessibility-keyboard':       'https://support.apple.com/guide/mac-help/use-accessibility-keyboard-mh43607/mac',
+  'fitness':                      'https://www.apple.com/apple-fitness-plus/',
+  'dictation':                    'https://support.apple.com/guide/iphone/use-dictation-iph2c0030c0/ios',
+  'assistive-access':             'https://support.apple.com/guide/iphone/assistive-access-iphe27491a34/ios',
+  'apple-intelligence':           'https://www.apple.com/apple-intelligence/',
+  'safari-reader':                'https://support.apple.com/guide/iphone/hide-ads-and-distractions-in-safari-iphdc30e3b86/ios',
+  'guided-access':                'https://support.apple.com/guide/iphone/guided-access-iph7fad0d166/ios',
+  'focus':                        'https://support.apple.com/guide/iphone/set-up-a-focus-iph7613f0b/ios',
+  'shortcuts-app':                'https://support.apple.com/guide/shortcuts/intro-to-shortcuts-apdf22b0444c/ios',
+  'share-accessibility-settings': 'https://support.apple.com/guide/iphone/share-accessibility-settings-iph0b3ac2d4/ios'
 };
 
 // ============ DATA ============
@@ -1337,6 +1409,9 @@ function renderDetail(d) {
     catTags = `<div class="detail-meta-row"><span class="detail-meta-label">${t.detailCategories}</span><div class="tag-row">${d.cats.map(c=>`<span class="tag" style="color:${CATEGORY_META[c].color};border-color:${CATEGORY_META[c].color}40;">${CATEGORY_META[c].name[lang]}</span>`).join('')}</div></div>`;
   }
 
+  const linkUrl = FEATURE_LINKS[d.id] || null;
+  const linkLabel = lang === 'en' ? 'View on Apple ↗' : 'Apple에서 보기 ↗';
+
   card.innerHTML = `
     <div class="detail-tier"><span class="dot"></span>${tierLabel}</div>
     <h3 class="detail-title">${d.name[lang]}</h3>
@@ -1348,6 +1423,7 @@ function renderDetail(d) {
       ${childCount}
       <div class="detail-meta-row"><span class="detail-meta-label">${t.detailNodeId}</span><span class="detail-meta-value" style="font-family:var(--font-mono);font-size:11px;color:var(--ink-dim);">${d.id}</span></div>
     </div>
+    ${linkUrl ? `<a href="${linkUrl}" target="_blank" rel="noopener" class="detail-link-btn">${linkLabel}</a>` : ''}
   `;
 }
 
