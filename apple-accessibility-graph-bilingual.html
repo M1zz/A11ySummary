@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Accessibility Features Graph</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f3ee;
+    --bg-elev: rgba(236,231,221,0.1);
+    --panel: #fbfaf6;
+    --ink: #1a1a1a;
+    --ink-dim: #4a4a48;
+    --ink-soft: #807d77;
+    --rule: #d8d2c4;
+    --rule-soft: #ece7dd;
+
+    --vision: #5B8DEF;
+    --hearing: #4FB58A;
+    --speech: #E87454;
+    --mobility: #C77AC9;
+    --cognitive: #DCB44E;
+    --root: #F5F4EF;
+
+    --font-display: 'Instrument Serif', 'Pretendard', serif;
+    --font-body: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    grid-template-rows: auto 1fr;
+    height: calc(100vh - 54px);
+    overflow: hidden;
+  }
+
+  /* ============ HEADER ============ */
+  .header {
+    grid-column: 1 / -1;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--rule);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px;
+    background: rgba(246,243,238,0.94);
+    backdrop-filter: blur(20px);
+    z-index: 10;
+  }
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+  .brand-mark {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 24px;
+    letter-spacing: -0.01em;
+  }
+  .brand-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .header-stats {
+    display: flex; gap: 24px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .header-stats b {
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+  .header-controls {
+    display: flex; gap: 8px;
+    align-items: center;
+  }
+  .ctrl-btn {
+    padding: 7px 12px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .ctrl-btn:hover { border-color: var(--ink-dim); color: var(--ink); }
+  .ctrl-btn.active { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  /* Language toggle pill */
+  .lang-toggle {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 2px;
+    margin-right: 6px;
+  }
+  .lang-btn {
+    padding: 5px 12px;
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .lang-btn:hover { color: var(--ink); }
+  .lang-btn.active {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* ============ GRAPH ============ */
+  .graph-container {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  #graph-svg { width: 100%; height: 100%; cursor: grab; display: block; }
+  #graph-svg:active { cursor: grabbing; }
+
+  .legend-overlay {
+    position: absolute;
+    top: 20px; left: 20px;
+    padding: 14px 16px;
+    background: rgba(251,250,246,0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    font-size: 11px;
+    z-index: 5;
+    user-select: none;
+  }
+  .legend-overlay h4 {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .legend-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 3px 0;
+  }
+  .legend-row .swatch {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--swatch-color);
+    flex-shrink: 0;
+  }
+  .legend-row .label { color: var(--ink); font-size: 11.5px; }
+  .legend-row .label em {
+    color: var(--ink-soft);
+    font-style: normal;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    margin-left: 4px;
+  }
+  .legend-tier {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--rule);
+  }
+  .tier-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 3px 0;
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .tier-dot {
+    background: var(--ink-soft);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .tier-dot.t0 { width: 18px; height: 18px; }
+  .tier-dot.t1 { width: 14px; height: 14px; }
+  .tier-dot.t2 { width: 10px; height: 10px; }
+  .tier-dot.t3 { width: 6px; height: 6px; }
+
+  .controls-overlay {
+    position: absolute;
+    bottom: 20px; left: 20px;
+    display: flex; flex-direction: column; gap: 4px;
+    z-index: 5;
+  }
+  .zoom-btn {
+    width: 34px; height: 34px;
+    background: rgba(251,250,246,0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--ink);
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.15s;
+  }
+  .zoom-btn:hover { background: var(--panel); border-color: var(--ink-dim); }
+
+  .info-strip {
+    position: absolute;
+    bottom: 20px; right: 20px;
+    padding: 8px 14px;
+    background: rgba(251,250,246,0.92);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    z-index: 5;
+  }
+  .info-strip kbd {
+    padding: 1px 5px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    margin: 0 2px;
+    color: var(--ink);
+    font-family: inherit;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    border-left: 1px solid var(--rule);
+    background: var(--bg);
+    overflow-y: auto;
+    padding: 24px 22px;
+  }
+  .sidebar-section { margin-bottom: 28px; }
+  .sidebar-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .cat-list { display: flex; flex-direction: column; gap: 6px; }
+  .cat-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px 10px;
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 12.5px;
+    width: 100%;
+    text-align: left;
+  }
+  .cat-item:hover { border-color: var(--ink-dim); }
+  .cat-item.active {
+    background: var(--cat-color);
+    border-color: var(--cat-color);
+    color: var(--bg);
+  }
+  .cat-item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--cat-color);
+    flex-shrink: 0;
+  }
+  .cat-item.active .dot { background: var(--bg); }
+  .cat-item .count {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--ink-soft);
+  }
+  .cat-item.active .count { color: var(--bg); opacity: 0.7; }
+  .cat-item[data-c="vision"] { --cat-color: var(--vision); }
+  .cat-item[data-c="hearing"] { --cat-color: var(--hearing); }
+  .cat-item[data-c="speech"] { --cat-color: var(--speech); }
+  .cat-item[data-c="mobility"] { --cat-color: var(--mobility); }
+  .cat-item[data-c="cognitive"] { --cat-color: var(--cognitive); }
+
+  .search-input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 13px;
+    outline: none;
+    transition: border 0.15s;
+  }
+  .search-input:focus { border-color: var(--ink-dim); }
+  .search-input::placeholder { color: var(--ink-soft); }
+
+  .detail-card {
+    padding: 16px;
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    min-height: 200px;
+  }
+  .detail-empty {
+    color: var(--ink-soft);
+    font-size: 12px;
+    text-align: center;
+    padding: 40px 16px;
+    font-style: italic;
+    font-family: var(--font-display);
+  }
+  .detail-tier {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--detail-color, var(--ink-soft));
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 8px;
+  }
+  .detail-tier .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--detail-color, var(--ink-soft));
+  }
+  .detail-title {
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .detail-subtitle {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 14px;
+    margin-bottom: 14px;
+  }
+  .detail-desc {
+    font-size: 12.5px;
+    color: var(--ink-dim);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .detail-meta { display: flex; flex-direction: column; gap: 10px; }
+  .detail-meta-row { display: flex; flex-direction: column; gap: 6px; }
+  .detail-meta-label {
+    font-family: var(--font-mono);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+  .detail-meta-value { font-size: 12px; color: var(--ink); }
+  .tag-row { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tag {
+    padding: 3px 8px;
+    background: var(--rule-soft);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    font-size: 10px;
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+    letter-spacing: 0.02em;
+  }
+
+  /* ============ GRAPH NODE STYLES ============ */
+  .node circle {
+    stroke: var(--bg);
+    cursor: pointer;
+    transition: stroke-width 0.15s, opacity 0.25s;
+  }
+  .node text {
+    pointer-events: none;
+    font-family: var(--font-body);
+    font-weight: 500;
+    fill: var(--ink);
+    text-anchor: middle;
+    paint-order: stroke;
+    stroke: var(--bg);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    transition: opacity 0.25s;
+  }
+  .link {
+    fill: none;
+    stroke: var(--rule);
+    stroke-opacity: 0.6;
+    transition: stroke-opacity 0.2s, stroke 0.2s;
+  }
+  .link.highlighted {
+    stroke: var(--ink);
+    stroke-opacity: 0.9;
+    stroke-width: 1.5px;
+  }
+  .node.faded circle { opacity: 0.12; }
+  .node.faded text { opacity: 0.08; }
+  .link.faded { stroke-opacity: 0.08; }
+  .node.highlighted circle { stroke-width: 3px; stroke: var(--ink); }
+
+  @media (max-width: 1000px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: auto 60vh 40vh; height: calc(100vh - 54px); }
+    .sidebar { border-left: none; border-top: 1px solid var(--rule); }
+    .header-stats { display: none; }
+  }
+
+  /* ============ SITE TOP NAV ============ */
+  .top-nav {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(246,243,238,0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--rule);
+    padding: 14px 36px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    height: 54px;
+    box-sizing: border-box;
+  }
+  .top-nav .home {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 15px;
+    text-decoration: none;
+    color: var(--ink);
+    letter-spacing: -.01em;
+  }
+  .top-nav nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  .top-nav nav a {
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-family: var(--font-body);
+    font-weight: 500;
+    letter-spacing: .02em;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: color .15s ease, border-color .15s ease;
+  }
+  .top-nav nav a:hover { color: var(--ink); }
+  .top-nav nav a.active { color: #c83a1a; border-bottom-color: #c83a1a; font-weight: 700; }
+</style>
+</head>
+<body>
+<header class="top-nav">
+  <a href="index.html" class="home">Apple Accessibility</a>
+  <nav>
+    <a href="index.html">개요</a>
+    <a href="part-i.html">I · 사용자 기능</a>
+    <a href="part-ii.html">II · 개발자 API</a>
+    <a href="part-iii.html">III · 기능 × SwiftUI</a>
+    <a href="part-iv.html">IV · 피쳐별 레시피</a>
+    <a href="part-v.html">V · 부록</a>
+    <a href="apple-accessibility-graph-bilingual.html" class="active">그래프</a>
+  </nav>
+</header>
+<div class="app">
+
+<header class="header">
+  <div class="brand">
+    <span class="brand-mark">Accessibility</span>
+    <span class="brand-sub" data-i18n="brandSub">Graph View · v2026</span>
+  </div>
+  <div class="header-stats">
+    <span><b id="stat-nodes">0</b><span data-i18n="statNodes">nodes</span></span>
+    <span><b id="stat-edges">0</b><span data-i18n="statEdges">edges</span></span>
+    <span><b id="stat-tiers">4</b><span data-i18n="statTiers">tiers</span></span>
+    <span><b id="stat-visible">0</b><span data-i18n="statVisible">visible</span></span>
+  </div>
+  <div class="header-controls">
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button class="lang-btn active" data-lang="en">EN</button>
+      <button class="lang-btn" data-lang="ko">한국어</button>
+    </div>
+    <button class="ctrl-btn active" id="toggle-labels" data-i18n="btnLabels">Labels</button>
+    <button class="ctrl-btn active" id="toggle-subs" data-i18n="btnSubs">Sub-features</button>
+    <button class="ctrl-btn" id="restart-sim" data-i18n="btnRelayout">↻ Re-layout</button>
+  </div>
+</header>
+
+<div class="graph-container">
+  <svg id="graph-svg"></svg>
+
+  <div class="legend-overlay">
+    <h4 data-i18n="legendCategory">Category</h4>
+    <div class="legend-row"><span class="swatch" style="--swatch-color: var(--vision)"></span><span class="label" data-i18n="catVision">Vision</span></div>
+    <div class="legend-row"><span class="swatch" style="--swatch-color: var(--hearing)"></span><span class="label" data-i18n="catHearing">Hearing</span></div>
+    <div class="legend-row"><span class="swatch" style="--swatch-color: var(--speech)"></span><span class="label" data-i18n="catSpeech">Speech</span></div>
+    <div class="legend-row"><span class="swatch" style="--swatch-color: var(--mobility)"></span><span class="label" data-i18n="catMobility">Mobility</span></div>
+    <div class="legend-row"><span class="swatch" style="--swatch-color: var(--cognitive)"></span><span class="label" data-i18n="catCognitive">Cognitive</span></div>
+
+    <div class="legend-tier">
+      <h4 data-i18n="legendTier">Tier</h4>
+      <div class="tier-row"><span class="tier-dot t0"></span><span data-i18n="tier0">Root</span></div>
+      <div class="tier-row"><span class="tier-dot t1"></span><span data-i18n="tier1">Category</span></div>
+      <div class="tier-row"><span class="tier-dot t2"></span><span data-i18n="tier2">Feature</span></div>
+      <div class="tier-row"><span class="tier-dot t3"></span><span data-i18n="tier3">Sub-feature</span></div>
+    </div>
+  </div>
+
+  <div class="controls-overlay">
+    <button class="zoom-btn" id="zoom-in">+</button>
+    <button class="zoom-btn" id="zoom-out">−</button>
+    <button class="zoom-btn" id="zoom-reset" style="font-size:11px;">⊙</button>
+  </div>
+
+  <div class="info-strip" id="info-strip">
+    <kbd>scroll</kbd> <span data-i18n="hintZoom">zoom</span> · <kbd>drag</kbd> <span data-i18n="hintPan">pan</span> · <kbd>click</kbd> <span data-i18n="hintClick">node to focus</span>
+  </div>
+</div>
+
+<aside class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label" data-i18n="sbSearch">Search</div>
+    <input class="search-input" id="search" data-i18n-placeholder="searchPlaceholder" placeholder="Search features and sub-features...">
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label" data-i18n="sbFilter">Filter by category</div>
+    <div class="cat-list">
+      <button class="cat-item" data-c="vision"><span class="dot"></span><span data-i18n="catVision">Vision</span><span class="count" id="c-vision">0</span></button>
+      <button class="cat-item" data-c="hearing"><span class="dot"></span><span data-i18n="catHearing">Hearing</span><span class="count" id="c-hearing">0</span></button>
+      <button class="cat-item" data-c="speech"><span class="dot"></span><span data-i18n="catSpeech">Speech</span><span class="count" id="c-speech">0</span></button>
+      <button class="cat-item" data-c="mobility"><span class="dot"></span><span data-i18n="catMobility">Mobility</span><span class="count" id="c-mobility">0</span></button>
+      <button class="cat-item" data-c="cognitive"><span class="dot"></span><span data-i18n="catCognitive">Cognitive</span><span class="count" id="c-cognitive">0</span></button>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label" data-i18n="sbSelection">Selection</div>
+    <div class="detail-card" id="detail-card">
+      <div class="detail-empty" data-i18n="detailEmpty">Click any node to see<br>detailed information here.</div>
+    </div>
+  </div>
+</aside>
+
+</div>
+
+<script>
+// ============ I18N STRINGS ============
+const UI = {
+  en: {
+    brandSub: 'Graph View · v2026',
+    statNodes: 'nodes', statEdges: 'edges', statTiers: 'tiers', statVisible: 'visible',
+    btnLabels: 'Labels', btnSubs: 'Sub-features', btnRelayout: '↻ Re-layout',
+    legendCategory: 'Category', legendTier: 'Tier',
+    catVision: 'Vision', catHearing: 'Hearing', catSpeech: 'Speech',
+    catMobility: 'Mobility', catCognitive: 'Cognitive',
+    tier0: 'Root · Apple Accessibility',
+    tier1: 'Category',
+    tier2: 'Feature',
+    tier3: 'Sub-feature',
+    sbSearch: 'Search',
+    searchPlaceholder: 'Search features and sub-features...',
+    sbFilter: 'Filter by category',
+    sbSelection: 'Selection',
+    detailEmpty: 'Click any node to see<br>detailed information here.',
+    hintZoom: 'zoom', hintPan: 'pan', hintClick: 'node to focus',
+    rootLabel: 'Apple Accessibility',
+    detailCategories: 'Categories',
+    detailParent: 'Parent feature',
+    detailSubs: 'Sub-features',
+    detailNodeId: 'Node ID',
+    tierLabels: { 0:'ROOT', 1:'CATEGORY', 2:'FEATURE', 3:'SUB-FEATURE' }
+  },
+  ko: {
+    brandSub: '그래프 뷰 · v2026',
+    statNodes: '노드', statEdges: '엣지', statTiers: '계층', statVisible: '표시중',
+    btnLabels: '라벨', btnSubs: '하위 기능', btnRelayout: '↻ 재배치',
+    legendCategory: '카테고리', legendTier: '계층',
+    catVision: '시각', catHearing: '청각', catSpeech: '말하기',
+    catMobility: '이동성', catCognitive: '인지',
+    tier0: '루트 · Apple 접근성',
+    tier1: '카테고리',
+    tier2: '기능',
+    tier3: '하위 기능',
+    sbSearch: '검색',
+    searchPlaceholder: '기능명·하위 기능 검색...',
+    sbFilter: '카테고리 필터',
+    sbSelection: '선택 노드',
+    detailEmpty: '노드를 클릭하면<br>여기에 상세 정보가 표시됩니다.',
+    hintZoom: '확대', hintPan: '이동', hintClick: '노드 클릭',
+    rootLabel: 'Apple 접근성',
+    detailCategories: '카테고리',
+    detailParent: '상위 기능',
+    detailSubs: '하위 기능',
+    detailNodeId: '노드 ID',
+    tierLabels: { 0:'루트', 1:'카테고리', 2:'기능', 3:'하위 기능' }
+  }
+};
+
+// ============ DATA ============
+const CATEGORY_META = {
+  vision:    { name: { en: 'Vision', ko: '시각' },       color: '#5B8DEF' },
+  hearing:   { name: { en: 'Hearing', ko: '청각' },      color: '#4FB58A' },
+  speech:    { name: { en: 'Speech', ko: '말하기' },     color: '#E87454' },
+  mobility:  { name: { en: 'Mobility', ko: '이동성' },   color: '#C77AC9' },
+  cognitive: { name: { en: 'Cognitive', ko: '인지' },    color: '#DCB44E' }
+};
+
+const FEATURES = [
+  // VISION
+  { id:'voiceover', name:{en:'VoiceOver', ko:'VoiceOver'},
+    desc:{en:'Industry-leading screen reader that describes your screen via audio and braille. Live Recognition narrates surroundings.',
+          ko:'화면 내용을 음성·점자로 읽어주는 산업 표준 스크린리더. Live Recognition으로 주변 묘사.'}, cats:['vision']},
+  { id:'magnifier', name:{en:'Magnifier', ko:'돋보기'},
+    desc:{en:'Digital magnifier using the camera to enlarge and describe objects, doors, people, and text.',
+          ko:'카메라를 디지털 돋보기로 사용. 사물·문·사람·텍스트 인식.'}, cats:['vision']},
+  { id:'read-speak-settings', name:{en:'Read & Speak settings', ko:'읽기 & 말하기 설정'},
+    desc:{en:'System-wide spoken content. Read the screen or selections aloud in 80+ voices across 60+ languages.',
+          ko:'화면 텍스트를 음성으로 읽어주는 시스템 기능. 80+ 음성, 60+ 언어.'}, cats:['vision','speech','cognitive']},
+  { id:'display-settings', name:{en:'Display settings & Text Size', ko:'디스플레이 설정'},
+    desc:{en:'Invert colors, color filters, increase contrast, text size, and more display adjustments.',
+          ko:'색상 반전·필터·대비 증가·텍스트 크기 등 디스플레이 조정.'}, cats:['vision']},
+  { id:'vehicle-motion', name:{en:'Vehicle Motion Cues', ko:'차량 모션 신호'},
+    desc:{en:'Dots on screen edges that move with the vehicle to reduce passenger motion sickness.',
+          ko:'차량 탑승 멀미를 줄이는 가장자리 점 표시.'}, cats:['vision']},
+  { id:'motion-settings', name:{en:'Motion settings', ko:'모션 설정'},
+    desc:{en:'Reduce motion, dim flashing lights, pause auto-play, stop blinking cursor, limit frame rate.',
+          ko:'화면 모션·깜빡임 축소 및 정지.'}, cats:['vision']},
+  { id:'zoom', name:{en:'Zoom', ko:'확대/축소'},
+    desc:{en:'Screen magnifier with multiple modes including Full Screen, Window, and Split Screen Zoom.',
+          ko:'화면 확대 기능. 다양한 모드 지원.'}, cats:['vision']},
+  { id:'hover', name:{en:'Hover settings', ko:'호버 설정'},
+    desc:{en:'Show a close-up view of text or color under the cursor. Includes Hover Text, Color, and Typing.',
+          ko:'커서 위 텍스트·색상을 크게 표시.'}, cats:['vision']},
+  { id:'iwork', name:{en:'iWork', ko:'iWork'},
+    desc:{en:'Accessibility tools in Pages, Numbers, and Keynote — alt text, headings, VoiceOver rotor, audio graphs.',
+          ko:'Pages·Numbers·Keynote의 접근성 도구.'}, cats:['vision','cognitive']},
+  { id:'audio-descriptions', name:{en:'Audio Descriptions', ko:'화면 해설'},
+    desc:{en:'Verbal descriptions of every scene in supported movies and TV shows.',
+          ko:'영화 장면을 음성 해설로 제공.'}, cats:['vision']},
+  { id:'quickly-toggle-settings', name:{en:'Quickly Toggle Settings', ko:'설정 빠른 전환'},
+    desc:{en:'Add and customize shortcuts via Control Center, Accessibility Shortcut, Back Tap, and Action Button.',
+          ko:'자주 쓰는 접근성 기능 빠른 토글.'}, cats:['vision','speech','mobility']},
+  { id:'accessibility-reader', name:{en:'Accessibility Reader', ko:'접근성 리더'},
+    desc:{en:'System-wide reading experience to customize text font, color, and spacing across any app.',
+          ko:'시스템 전반 읽기 환경 커스터마이즈.'}, cats:['vision','cognitive']},
+  { id:'braille-access', name:{en:'Braille Access', ko:'점자 접근'},
+    desc:{en:'Turn Apple devices into a full-featured braille notetaker with app launcher and Nemeth/UEB Math.',
+          ko:'기기를 점자 노트테이커로 사용.'}, cats:['vision']},
+
+  // HEARING
+  { id:'hearing-health', name:{en:'Hearing Health', ko:'청각 건강'},
+    desc:{en:'AirPods Pro Hearing Test, clinical-grade Hearing Aid, and active Hearing Protection.',
+          ko:'AirPods Pro 청력 테스트·보청기·청력 보호.'}, cats:['hearing']},
+  { id:'made-for-iphone-hearing-devices', name:{en:'Made for iPhone hearing devices', ko:'MFi 보청기'},
+    desc:{en:'Hearing aids, cochlear implants, and sound processors designed specifically for Apple devices.',
+          ko:'Apple 기기 전용 보청기·인공와우.'}, cats:['hearing']},
+  { id:'music-haptics', name:{en:'Music Haptics', ko:'음악 햅틱'},
+    desc:{en:'Experience music as taps and textures via the iPhone Taptic Engine synced to song rhythm.',
+          ko:'Taptic Engine으로 음악의 리듬을 진동으로.'}, cats:['hearing']},
+  { id:'audio-settings', name:{en:'Audio settings', ko:'오디오 설정'},
+    desc:{en:'Conversation Boost, Headphone Accommodations, and Mono Audio.',
+          ko:'오디오 출력 환경 커스터마이즈.'}, cats:['hearing']},
+  { id:'sound-recognition', name:{en:'Sound & Name Recognition', ko:'소리 & 이름 인식'},
+    desc:{en:'On-device detection of 15+ sounds and your name being called. CarPlay support.',
+          ko:'15가지 소리·이름 호출 감지.'}, cats:['hearing']},
+  { id:'facetime', name:{en:'FaceTime', ko:'FaceTime'},
+    desc:{en:'Accessible video calling with Sign Language Prominence, Live Captions, and Live Speech.',
+          ko:'영상통화 접근성 통합.'}, cats:['hearing','speech']},
+  { id:'live-listen', name:{en:'Live Listen', ko:'라이브 듣기'},
+    desc:{en:"Use your device's microphone as a remote mic to pick up distant conversations.",
+          ko:'기기 마이크를 원격 마이크로 활용.'}, cats:['hearing']},
+  { id:'sensory-alerts', name:{en:'Sensory Alerts', ko:'감각 알림'},
+    desc:{en:'Receive notifications via visual cues, vibrations, or a flashing LED light.',
+          ko:'시각·청각·진동·LED로 알림 전달.'}, cats:['vision','hearing']},
+  { id:'rtt', name:{en:'Real-Time Text (RTT)', ko:'실시간 텍스트(RTT)'},
+    desc:{en:'Instant character-by-character transmission during phone calls. Works with Call Screening.',
+          ko:'통화 중 실시간 텍스트 전송.'}, cats:['hearing']},
+  { id:'closed-captions', name:{en:'Closed Captions', ko:'폐쇄 자막'},
+    desc:{en:'Text transcriptions synced with video dialogue and sound. 40+ languages supported.',
+          ko:'영상 자막. 40+ 언어 지원.'}, cats:['hearing']},
+  { id:'transcriptions', name:{en:'Transcriptions', ko:'전사'},
+    desc:{en:'Written transcripts for podcasts, intercom messages, voice memos, voicemail, and calls.',
+          ko:'오디오의 텍스트 전사.'}, cats:['hearing']},
+  { id:'noise-app', name:{en:'Noise app', ko:'소음 앱'},
+    desc:{en:'Apple Watch tracks ambient sound levels and headphone audio to protect hearing.',
+          ko:'주변 소음·헤드폰 음량 측정.'}, cats:['hearing']},
+  { id:'live-captions', name:{en:'Live Captions', ko:'라이브 자막'},
+    desc:{en:'Real-time on-device captions for calls, FaceTime, and any audio playing through the device.',
+          ko:'대화·앱 오디오 실시간 자막.'}, cats:['hearing','cognitive']},
+  { id:'background-sounds', name:{en:'Background Sounds', ko:'배경 소리'},
+    desc:{en:'Balanced sounds like ocean, rain, and streams to mask noise, focus, or rest.',
+          ko:'바다·비 등 균형 잡힌 사운드.'}, cats:['hearing','cognitive']},
+
+  // SPEECH
+  { id:'siri', name:{en:'Siri', ko:'Siri'},
+    desc:{en:'Voice or text assistance via Siri, with Type to Siri, atypical speech learning, and Pause Time.',
+          ko:'음성·텍스트로 작업 수행. Type to Siri.'}, cats:['hearing','speech','mobility','cognitive']},
+  { id:'live-speech', name:{en:'Live Speech', ko:'라이브 스피치'},
+    desc:{en:'Type what you want to say and have your device speak it aloud during calls or in person.',
+          ko:'타이핑한 텍스트를 음성으로.'}, cats:['speech','cognitive']},
+  { id:'personal-voice', name:{en:'Personal Voice', ko:'개인 음성'},
+    desc:{en:'Securely create a voice that sounds like you, ready in under a minute on-device.',
+          ko:'본인 목소리와 유사한 음성 생성.'}, cats:['speech']},
+  { id:'vocal-shortcuts', name:{en:'Vocal Shortcuts', ko:'음성 단축어'},
+    desc:{en:'Teach your device to perform actions when you make custom sounds or words.',
+          ko:'고유한 소리·단어로 작업 실행.'}, cats:['speech']},
+
+  // MOBILITY
+  { id:'switch-control', name:{en:'Switch Control', ko:'스위치 제어'},
+    desc:{en:'Control devices with adaptive switches, game controllers, or simple sounds like a click or pop.',
+          ko:'적응형 스위치·소리로 기기 제어.'}, cats:['speech','mobility']},
+  { id:'voice-control', name:{en:'Voice Control', ko:'음성 제어'},
+    desc:{en:'Navigate and dictate using just your voice with spelling mode and grid overlay support.',
+          ko:'음성 명령으로 기기 탐색.'}, cats:['mobility']},
+  { id:'eye-tracking', name:{en:'Eye Tracking', ko:'시선 추적'},
+    desc:{en:'Control iPad and iPhone with just your eyes via the front-facing camera.',
+          ko:'시선만으로 iPad·iPhone 제어.'}, cats:['mobility']},
+  { id:'head-tracking', name:{en:'Head Tracking', ko:'헤드 추적'},
+    desc:{en:'Move the pointer with head and facial movements. Supported on iPhone, iPad, and Mac.',
+          ko:'머리 움직임으로 포인터 제어.'}, cats:['mobility']},
+  { id:'assistive-touch', name:{en:'AssistiveTouch', ko:'AssistiveTouch'},
+    desc:{en:'On-screen menu, custom gestures, and Apple Watch hand gestures (clench, pinch) for control.',
+          ko:'화면 메뉴·맞춤 제스처로 조작.'}, cats:['mobility']},
+  { id:'touch-settings', name:{en:'Touch settings', ko:'터치 설정'},
+    desc:{en:'Adjust touch sensitivity, ignore repeated touches, and tune press-and-hold.',
+          ko:'터치 응답·반복 조정.'}, cats:['mobility']},
+  { id:'hardware-keyboard', name:{en:'Hardware Keyboard', ko:'하드웨어 키보드'},
+    desc:{en:'External keyboard shortcuts, sticky keys, slow keys, and key repeat tuning.',
+          ko:'외부 키보드 단축키·고정 키.'}, cats:['mobility']},
+  { id:'accessibility-keyboard', name:{en:'Accessibility Keyboard', ko:'접근성 키보드'},
+    desc:{en:"Mac on-screen keyboard for input without a physical keyboard, mouse, or trackpad.",
+          ko:'Mac 화면 키보드.'}, cats:['mobility']},
+  { id:'fitness', name:{en:'Fitness+', ko:'피트니스+'},
+    desc:{en:'Wheelchair workouts, push tracking, and sign language trainer guidance on Apple Watch and Fitness+.',
+          ko:'휠체어 사용자 운동·푸시 트래킹.'}, cats:['mobility']},
+  { id:'dictation', name:{en:'Dictation', ko:'받아쓰기'},
+    desc:{en:'Enter text by speaking, available system-wide across Apple devices.',
+          ko:'말로 텍스트 입력.'}, cats:['mobility','cognitive']},
+
+  // COGNITIVE
+  { id:'assistive-access', name:{en:'Assistive Access', ko:'단순 접근'},
+    desc:{en:'Simplified core apps and interface for users with cognitive disabilities. Big buttons, high contrast.',
+          ko:'핵심 앱 인터페이스 단순화.'}, cats:['cognitive']},
+  { id:'apple-intelligence', name:{en:'Apple Intelligence', ko:'Apple Intelligence'},
+    desc:{en:'Writing Tools to proofread, rewrite, and summarize. Reduces cognitive load.',
+          ko:'Writing Tools·요약·재작성.'}, cats:['cognitive']},
+  { id:'safari-reader', name:{en:'Safari Reader', ko:'Safari 리더'},
+    desc:{en:'Strip ads and distractions from web pages. Tune fonts and colors, listen with Siri.',
+          ko:'웹페이지 산만함 제거.'}, cats:['cognitive']},
+  { id:'guided-access', name:{en:'Guided Access', ko:'유도 접근'},
+    desc:{en:'Keep the device in a single app, with optional time and touch-area limits to maintain focus.',
+          ko:'단일 앱에 머물도록 제한.'}, cats:['cognitive']},
+  { id:'focus', name:{en:'Focus', ko:'집중 모드'},
+    desc:{en:'Context-aware notification, app, and Home Screen tuning to minimize distractions.',
+          ko:'상황별 알림·앱 조정.'}, cats:['cognitive']},
+
+  // CROSS
+  { id:'shortcuts-app', name:{en:'Shortcuts app', ko:'단축어 앱'},
+    desc:{en:'Accessibility Gallery with Accessibility Assistant, Hold That Thought, In Case of Emergency, and more.',
+          ko:'접근성 갤러리·맞춤 자동화.'}, cats:['vision','hearing','speech','mobility','cognitive']},
+  { id:'share-accessibility-settings', name:{en:'Share Accessibility Settings', ko:'접근성 설정 공유'},
+    desc:{en:'Temporarily share your accessibility settings with another iPhone or iPad.',
+          ko:'다른 기기에 임시 설정 공유.'}, cats:['vision','hearing','speech','mobility','cognitive']}
+];
+
+// SUB-FEATURES
+const SUBFEATURES = {
+  'voiceover': [
+    {id:'sub-vo-core', name:{en:'VoiceOver Core', ko:'VoiceOver 코어'},
+     desc:{en:'Audio and braille output, gesture navigation, Live Recognition narrating surroundings.',
+           ko:'음성·점자 출력, 제스처 탐색, Live Recognition으로 주변 묘사.'}},
+    {id:'sub-vo-braille', name:{en:'VoiceOver + Braille', ko:'VoiceOver + 점자'},
+     desc:{en:'Bluetooth braille display support. UEB, multilingual, 100+ supported displays.',
+           ko:'블루투스 점자 디스플레이 연결. UEB·다국어 지원, 100+ 디스플레이.'}}
+  ],
+  'magnifier': [
+    {id:'sub-mag-core', name:{en:'Magnifier Core', ko:'돋보기 코어'},
+     desc:{en:'Camera zoom, flash, color filters, frame freeze. Mac uses Continuity Camera and Desk View.',
+           ko:'카메라 줌·플래시·색 필터·프레임 정지. Mac에서 Continuity Camera·Desk View.'}},
+    {id:'sub-mag-detection', name:{en:'Detection Mode', ko:'감지 모드'},
+     desc:{en:'LiDAR + ML for People, Door, Furniture, Scene, Text Detection, and Point & Speak.',
+           ko:'LiDAR·머신러닝 결합. 사람·문·가구·장면·텍스트·Point & Speak 감지.'}},
+    {id:'sub-mag-reader', name:{en:'Reader Mode', ko:'리더 모드'},
+     desc:{en:'Capture real-world text from books or menus. Adjust font, size, color, listen aloud.',
+           ko:'책·메뉴 등 실세계 텍스트 캡처. 폰트·색상 조정 + 음성 읽기 연동.'}}
+  ],
+  'read-speak-settings': [
+    {id:'sub-rss-speak', name:{en:'Speak Screen & Selection', ko:'화면/선택 읽기'},
+     desc:{en:'Speak the whole screen or just a selection aloud. 80+ voices, 60+ languages.',
+           ko:'전체 화면 또는 선택 영역 음성 출력. 80+ 음성, 60+ 언어.'}},
+    {id:'sub-rss-typing', name:{en:'Typing Feedback & Highlight', ko:'타이핑 피드백 & 강조'},
+     desc:{en:'Speak each character or word as you type. Highlight words or sentences as they are read.',
+           ko:'문자·단어 단위 발음, 자동수정 알림. 단어·문장 강조 표시.'}}
+  ],
+  'display-settings': [
+    {id:'sub-ds-textsize', name:{en:'Text Size', ko:'텍스트 크기'},
+     desc:{en:'Slider-based size adjustment plus Bold Text. Can be applied per-app.',
+           ko:'슬라이더 크기 조정 + Bold Text. 앱별 적용 가능.'}},
+    {id:'sub-ds-invert', name:{en:'Invert Colors', ko:'색상 반전'},
+     desc:{en:'Smart Invert (preserves media) or Classic Invert (full screen).',
+           ko:'Smart Invert(미디어 제외) / Classic Invert(전체).'}},
+    {id:'sub-ds-filter', name:{en:'Color Filters', ko:'색상 필터'},
+     desc:{en:'Grayscale, color-vision deficiency corrections, tinted screen. White Point and Night Shift.',
+           ko:'그레이스케일·색약 보정·색조 적용. White Point·Night Shift.'}},
+    {id:'sub-ds-transparency', name:{en:'Reduce Transparency', ko:'투명도 감소'},
+     desc:{en:'Turn translucent and blurred backgrounds opaque. Pairs with Increase Contrast.',
+           ko:'반투명·블러를 불투명 단색으로. Increase Contrast 함께.'}},
+    {id:'sub-ds-differentiate', name:{en:'Differentiate Without Color', ko:'색 외 구분'},
+     desc:{en:'Replace color-only cues with shapes or text. Includes On/Off Labels and Button Shapes.',
+           ko:'색 의존 UI를 모양·텍스트로 대체. On/Off Labels, Button Shapes.'}}
+  ],
+  'motion-settings': [
+    {id:'sub-ms-reduce', name:{en:'Reduce Motion', ko:'모션 감소'},
+     desc:{en:'Simplify transitions and Liquid Glass effects. Apply per-app.',
+           ko:'앱 전환·Liquid Glass 효과 단순화. 앱별 적용.'}},
+    {id:'sub-ms-dim', name:{en:'Dim Flashing Lights', ko:'깜빡임 어둡게'},
+     desc:{en:'Automatically darken bright flashes in videos.',
+           ko:'영상의 밝은 깜빡임 자동 어둡게.'}},
+    {id:'sub-ms-autoplay', name:{en:'Auto-Play Pause', ko:'자동재생 일시정지'},
+     desc:{en:'Pause animated images and video previews.',
+           ko:'움직이는 이미지·비디오 미리보기 정지.'}},
+    {id:'sub-ms-cursor', name:{en:'Non-Blinking Cursor', ko:'커서 깜빡임 정지'},
+     desc:{en:'Stop the text insertion cursor from blinking.',
+           ko:'텍스트 입력 커서 깜빡임 정지.'}},
+    {id:'sub-ms-framerate', name:{en:'Limit Frame Rate', ko:'프레임률 제한'},
+     desc:{en:'Cap ProMotion displays at 60fps.',
+           ko:'ProMotion을 60fps로 제한.'}}
+  ],
+  'hover': [
+    {id:'sub-hov-text', name:{en:'Hover Text', ko:'호버 텍스트'},
+     desc:{en:'Show a larger version of text under the pointer.',
+           ko:'포인터 위 텍스트를 큰 글씨로 확대.'}},
+    {id:'sub-hov-color', name:{en:'Hover Color', ko:'호버 색상'},
+     desc:{en:'Translate the color under the cursor into a readable color name.',
+           ko:'커서 아래 색상을 이름으로 변환.'}},
+    {id:'sub-hov-typing', name:{en:'Hover Typing', ko:'호버 타이핑'},
+     desc:{en:'Show enlarged text while you type in a field.',
+           ko:'입력 중 텍스트를 크게 표시.'}}
+  ],
+  'iwork': [
+    {id:'sub-iw-pages', name:{en:'Pages a11y', ko:'Pages 접근성'},
+     desc:{en:'Image descriptions, headings, VoiceOver layout rotor.',
+           ko:'이미지 설명·헤딩·VoiceOver 레이아웃 로터.'}},
+    {id:'sub-iw-numbers', name:{en:'Numbers a11y', ko:'Numbers 접근성'},
+     desc:{en:'Audio graphs for VoiceOver users to hear data trends.',
+           ko:'VoiceOver Audio Graph로 데이터 청각화.'}},
+    {id:'sub-iw-keynote', name:{en:'Keynote a11y', ko:'Keynote 접근성'},
+     desc:{en:'Slide navigation, image alt text, VoiceOver-friendly editing.',
+           ko:'슬라이드 내비게이션·이미지 alt.'}}
+  ],
+  'quickly-toggle-settings': [
+    {id:'sub-qts-cc', name:{en:'Control Center', ko:'제어 센터'},
+     desc:{en:'Quick toggles grouped by category. Customize the Hearing category.',
+           ko:'카테고리별 빠른 토글. Hearing 카테고리 커스터마이즈.'}},
+    {id:'sub-qts-shortcut', name:{en:'Accessibility Shortcut', ko:'접근성 단축키'},
+     desc:{en:'Triple-click side button or Digital Crown to toggle features.',
+           ko:'사이드/Digital Crown 트리플 클릭.'}},
+    {id:'sub-qts-backtap', name:{en:'Back Tap', ko:'두드려서 동작'},
+     desc:{en:'Double or triple-tap the back of iPhone. 20+ actions available.',
+           ko:'iPhone 뒷면 더블/트리플 탭. 20+ 동작.'}},
+    {id:'sub-qts-action', name:{en:'Action Button', ko:'동작 버튼'},
+     desc:{en:'Customize iPhone Action Button for accessibility features and shortcuts.',
+           ko:'iPhone 동작 버튼 커스터마이즈.'}},
+    {id:'sub-qts-perapp', name:{en:'Per-App Settings', ko:'앱별 설정'},
+     desc:{en:'Tune contrast, transparency, and text size on a per-app basis.',
+           ko:'대비·투명도·텍스트 크기 앱별 조정.'}},
+    {id:'sub-qts-siri', name:{en:'Siri Shortcuts', ko:'Siri 단축어'},
+     desc:{en:'Run shortcuts by voice.',
+           ko:'음성으로 단축어 실행.'}}
+  ],
+  'audio-settings': [
+    {id:'sub-as-boost', name:{en:'Conversation Boost', ko:'대화 강조'},
+     desc:{en:'AirPods Pro beamforming to amplify the voice of the person in front of you.',
+           ko:'AirPods Pro 빔포밍으로 정면 대화 강조.'}},
+    {id:'sub-as-headphone', name:{en:'Headphone Accommodations', ko:'헤드폰 조정'},
+     desc:{en:'Tune frequencies and amplification with up to 9 profiles. Import audiograms.',
+           ko:'주파수·증폭 9개 프로파일. 청력검사 연동.'}},
+    {id:'sub-as-mono', name:{en:'Mono Audio', ko:'모노 오디오'},
+     desc:{en:'Play both stereo channels in both ears, with balance adjustment.',
+           ko:'좌우 채널을 양쪽 귀에 동일하게.'}}
+  ],
+  'sensory-alerts': [
+    {id:'sub-sa-led', name:{en:'LED Flash for Alerts', ko:'LED 플래시 알림'},
+     desc:{en:'Camera LED flashes for calls and notifications.',
+           ko:'전화·알림 시 카메라 LED 깜빡임.'}},
+    {id:'sub-sa-haptic', name:{en:'Haptic Feedback', ko:'햅틱 피드백'},
+     desc:{en:'Haptics for Face ID, Apple Pay, and purchase verification.',
+           ko:'Face ID·Apple Pay·구매 확인 햅틱.'}},
+    {id:'sub-sa-taptic', name:{en:'Taptic Time', ko:'택틱 타임'},
+     desc:{en:'Silent haptic time-telling for users who are blind or low vision.',
+           ko:'시각장애 사용자를 위한 무음 햅틱 시간 알림.'}},
+    {id:'sub-sa-crown', name:{en:'Crown Haptics', ko:'크라운 햅틱'},
+     desc:{en:'Apple Watch Digital Crown gives haptic feedback while scrolling.',
+           ko:'Apple Watch Digital Crown 스크롤 햅틱.'}}
+  ],
+  'facetime': [
+    {id:'sub-ft-sign', name:{en:'Sign Language Prominence', ko:'수어 강조'},
+     desc:{en:'Auto-detect and prominently display the active signer in Group FaceTime.',
+           ko:'그룹 통화에서 수어 사용자 자동 강조.'}},
+    {id:'sub-ft-captions', name:{en:'Live Captions in FaceTime', ko:'FaceTime 라이브 자막'},
+     desc:{en:'Real-time captions in 1:1 and Group calls with speaker attribution.',
+           ko:'1:1·그룹 통화 실시간 자막. 화자 식별.'}},
+    {id:'sub-ft-speech', name:{en:'Live Speech in FaceTime', ko:'FaceTime 라이브 스피치'},
+     desc:{en:'Type to have your device speak in calls.',
+           ko:'타이핑한 텍스트를 통화에서 음성 출력.'}}
+  ],
+  'transcriptions': [
+    {id:'sub-tr-podcast', name:{en:'Podcast Transcriptions', ko:'팟캐스트 전사'},
+     desc:{en:'Full text alongside Apple Podcasts episodes.',
+           ko:'Apple Podcasts 전체 텍스트.'}},
+    {id:'sub-tr-intercom', name:{en:'Intercom Transcriptions', ko:'인터컴 전사'},
+     desc:{en:'Transcripts of HomePod Intercom messages.',
+           ko:'HomePod Intercom 메시지 전사.'}},
+    {id:'sub-tr-voicememo', name:{en:'Voice Memo Transcriptions', ko:'음성 메모 전사'},
+     desc:{en:'View transcripts during and after Voice Memos recordings.',
+           ko:'녹음 중·후 전사 확인.'}},
+    {id:'sub-tr-notes', name:{en:'Notes & Phone Transcriptions', ko:'메모/전화 전사'},
+     desc:{en:'Record and transcribe audio, calls, and voicemail; transcripts are searchable.',
+           ko:'녹음·통화·음성사서함 전사 후 검색.'}}
+  ],
+  'siri': [
+    {id:'sub-siri-type', name:{en:'Type to Siri', ko:'Type to Siri'},
+     desc:{en:'Use Siri by typing rather than speaking.',
+           ko:'음성 대신 텍스트로 Siri 사용.'}},
+    {id:'sub-siri-pause', name:{en:'Siri Pause Time', ko:'Siri 일시정지 시간'},
+     desc:{en:'Adjust how long Siri waits for you to finish speaking.',
+           ko:'응답 대기 시간 조정.'}},
+    {id:'sub-siri-atypical', name:{en:'Atypical Speech', ko:'비전형 말하기 학습'},
+     desc:{en:'Siri learns your unique speech patterns.',
+           ko:'사용자의 고유 발화 패턴 학습.'}}
+  ],
+  'switch-control': [
+    {id:'sub-sc-scanning', name:{en:'Item/Point/Manual Scan', ko:'스캐닝'},
+     desc:{en:'Sequential item scanning, point scanning, or full manual control.',
+           ko:'아이템·포인트·수동 스캔.'}},
+    {id:'sub-sc-panels', name:{en:'Custom Panels', ko:'맞춤 패널'},
+     desc:{en:'Build system-wide or app-specific keyboards and control panels.',
+           ko:'시스템/앱별 키보드·패널 생성.'}},
+    {id:'sub-sc-watch-mirror', name:{en:'Apple Watch Mirroring', ko:'Apple Watch 미러링'},
+     desc:{en:'Fully control Apple Watch from iPhone with assistive features.',
+           ko:'iPhone에서 Apple Watch 완전 제어.'}},
+    {id:'sub-sc-sets', name:{en:'Switch Sets', ko:'스위치 세트'},
+     desc:{en:'Switch between profiles based on time, location, or energy levels.',
+           ko:'시간·위치·에너지별 프로파일 전환.'}}
+  ],
+  'voice-control': [
+    {id:'sub-vc-spelling', name:{en:'Spelling Mode', ko:'철자 모드'},
+     desc:{en:'Dictate letter by letter for names and custom spellings.',
+           ko:'문자 단위 받아쓰기.'}},
+    {id:'sub-vc-grid', name:{en:'Grid & Number Overlay', ko:'격자/숫자 오버레이'},
+     desc:{en:'Show a grid or numbers on screen for precise selection.',
+           ko:'화면 격자·숫자로 정밀 선택.'}}
+  ],
+  'assistive-touch': [
+    {id:'sub-at-menu', name:{en:'On-screen Menu', ko:'AssistiveTouch 메뉴'},
+     desc:{en:'Floating button that opens a single-tap menu for common actions.',
+           ko:'화면 위 단일 탭 메뉴.'}},
+    {id:'sub-at-gestures', name:{en:'Hand Gestures', ko:'손동작 인식'},
+     desc:{en:'Apple Watch detects clench and pinch for hands-free control.',
+           ko:'Apple Watch 주먹쥐기·꼬집기로 제어.'}}
+  ],
+  'touch-settings': [
+    {id:'sub-ts-accom', name:{en:'Touch Accommodations', ko:'터치 적응'},
+     desc:{en:'Tune hold duration and ignore repeat touches.',
+           ko:'길게 누르기·반복 터치 무시.'}},
+    {id:'sub-ts-haptic', name:{en:'Haptic Touch', ko:'햅틱 터치'},
+     desc:{en:'Adjust touch response sensitivity.',
+           ko:'터치 응답 속도·강도 조정.'}}
+  ],
+  'hardware-keyboard': [
+    {id:'sub-hk-sticky', name:{en:'Sticky Keys', ko:'고정 키'},
+     desc:{en:'Modifier keys can be pressed one at a time.',
+           ko:'수정자 키 한 번씩 따로 누르기.'}},
+    {id:'sub-hk-slow', name:{en:'Slow Keys', ko:'느린 키'},
+     desc:{en:'Adjust how long a key must be held to register.',
+           ko:'입력 인식 시간 조정.'}},
+    {id:'sub-hk-repeat', name:{en:'Key Repeat', ko:'키 반복'},
+     desc:{en:'Tune repeat delay and rate.',
+           ko:'반복 입력 속도·지연 조정.'}}
+  ],
+  'apple-intelligence': [
+    {id:'sub-ai-writing', name:{en:'Writing Tools', ko:'쓰기 도구'},
+     desc:{en:'Proofread, rewrite, and summarize text.',
+           ko:'교정·재작성·요약.'}},
+    {id:'sub-ai-siri', name:{en:'AI-powered Siri', ko:'AI Siri'},
+     desc:{en:'Siri keeps context and handles self-corrections.',
+           ko:'문맥 유지·자기 수정 인식.'}}
+  ],
+  'assistive-access': [
+    {id:'sub-aa-apps', name:{en:'Simplified Apps', ko:'단순화된 앱'},
+     desc:{en:'Streamlined Phone, Messages, Camera, Photos, and Music.',
+           ko:'전화·메시지·카메라·사진·음악 핵심 앱.'}},
+    {id:'sub-aa-ui', name:{en:'Big UI & High Contrast', ko:'큰 UI·고대비'},
+     desc:{en:'Oversized buttons, icons, and high-contrast design.',
+           ko:'큰 버튼·아이콘·고대비 디자인.'}}
+  ],
+  'live-captions': [
+    {id:'sub-lc-phone', name:{en:'Phone Live Captions', ko:'전화 라이브 자막'},
+     desc:{en:'Real-time captions in voice calls.',
+           ko:'음성 통화 실시간 자막.'}},
+    {id:'sub-lc-watch', name:{en:'Apple Watch Captions', ko:'Watch 라이브 자막'},
+     desc:{en:'View captions on Apple Watch during a Live Listen session on iPhone.',
+           ko:'iPhone Live Listen 세션을 Watch에서 자막.'}},
+    {id:'sub-lc-vision', name:{en:'Vision Pro Captions', ko:'Vision Pro 라이브 자막'},
+     desc:{en:'System-wide captions for visionOS audio.',
+           ko:'visionOS 시스템 오디오 자막.'}}
+  ],
+  'shortcuts-app': [
+    {id:'sub-sh-assistant', name:{en:'Accessibility Assistant', ko:'접근성 어시스턴트'},
+     desc:{en:'Answer a quiz to get recommended accessibility features tailored to your needs.',
+           ko:'질문을 통해 맞춤 기능 추천.'}},
+    {id:'sub-sh-hold-thought', name:{en:'Hold That Thought', ko:'Hold That Thought'},
+     desc:{en:'Capture an interrupted thought into a note before it slips away.',
+           ko:'주의 방해 시 생각을 노트로 캡처.'}},
+    {id:'sub-sh-emergency', name:{en:'In Case of Emergency', ko:'In Case of Emergency'},
+     desc:{en:'Share your location and instructions to emergency contacts and first responders.',
+           ko:'위치·메시지를 응급 연락처에 공유.'}}
+  ],
+  'personal-voice': [
+    {id:'sub-pv-record', name:{en:'10-Phrase Recording', ko:'10문장 녹음'},
+     desc:{en:'Create your voice in under a minute by reading 10 randomized phrases.',
+           ko:'1분 이내 빠른 보이스 생성.'}},
+    {id:'sub-pv-short', name:{en:'3-Word Mode', ko:'3단어 모드'},
+     desc:{en:'For users who struggle with long sentences, record using short phrases.',
+           ko:'긴 문장 발음 곤란 시 짧은 문구로.'}}
+  ],
+  'fitness': [
+    {id:'sub-fit-wheelchair', name:{en:'Wheelchair Mode', ko:'휠체어 모드'},
+     desc:{en:'Push tracking and workout metrics for wheelchair users.',
+           ko:'푸시 동작·운동 측정.'}},
+    {id:'sub-fit-sign', name:{en:'Sign Language Trainers', ko:'트레이너 수어'},
+     desc:{en:'Fitness+ workouts with sign language guidance.',
+           ko:'Fitness+ 수어 안내 영상.'}}
+  ]
+};
+
+// ============ STATE ============
+let lang = 'en';
+let hideSubs = false;
+let hideLabels = false;
+let catFilter = null;
+let selectedNode = null;
+
+// ============ BUILD GRAPH DATA ============
+const nodes = [];
+const links = [];
+
+// Tier 0: Root
+nodes.push({ id: 'root', name: { en: 'Apple Accessibility', ko: 'Apple 접근성' }, tier: 0, type: 'root' });
+
+// Tier 1: Categories
+Object.keys(CATEGORY_META).forEach(catKey => {
+  const m = CATEGORY_META[catKey];
+  nodes.push({
+    id: 'cat-' + catKey,
+    name: m.name,
+    tier: 1,
+    type: 'category',
+    cat: catKey,
+    color: m.color
+  });
+  links.push({ source: 'root', target: 'cat-' + catKey, kind: 'tier' });
+});
+
+// Tier 2: Features
+FEATURES.forEach(f => {
+  const primary = f.cats[0];
+  nodes.push({
+    id: f.id,
+    name: f.name,
+    desc: f.desc,
+    tier: 2,
+    type: 'feature',
+    cats: f.cats,
+    cat: primary,
+    color: CATEGORY_META[primary].color
+  });
+  f.cats.forEach(c => {
+    links.push({
+      source: 'cat-' + c,
+      target: f.id,
+      kind: c === primary ? 'primary' : 'cross'
+    });
+  });
+});
+
+// Tier 3: Sub-features
+Object.keys(SUBFEATURES).forEach(parentId => {
+  const parent = FEATURES.find(f => f.id === parentId);
+  if (!parent) return;
+  SUBFEATURES[parentId].forEach(sub => {
+    nodes.push({
+      id: sub.id,
+      name: sub.name,
+      desc: sub.desc,
+      tier: 3,
+      type: 'subfeature',
+      parent: parentId,
+      cats: parent.cats,
+      cat: parent.cats[0],
+      color: CATEGORY_META[parent.cats[0]].color
+    });
+    links.push({ source: parentId, target: sub.id, kind: 'sub' });
+  });
+});
+
+// ============ SVG SETUP ============
+const svgEl = document.getElementById('graph-svg');
+const svg = d3.select(svgEl);
+const container = svgEl.parentElement;
+let width = container.clientWidth;
+let height = container.clientHeight;
+
+const g = svg.append('g').attr('class', 'graph-root');
+
+const zoom = d3.zoom()
+  .scaleExtent([0.2, 4])
+  .on('zoom', e => g.attr('transform', e.transform));
+svg.call(zoom);
+
+const linkGroup = g.append('g').attr('class', 'links');
+const nodeGroup = g.append('g').attr('class', 'nodes');
+
+const catAngles = {};
+Object.keys(CATEGORY_META).forEach((c, i) => {
+  catAngles[c] = (i / 5) * Math.PI * 2 - Math.PI / 2;
+});
+
+const RADIUS = { 0: 22, 1: 16, 2: 8, 3: 4 };
+
+const simulation = d3.forceSimulation(nodes)
+  .force('link', d3.forceLink(links).id(d => d.id)
+    .distance(l => {
+      if (l.kind === 'tier') return 130;
+      if (l.kind === 'primary') return 90;
+      if (l.kind === 'cross') return 180;
+      if (l.kind === 'sub') return 45;
+      return 100;
+    })
+    .strength(l => l.kind === 'cross' ? 0.15 : 0.85))
+  .force('charge', d3.forceManyBody().strength(d => {
+    if (d.tier === 0) return -800;
+    if (d.tier === 1) return -500;
+    if (d.tier === 2) return -120;
+    return -30;
+  }))
+  .force('center', d3.forceCenter(width / 2, height / 2).strength(0.04))
+  .force('collide', d3.forceCollide().radius(d => RADIUS[d.tier] + 6).strength(0.9))
+  .force('radial', d3.forceRadial(d => {
+    if (d.tier === 0) return 0;
+    if (d.tier === 1) return 200;
+    if (d.tier === 2) return 380;
+    return 470;
+  }, width / 2, height / 2).strength(d => {
+    if (d.tier === 0) return 1;
+    if (d.tier === 1) return 0.5;
+    if (d.tier === 2) return 0.15;
+    return 0.4;
+  }))
+  .force('cluster', d3.forceX(d => {
+    if (!d.cat) return width / 2;
+    return width / 2 + Math.cos(catAngles[d.cat]) * (d.tier === 1 ? 200 : 360);
+  }).strength(d => d.tier === 0 ? 0 : 0.06))
+  .force('clusterY', d3.forceY(d => {
+    if (!d.cat) return height / 2;
+    return height / 2 + Math.sin(catAngles[d.cat]) * (d.tier === 1 ? 200 : 360);
+  }).strength(d => d.tier === 0 ? 0 : 0.06));
+
+const linkSel = linkGroup.selectAll('line')
+  .data(links)
+  .join('line')
+  .attr('class', 'link')
+  .attr('stroke-width', l => l.kind === 'sub' ? 0.8 : l.kind === 'cross' ? 0.6 : 1)
+  .attr('stroke-dasharray', l => l.kind === 'cross' ? '3,3' : null);
+
+const nodeSel = nodeGroup.selectAll('g')
+  .data(nodes)
+  .join('g')
+  .attr('class', 'node')
+  .attr('data-id', d => d.id)
+  .call(d3.drag()
+    .on('start', dragStart)
+    .on('drag', dragging)
+    .on('end', dragEnd));
+
+nodeSel.append('circle')
+  .attr('r', d => RADIUS[d.tier])
+  .attr('fill', d => d.tier === 0 ? '#F5F4EF' : d.color || '#888')
+  .attr('stroke-width', d => d.tier === 0 ? 2 : 1.5)
+  .attr('fill-opacity', d => d.tier === 3 ? 0.7 : 1)
+  .on('click', (e, d) => { e.stopPropagation(); selectNode(d); })
+  .on('mouseover', (e, d) => hoverNode(d, true))
+  .on('mouseout', (e, d) => hoverNode(d, false));
+
+nodeSel.filter(d => d.tier === 2 && d.cats && d.cats.length > 1)
+  .append('circle')
+  .attr('r', d => RADIUS[d.tier] + 3)
+  .attr('fill', 'none')
+  .attr('stroke', d => d.color)
+  .attr('stroke-width', 1)
+  .attr('stroke-dasharray', '2,2')
+  .attr('opacity', 0.6)
+  .style('pointer-events', 'none');
+
+nodeSel.append('text')
+  .attr('class', 'node-label')
+  .attr('dy', d => RADIUS[d.tier] + 12)
+  .attr('font-size', d => {
+    if (d.tier === 0) return 14;
+    if (d.tier === 1) return 13;
+    if (d.tier === 2) return 10.5;
+    return 9;
+  })
+  .attr('font-weight', d => d.tier <= 1 ? 600 : 500)
+  .text(d => d.name[lang]);
+
+simulation.on('tick', () => {
+  linkSel
+    .attr('x1', d => d.source.x)
+    .attr('y1', d => d.source.y)
+    .attr('x2', d => d.target.x)
+    .attr('y2', d => d.target.y);
+  nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+});
+
+function dragStart(e, d) {
+  if (!e.active) simulation.alphaTarget(0.3).restart();
+  d.fx = d.x; d.fy = d.y;
+}
+function dragging(e, d) { d.fx = e.x; d.fy = e.y; }
+function dragEnd(e, d) {
+  if (!e.active) simulation.alphaTarget(0);
+  d.fx = null; d.fy = null;
+}
+
+// ============ HOVER & SELECT ============
+function hoverNode(d, on) {
+  if (selectedNode) return;
+  if (on) highlightNeighborhood(d); else clearHighlight();
+}
+
+function highlightNeighborhood(d) {
+  const connected = new Set([d.id]);
+  links.forEach(l => {
+    if (l.source.id === d.id) connected.add(l.target.id);
+    if (l.target.id === d.id) connected.add(l.source.id);
+  });
+  if (d.tier === 2) {
+    links.forEach(l => {
+      if (connected.has(l.source.id)) connected.add(l.target.id);
+      if (connected.has(l.target.id)) connected.add(l.source.id);
+    });
+  }
+  nodeSel.classed('faded', n => !connected.has(n.id));
+  nodeSel.classed('highlighted', n => n.id === d.id);
+  linkSel.classed('faded', l => !(connected.has(l.source.id) && connected.has(l.target.id)));
+  linkSel.classed('highlighted', l => l.source.id === d.id || l.target.id === d.id);
+}
+
+function clearHighlight() {
+  nodeSel.classed('faded', false).classed('highlighted', false);
+  linkSel.classed('faded', false).classed('highlighted', false);
+}
+
+function selectNode(d) {
+  selectedNode = d;
+  highlightNeighborhood(d);
+  renderDetail(d);
+}
+
+svg.on('click', () => {
+  selectedNode = null;
+  clearHighlight();
+  renderDetail(null);
+});
+
+// ============ DETAIL CARD ============
+function renderDetail(d) {
+  const card = document.getElementById('detail-card');
+  const t = UI[lang];
+  if (!d) {
+    card.innerHTML = `<div class="detail-empty">${t.detailEmpty}</div>`;
+    return;
+  }
+  const color = d.color || '#F5F4EF';
+  card.style.setProperty('--detail-color', color);
+
+  let tierLabel = '';
+  if (d.tier === 0) tierLabel = t.tierLabels[0];
+  else if (d.tier === 1) tierLabel = `${t.tierLabels[1]} · ${d.name.en.toUpperCase()}`;
+  else if (d.tier === 2) tierLabel = `${t.tierLabels[2]} · ${(d.cats||[]).map(c=>CATEGORY_META[c].name.en).join(' / ')}`;
+  else tierLabel = `${t.tierLabels[3]} · ${CATEGORY_META[d.cat]?.name.en || ''}`;
+
+  // Other-language label (the one not currently displayed) for translation aid
+  const otherLang = lang === 'en' ? 'ko' : 'en';
+  const otherLabel = d.name[otherLang] && d.name[otherLang] !== d.name[lang] ? d.name[otherLang] : null;
+
+  let parentInfo = '';
+  if (d.tier === 3) {
+    const parent = FEATURES.find(f => f.id === d.parent);
+    if (parent) parentInfo = `<div class="detail-meta-row"><span class="detail-meta-label">${t.detailParent}</span><span class="detail-meta-value">${parent.name[lang]}</span></div>`;
+  }
+
+  let childCount = '';
+  if (d.tier === 2 && SUBFEATURES[d.id]) {
+    childCount = `<div class="detail-meta-row"><span class="detail-meta-label">${t.detailSubs} (${SUBFEATURES[d.id].length})</span><div class="tag-row">${SUBFEATURES[d.id].map(s=>`<span class="tag">${s.name[lang]}</span>`).join('')}</div></div>`;
+  }
+
+  let catTags = '';
+  if (d.cats && d.tier >= 2) {
+    catTags = `<div class="detail-meta-row"><span class="detail-meta-label">${t.detailCategories}</span><div class="tag-row">${d.cats.map(c=>`<span class="tag" style="color:${CATEGORY_META[c].color};border-color:${CATEGORY_META[c].color}40;">${CATEGORY_META[c].name[lang]}</span>`).join('')}</div></div>`;
+  }
+
+  card.innerHTML = `
+    <div class="detail-tier"><span class="dot"></span>${tierLabel}</div>
+    <h3 class="detail-title">${d.name[lang]}</h3>
+    ${otherLabel ? `<p class="detail-subtitle">${otherLabel}</p>` : ''}
+    ${d.desc ? `<p class="detail-desc">${d.desc[lang]}</p>` : ''}
+    <div class="detail-meta">
+      ${catTags}
+      ${parentInfo}
+      ${childCount}
+      <div class="detail-meta-row"><span class="detail-meta-label">${t.detailNodeId}</span><span class="detail-meta-value" style="font-family:var(--font-mono);font-size:11px;color:var(--ink-dim);">${d.id}</span></div>
+    </div>
+  `;
+}
+
+// ============ FILTERS ============
+document.querySelectorAll('.cat-item').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const c = btn.dataset.c;
+    if (catFilter === c) {
+      catFilter = null;
+      btn.classList.remove('active');
+    } else {
+      catFilter = c;
+      document.querySelectorAll('.cat-item').forEach(x => x.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    applyFilter();
+  });
+});
+
+function applyFilter() {
+  const visibleIds = new Set();
+  if (!catFilter) {
+    nodes.forEach(n => visibleIds.add(n.id));
+  } else {
+    visibleIds.add('root');
+    visibleIds.add('cat-' + catFilter);
+    nodes.forEach(n => {
+      if (n.tier === 2 && n.cats.includes(catFilter)) visibleIds.add(n.id);
+      if (n.tier === 3) {
+        const parent = nodes.find(p => p.id === n.parent);
+        if (parent && parent.cats.includes(catFilter)) visibleIds.add(n.id);
+      }
+    });
+  }
+  nodeSel.style('display', d => visibleIds.has(d.id) ? null : 'none');
+  linkSel.style('display', l => (visibleIds.has(l.source.id) && visibleIds.has(l.target.id)) ? null : 'none');
+  updateStats(visibleIds);
+}
+
+// ============ SEARCH ============
+const searchInput = document.getElementById('search');
+searchInput.addEventListener('input', e => {
+  const q = e.target.value.trim().toLowerCase();
+  if (!q) { clearHighlight(); selectedNode = null; return; }
+  const matched = nodes.filter(n =>
+    n.name.en.toLowerCase().includes(q) ||
+    n.name.ko.toLowerCase().includes(q) ||
+    (n.desc && (n.desc.en.toLowerCase().includes(q) || n.desc.ko.toLowerCase().includes(q)))
+  );
+  const ids = new Set(matched.map(n => n.id));
+  nodeSel.classed('faded', n => !ids.has(n.id));
+  linkSel.classed('faded', true);
+});
+
+// ============ TOGGLE BUTTONS ============
+document.getElementById('toggle-labels').addEventListener('click', e => {
+  hideLabels = !hideLabels;
+  e.target.classList.toggle('active', !hideLabels);
+  nodeSel.selectAll('text').style('display', hideLabels ? 'none' : null);
+});
+document.getElementById('toggle-subs').addEventListener('click', e => {
+  hideSubs = !hideSubs;
+  e.target.classList.toggle('active', !hideSubs);
+  nodeSel.filter(d => d.tier === 3).style('display', hideSubs ? 'none' : null);
+  linkSel.filter(l => l.kind === 'sub').style('display', hideSubs ? 'none' : null);
+});
+document.getElementById('restart-sim').addEventListener('click', () => {
+  simulation.alpha(0.8).restart();
+});
+
+// ============ ZOOM CONTROLS ============
+document.getElementById('zoom-in').addEventListener('click', () => {
+  svg.transition().duration(300).call(zoom.scaleBy, 1.3);
+});
+document.getElementById('zoom-out').addEventListener('click', () => {
+  svg.transition().duration(300).call(zoom.scaleBy, 0.75);
+});
+document.getElementById('zoom-reset').addEventListener('click', () => {
+  svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);
+});
+
+// ============ LANGUAGE TOGGLE ============
+function setLanguage(newLang) {
+  if (newLang === lang) return;
+  lang = newLang;
+  document.documentElement.setAttribute('lang', lang);
+
+  // toggle button states
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+
+  // Update all UI strings
+  const t = UI[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.dataset.i18n;
+    if (t[key] !== undefined) el.innerHTML = t[key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.dataset.i18nPlaceholder;
+    if (t[key] !== undefined) el.placeholder = t[key];
+  });
+
+  // Update all node labels in SVG
+  nodeSel.selectAll('text.node-label').text(d => d.name[lang]);
+
+  // Re-render selection card if open
+  if (selectedNode) renderDetail(selectedNode);
+  else renderDetail(null);
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+});
+
+// ============ STATS ============
+function updateStats(visibleIds) {
+  const visNodes = visibleIds ? visibleIds.size : nodes.length;
+  document.getElementById('stat-nodes').textContent = nodes.length;
+  document.getElementById('stat-edges').textContent = links.length;
+  document.getElementById('stat-visible').textContent = visNodes;
+  Object.keys(CATEGORY_META).forEach(c => {
+    const count = FEATURES.filter(f => f.cats.includes(c)).length;
+    document.getElementById('c-' + c).textContent = count;
+  });
+}
+updateStats();
+
+// ============ RESIZE ============
+window.addEventListener('resize', () => {
+  width = container.clientWidth;
+  height = container.clientHeight;
+  simulation.force('center', d3.forceCenter(width / 2, height / 2).strength(0.04));
+  simulation.force('radial', d3.forceRadial(d => {
+    if (d.tier === 0) return 0;
+    if (d.tier === 1) return 200;
+    if (d.tier === 2) return 380;
+    return 470;
+  }, width / 2, height / 2).strength(d => d.tier === 0 ? 1 : 0.15));
+  simulation.alpha(0.4).restart();
+});
+
+setTimeout(() => {
+  svg.transition().duration(800).call(
+    zoom.transform,
+    d3.zoomIdentity.translate(0, 0).scale(0.85)
+  );
+}, 1500);
+</script>
+</body>
+</html>
