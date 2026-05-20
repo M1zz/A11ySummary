@@ -633,6 +633,522 @@
 
   </article><!-- /Reduce Motion -->
 
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="accessibility-traits" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS · visionOS</span>
+    </div>
+    <div class="feat-name">Accessibility Traits</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Custom-drawn views carry no semantic role — VoiceOver cannot tell a tappable card from static text, and won't announce &quot;Button&quot; or &quot;Heading&quot; without explicit declaration.">커스텀 뷰는 시맨틱 역할 정보를 갖지 않는다. 명시적 선언 없이 VoiceOver는 탭 가능한 카드를 정적 텍스트와 구별하지 못하고 "버튼"이나 "제목"으로 발화하지 않는다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Traits are the semantic vocabulary of UIAccessibility. Attach the right trait so VoiceOver announces the correct role — button, heading, link, image, selected — even when the view doesn't use a standard component.">Traits는 UIAccessibility의 시맨틱 어휘다. 올바른 Trait를 부착하면 표준 컴포넌트를 쓰지 않아도 VoiceOver가 버튼·제목·링크·이미지·선택됨을 정확히 발화한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Role — declaring interactive intent">인터랙티브 의도 선언</span>
+      <code class="impl-sig">.accessibilityAddTraits(.isButton)</code>
+    </div>
+    <p class="impl-when" data-en="Any custom view that responds to tap but isn't a SwiftUI Button or UIButton. Without the trait, VoiceOver won't say &quot;Button&quot; — users have no way to know the element is interactive.">탭에 반응하지만 SwiftUI <code>Button</code>이나 UIButton이 아닌 모든 커스텀 뷰. Trait 없이는 VoiceOver가 "버튼"을 발화하지 않아 사용자가 인터랙티브 요소인지 알 수 없다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom tappable Card view reads only its label. No role hint. VoiceOver user doesn't know to double-tap.">탭 가능한 커스텀 카드가 라벨만 읽힌다. 역할 힌트 없음. VoiceOver 사용자는 더블탭 해야 한다는 것을 알 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="VoiceOver announces &quot;Article. Button.&quot; — the user knows to double-tap to activate.">VoiceOver가 "기사. 버튼."을 발화한다. 사용자는 더블탭으로 활성화할 수 있음을 안다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Heading — rotor navigation">로터 제목 탐색</span>
+      <code class="impl-sig">.accessibilityAddTraits(.isHeader)</code>
+    </div>
+    <p class="impl-when" data-en="Section titles in scroll views. VoiceOver's rotor has a Headings mode — users jump between sections by flicking up/down. Without the trait, headings are invisible to the rotor.">스크롤 뷰의 섹션 제목. VoiceOver 로터에는 제목 모드가 있어 사용자가 위아래 플릭으로 섹션을 이동한다. Trait 없이는 제목이 로터에 나타나지 않는다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Styled large text &quot;Recent Orders&quot; is skipped by the Headings rotor — VoiceOver users can't navigate to sections.">크게 스타일된 "최근 주문" 텍스트가 Headings 로터에 잡히지 않는다. 섹션으로 직접 이동할 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="&quot;Recent Orders. Heading.&quot; — the element appears in the rotor; users jump directly to it from anywhere in the scroll view.">"최근 주문. 제목." — 로터에 나타나 스크롤 뷰 어디서든 바로 이동할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="element-grouping" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS · visionOS</span>
+    </div>
+    <div class="feat-name">Element Grouping</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="A card with an icon, title, and subtitle costs 3 VoiceOver swipes — exhausting to navigate. Decorative images add noise by announcing meaningless icon names.">아이콘·제목·부제목이 있는 카드 하나를 읽는 데 VoiceOver 스와이프 3번이 필요하다. 장식용 이미지는 무의미한 아이콘 이름을 발화해 소음을 더한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="`.accessibilityElement(children: .combine)` merges all child labels into one announcement. `.accessibilityHidden(true)` removes decorative elements from the accessibility tree entirely.">`.accessibilityElement(children: .combine)`은 모든 자식 라벨을 하나의 발화로 합친다. `.accessibilityHidden(true)`은 장식 요소를 접근성 트리에서 완전히 제거한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Grouping — merge card children">카드 자식 요소 병합</span>
+      <code class="impl-sig">.accessibilityElement(children: .combine)</code>
+    </div>
+    <p class="impl-when" data-en="List rows, cards, or any HStack/VStack containing text that should be read as a single unit. Three VoiceOver stops become one.">단일 단위로 읽혀야 할 텍스트를 담은 리스트 행, 카드, HStack/VStack 전체. VoiceOver 정류장 3개가 1개로 줄어든다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Icon (&quot;star.fill&quot;), title (&quot;Pro Plan&quot;), subtitle (&quot;$9.99/month&quot;) — 3 separate VoiceOver stops with gestures between each.">아이콘("star.fill"), 제목("Pro Plan"), 부제목("$9.99/month") — VoiceOver 정류장 3개, 각각 제스처 필요.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Single focus reads &quot;Pro Plan. $9.99/month.&quot; — icon is silently merged or omitted.">하나의 포커스로 "Pro Plan. $9.99/month."을 읽는다. 아이콘은 조용히 병합되거나 생략된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Hiding — remove decorative elements">장식 요소 제거</span>
+      <code class="impl-sig">.accessibilityHidden(true)</code>
+    </div>
+    <p class="impl-when" data-en="Purely decorative images, dividers, background shapes, or icons that duplicate information already in adjacent text.">순전히 장식적인 이미지, 구분선, 배경 도형, 인접 텍스트와 내용이 중복되는 아이콘.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="A background circle announces &quot;circle.fill&quot; — a meaningless interruption mid-navigation.">배경 원이 "circle.fill"을 발화한다. 탐색 중 의미 없는 방해.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="The circle is invisible to VoiceOver — focus jumps directly to meaningful content.">원은 VoiceOver에서 보이지 않는다. 포커스가 바로 의미 있는 콘텐츠로 이동한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="increase-contrast" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS · visionOS</span>
+    </div>
+    <div class="feat-name">Increase Contrast</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Translucent materials, light-gray-on-white text, and low-contrast palettes fail WCAG 1.4.3 (4.5:1) and become unreadable for low-vision and elderly users — especially outdoors in direct sunlight.">반투명 재질, 흰 배경 위 밝은 회색 텍스트, 저대비 색상 조합은 WCAG 1.4.3(4.5:1)을 충족하지 못하며, 저시력·고령 사용자에게, 특히 직사광선 아래 야외에서 읽을 수 없어진다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Read `accessibilityHighContrast` and `accessibilityReduceTransparency` from the environment. Swap muted colors for high-contrast alternatives and replace translucent layers with solid fills.">환경에서 `accessibilityHighContrast`와 `accessibilityReduceTransparency`를 읽는다. 중간 톤 색상을 고대비 대안으로 교체하고 반투명 레이어를 불투명 배경으로 대체한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Color — swap to solid high-contrast">고대비 색상으로 교체</span>
+      <code class="impl-sig">@Environment(\.accessibilityHighContrast) var highContrast</code>
+    </div>
+    <p class="impl-when" data-en="Any color pair with contrast ratio below 7:1 (AAA), or any text rendered on a semi-transparent or gradient surface.">대비율이 7:1(AAA) 미만인 색상 조합, 또는 반투명·그라디언트 배경 위에 렌더링되는 텍스트.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Label color `.secondary` (gray) on `.systemBackground` — ~3.7:1 contrast. Fails WCAG AA in non-ideal conditions.">.systemBackground` 위 `.secondary`(회색) 라벨 — 대비율 약 3.7:1. 비이상적 조건에서 WCAG AA 불합격.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="In High Contrast mode the label switches to `.primary` (near-black) — ~14:1 contrast. Passes AAA everywhere.">High Contrast 모드에서 라벨이 `.primary`(근-흑)로 전환 — 대비율 약 14:1. 어디서나 AAA 합격.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Material — remove blur layers">블러 레이어 제거</span>
+      <code class="impl-sig">@Environment(\.accessibilityReduceTransparency) var reduceTransparency</code>
+    </div>
+    <p class="impl-when" data-en="Any `Material` or `UIBlurEffect` background. Blur reduces the effective contrast of text layered on top.">`Material` 또는 `UIBlurEffect`를 배경으로 사용하는 모든 뷰. 블러는 위에 겹친 텍스트의 유효 대비를 낮춘다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Sidebar uses `Material.ultraThinMaterial` — text contrast collapses when background is colorful.">사이드바가 `Material.ultraThinMaterial`을 사용한다. 배경이 화려하면 텍스트 대비가 무너진다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="When reduceTransparency is true, sidebar becomes a solid `.systemBackground` — text is always readable.">`reduceTransparency`가 true이면 사이드바가 단색 `.systemBackground`로 전환된다. 텍스트가 항상 읽힌다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="differentiate-without-color" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS · visionOS</span>
+    </div>
+    <div class="feat-name">Differentiate Without Color</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="~8% of males are color-blind. UI patterns that encode meaning through color alone — red = error, green = success — are completely ambiguous to deuteranopia and protanopia users.">남성의 약 8%는 색맹이다. 색상만으로 의미를 전달하는 UI 패턴 — 빨강 = 오류, 초록 = 성공 — 은 적록색맹 사용자에게 완전히 모호하다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Read `accessibilityDifferentiateWithoutColor` from the environment and add a secondary cue — icon, pattern, or text label — alongside every color-coded indicator so meaning survives without hue perception.">환경에서 `accessibilityDifferentiateWithoutColor`를 읽어 색상 기반 지시자 옆에 아이콘·패턴·텍스트 레이블 같은 보조 단서를 추가한다. 색조 인식 없이도 의미가 전달된다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Status — add shape cue to color dot">색상 점에 형태 단서 추가</span>
+      <code class="impl-sig">@Environment(\.accessibilityDifferentiateWithoutColor) var noDiffColor</code>
+    </div>
+    <p class="impl-when" data-en="Any colored dot, badge, chart segment, or status indicator where color is the sole signal. Includes selection states shown only through color change.">색상이 유일한 신호인 모든 색상 점, 배지, 차트 세그먼트, 상태 표시기. 색상 변경만으로 표시되는 선택 상태 포함.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Network indicator: green dot = online, red dot = offline. Both appear as similar yellow-brown to a deuteranopia user.">네트워크 표시기: 초록 점 = 온라인, 빨강 점 = 오프라인. 적록색맹 사용자에게 두 점 모두 비슷한 황갈색으로 보인다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="When noDiffColor is true, dots become &quot;●&quot; (online) or &quot;✕&quot; (offline) — shape carries the meaning independently of color.">`noDiffColor`가 true이면 점이 "●"(온라인) 또는 "✕"(오프라인)으로 바뀐다. 형태가 색상 독립적으로 의미를 전달한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="smart-invert" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS</span>
+    </div>
+    <div class="feat-name">Smart Invert — ignoresInvertColors</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Smart Invert Colors is a popular low-vision tool that inverts the screen. Without intervention it also inverts photos, maps, and video — producing unrecognizable negative-film artifacts.">Smart Invert Colors는 저시력 사용자에게 인기 있는 도구로 화면 전체를 반전한다. 조치 없이는 사진·지도·영상도 반전되어 인식 불가능한 네거티브 필름 같은 결과물이 나온다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Mark any view that should display in natural colors with `.accessibilityIgnoresInvertColors(true)`. The system exempts that layer from the inversion compositing pass.">자연색으로 표시해야 하는 뷰에 `.accessibilityIgnoresInvertColors(true)`를 표시한다. 시스템이 해당 레이어를 반전 합성 단계에서 제외한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Images — preserve natural color">이미지 자연색 보존</span>
+      <code class="impl-sig">.accessibilityIgnoresInvertColors(true)</code>
+    </div>
+    <p class="impl-when" data-en="Every Image showing photos, product shots, maps, charts, avatars, or video previews. App icons are automatically exempt — other image content is not.">사진·제품 사진·지도·차트·아바타·영상 미리보기를 표시하는 모든 Image. 앱 아이콘은 자동으로 제외되지만 그 외 이미지 콘텐츠는 아니다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Product photo appears as a color-negative — white becomes black, skin tones invert. The image is unrecognizable under Smart Invert.">제품 사진이 컬러 네거티브로 보인다. 흰색이 검정으로, 피부 톤이 반전된다. Smart Invert 상태에서 이미지를 알아볼 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Photo renders in natural color. The surrounding UI (nav bar, buttons) continues to honor the inversion — only the image layer is exempt.">사진이 자연색으로 렌더링된다. 주변 UI(내비게이션 바, 버튼)는 계속 반전을 따른다. 이미지 레이어만 제외된다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="closed-captions" data-cat="hearing">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-hearing">Hearing</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS</span>
+    </div>
+    <div class="feat-name">Closed Captions &amp; Audio Descriptions</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Video content is completely inaccessible to deaf and hard-of-hearing users without captions. Relying on the creator to bundle a caption track is insufficient — the player must actively surface available tracks and respect the user's system caption preferences.">자막 없는 영상 콘텐츠는 청각장애·난청 사용자에게 완전히 접근 불가하다. 제작자가 자막 트랙을 포함했다고 충분한 것이 아니다. 플레이어가 사용 가능한 트랙을 노출하고 시스템 자막 설정을 따라야 한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Use `AVPlayerViewController` which automatically surfaces embedded SDH caption and audio-description tracks, applying the user's chosen style from Accessibility Settings.">`AVPlayerViewController`를 사용하면 내장된 SDH 자막 및 화면 해설 트랙을 자동으로 노출하고, 접근성 설정에서 사용자가 선택한 스타일을 적용한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Video — surface captions automatically">자막 자동 노출</span>
+      <code class="impl-sig">let vc = AVPlayerViewController()</code>
+    </div>
+    <p class="impl-when" data-en="Any in-app video playback. `AVPlayerViewController` detects SDH tracks in HLS or local media and shows the CC button respecting the user's system preference.">앱 내 모든 영상 재생. `AVPlayerViewController`는 HLS 또는 로컬 미디어의 SDH 트랙을 감지하고, 시스템 설정에 따라 CC 버튼을 표시한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom `AVPlayerLayer` shows video with no caption UI — a deaf user sees no text even if the media has embedded CC tracks.">커스텀 `AVPlayerLayer`는 자막 UI 없이 영상을 표시한다. 미디어에 CC 트랙이 내장돼 있어도 청각장애 사용자에게 텍스트가 보이지 않는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="`AVPlayerViewController` shows the CC button automatically. The user's preferred caption style — large font, high-contrast background — is applied from Settings.">`AVPlayerViewController`가 CC 버튼을 자동으로 표시한다. 설정에서 사용자가 선택한 자막 스타일(큰 글씨, 고대비 배경)이 적용된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Audio session — route to hearing devices">보청기로 오디오 라우팅</span>
+      <code class="impl-sig">try session.setCategory(.playback, options: .allowBluetooth)</code>
+    </div>
+    <p class="impl-when" data-en="Any app playing speech or music that must continue through a paired hearing aid or cochlear implant, even when the phone is locked.">잠금 화면에서도 페어링된 보청기나 인공와우를 통해 음성이나 음악이 계속 재생되어야 하는 앱.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="`.soloAmbient` pauses app audio on any call or notification — hearing-aid users lose content mid-sentence.">.soloAmbient`는 전화나 알림이 오면 앱 오디오를 일시 정지한다. 보청기 사용자가 문장 중간에 음성을 놓친다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="`.playback` with `.allowBluetooth` keeps audio running and routes through the paired hearing device correctly.">.allowBluetooth`가 포함된 `.playback`은 오디오를 계속 실행하고 페어링된 청각 장치로 올바르게 라우팅한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="haptic-feedback" data-cat="hearing">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-hearing">Hearing</span>
+      <span class="feat-platforms">iOS · watchOS</span>
+    </div>
+    <div class="feat-name">Haptic Feedback</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Sound-only feedback — a tap sound on button press, an error chime, a success ping — is silent to deaf users and users in loud environments. The confirmation that an action completed never arrives.">버튼 탭 소리, 오류 알림음, 성공 핑처럼 소리만 사용하는 피드백은 청각장애 사용자와 시끄러운 환경에 있는 사용자에게 들리지 않는다. 동작 완료 확인이 전달되지 않는다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Pair every sound event with a haptic using `UINotificationFeedbackGenerator` for results or `UIImpactFeedbackGenerator` for physical-feel moments. Haptics add a tactile channel — they don't replace audio.">결과에는 `UINotificationFeedbackGenerator`, 물리적 느낌에는 `UIImpactFeedbackGenerator`를 사용해 모든 소리 이벤트에 햅틱을 함께 추가한다. 햅틱은 음성을 대체하는 것이 아니라 촉각 채널을 추가한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Result — success / error / warning haptic">결과 햅틱 (성공 / 오류 / 경고)</span>
+      <code class="impl-sig">UINotificationFeedbackGenerator().notificationOccurred(.success)</code>
+    </div>
+    <p class="impl-when" data-en="Form submission confirmed, payment processed, authentication succeeded or failed. Any moment where the user needs to know &quot;it worked&quot; or &quot;it failed.&quot;">양식 제출 확인, 결제 처리, 인증 성공 또는 실패. 사용자가 "됐다" 또는 "안 됐다"를 알아야 하는 모든 순간.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Success plays a soft chime. In a noisy café with silent mode on, the user stares at the screen unsure if the form submitted.">성공 시 부드러운 알림음이 재생된다. 시끄러운 카페에서 무음 모드이면, 사용자는 양식이 제출됐는지 불확실한 채 화면만 바라본다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="`.success` triggers a distinctive double-tap haptic — the user feels the confirmation even with no sound and phone face-down.">.success`가 특유의 이중 탭 햅틱을 발생시킨다. 소리 없이 화면이 뒤집혀 있어도 사용자가 촉각으로 확인을 느낀다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Impact — physical interaction feel">물리적 상호작용 느낌</span>
+      <code class="impl-sig">UIImpactFeedbackGenerator(style: .medium).impactOccurred()</code>
+    </div>
+    <p class="impl-when" data-en="Drag-and-drop landing, slider snapping to a step, toggle switching on, reorder handle grab. Creates physical plausibility for virtual actions.">드래그 앤 드롭 착지, 슬라이더 스텝 스냅, 토글 켜짐, 재정렬 핸들 잡기. 가상 동작에 물리적 실재감을 부여한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Dragging a list item and dropping it feels weightless — no confirmation the drop registered.">리스트 항목을 드래그해 놓아도 무게감이 없다. 드롭이 인식됐는지 확인이 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="A `.medium` impact fires on drop — the interaction feels real; deaf users get the same tactile cue sighted users get from sound.">드롭 시 `.medium` 충격이 발생한다. 상호작용이 실재하는 느낌이 든다. 청각장애 사용자도 소리 대신 같은 촉각 신호를 받는다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="voice-control-labels" data-cat="motor">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-motor">Mobility</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS</span>
+    </div>
+    <div class="feat-name">Voice Control — Input Labels</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Voice Control lets users operate the entire UI by speaking element names. If two buttons share a similar visible label, or a button uses an icon with no text, Voice Control either can't resolve the command or activates the wrong element.">Voice Control은 사용자가 요소 이름을 말해 전체 UI를 조작하게 한다. 두 버튼의 라벨이 비슷하거나 버튼이 텍스트 없는 아이콘을 사용하면, Voice Control이 명령을 해석하지 못하거나 잘못된 요소를 활성화한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="`.accessibilityInputLabels([&quot;Send&quot;, &quot;Submit&quot;, &quot;Go&quot;])` registers multiple spoken aliases. `.accessibilityIdentifier(&quot;send-btn&quot;)` assigns a stable programmatic name for automation and grid-mode targeting.">`.accessibilityInputLabels(["보내기", "전송", "확인"])`은 여러 음성 별칭을 등록한다. `.accessibilityIdentifier("send-btn")`은 자동화와 그리드 모드 타겟팅을 위해 안정적인 프로그래밍 이름을 지정한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Disambiguation — spoken aliases">음성 별칭으로 구별</span>
+      <code class="impl-sig">.accessibilityInputLabels(["Send", "Submit", "Go"])</code>
+    </div>
+    <p class="impl-when" data-en="Any button whose visible label is ambiguous, truncated, an icon, or a symbol. Provide natural spoken alternatives the user is likely to try.">표시 라벨이 모호하거나, 잘렸거나, 아이콘이거나, 기호인 버튼. 사용자가 시도할 법한 자연스러운 음성 대안을 제공한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Two icon buttons &quot;→&quot; and &quot;✓&quot; in a form. Saying &quot;tap arrow&quot; or &quot;tap check&quot; does nothing — Voice Control has no mapping.">양식의 아이콘 버튼 "→"과 "✓". "화살표 탭" 또는 "체크 탭"을 말해도 아무 반응이 없다. Voice Control에 매핑이 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="`.accessibilityInputLabels([&quot;Next&quot;, &quot;Confirm&quot;])` — saying &quot;tap Next&quot; or &quot;tap Confirm&quot; activates the correct button every time.">.accessibilityInputLabels(["다음", "확인"])` — "다음 탭" 또는 "확인 탭"을 말하면 매번 올바른 버튼이 활성화된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Identifier — stable automation name">안정적인 자동화 이름</span>
+      <code class="impl-sig">.accessibilityIdentifier("compose-send-btn")</code>
+    </div>
+    <p class="impl-when" data-en="Critical interactive elements targeted by automation scripts or UI tests. The identifier is never shown to users — it's a machine-readable stable name independent of localization.">자동화 스크립트나 UI 테스트의 타겟이 되는 핵심 인터랙티브 요소. identifier는 사용자에게 표시되지 않는다. 로컬라이제이션에 독립적인 기계 판독 가능 안정 이름이다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Button label changes with locale (&quot;Send&quot; → &quot;送信&quot;) — automation scripts that target text break on localization.">버튼 라벨이 로케일에 따라 변한다("Send" → "보내기"). 텍스트를 타겟으로 하는 자동화 스크립트가 로컬라이제이션에서 깨진다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="`accessibilityIdentifier` is locale-independent. Scripts and tests reference the ID, not the display text.">`accessibilityIdentifier`는 로케일에 독립적이다. 스크립트와 테스트가 표시 텍스트가 아닌 ID를 참조한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="keyboard-focus" data-cat="motor">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-motor">Mobility</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · visionOS</span>
+    </div>
+    <div class="feat-name">Full Keyboard Access &amp; Focus Management</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="When a modal or alert appears programmatically, keyboard and switch-control focus remains on the triggering element — trapped in the background while the foreground content is unreachable.">모달이나 알림이 프로그래밍적으로 나타날 때, 키보드와 스위치 제어 포커스가 트리거 요소에 남아 있다. 전면 콘텐츠에 도달할 수 없는 채 배경에 갇힌다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Use `@AccessibilityFocusState` to programmatically move focus to the first meaningful element of newly presented content. On dismissal, restore focus to the triggering element.">`@AccessibilityFocusState`를 사용해 새로 표시된 콘텐츠의 첫 번째 의미 있는 요소로 포커스를 프로그래밍적으로 이동한다. 닫을 때는 트리거 요소로 포커스를 복원한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Focus — move to new content on appear">새 콘텐츠 등장 시 포커스 이동</span>
+      <code class="impl-sig">@AccessibilityFocusState var isConfirmFocused: Bool</code>
+    </div>
+    <p class="impl-when" data-en="Sheets, alerts, inline validation messages, or any content that appears dynamically. If focus isn't moved, keyboard and switch users are stranded — they must navigate the entire background to reach the foreground.">시트, 알림, 인라인 유효성 검사 메시지, 동적으로 나타나는 모든 콘텐츠. 포커스를 이동하지 않으면 키보드·스위치 사용자가 배경에 갇혀 전면에 도달하기 위해 전체 화면을 탐색해야 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="&quot;Send&quot; tapped → confirmation sheet slides up → focus stays on &quot;Send&quot; behind the sheet. Tab key cycles through background elements, never reaching the sheet.">"보내기" 탭 → 확인 시트가 올라옴 → 포커스는 시트 뒤 "보내기"에 남아 있다. Tab 키가 배경 요소를 순환하며 시트에 절대 도달하지 못한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="`.onAppear { isConfirmFocused = true }` jumps focus to the sheet's first element instantly. User hears &quot;Confirmation. Sheet.&quot; and can interact immediately.">.onAppear { isConfirmFocused = true }`가 즉시 포커스를 시트의 첫 번째 요소로 이동한다. 사용자가 "확인. 시트."를 듣고 즉시 상호작용할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Return focus — restore after dismiss">닫은 후 포커스 복원</span>
+      <code class="impl-sig">focusedField = .sendButton</code>
+    </div>
+    <p class="impl-when" data-en="After dismissing any modal, sheet, or popover, focus should return to the control that opened it — not fall to the top of the view hierarchy.">모달, 시트, 팝오버를 닫은 후 포커스가 열었던 컨트롤로 돌아와야 한다. 뷰 계층 구조 상단으로 떨어지면 안 된다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Sheet dismissed → focus drops to the navigation bar title. User must Tab through the entire screen to return to their place.">시트 닫힘 → 포커스가 내비게이션 바 제목으로 떨어진다. 사용자가 원래 위치로 돌아가려면 전체 화면을 Tab으로 이동해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="On dismiss, `@AccessibilityFocusState` restores focus to the &quot;Send&quot; button — the user continues exactly where they left off.">닫을 때 `@AccessibilityFocusState`가 포커스를 "보내기" 버튼으로 복원한다. 사용자가 정확히 이전 위치에서 계속한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="button-shapes" data-cat="cog">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-cog">Cognitive</span>
+      <span class="feat-platforms">iOS · iPadOS</span>
+    </div>
+    <div class="feat-name">Button Shapes</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Text-only buttons — &quot;Done&quot;, &quot;Cancel&quot;, &quot;Edit&quot; in navigation bars — look identical to static labels when Button Shapes is off. Cognitive and low-vision users cannot distinguish interactive from decorative text without a visible affordance.">내비게이션 바의 텍스트 전용 버튼("완료", "취소", "편집")은 Button Shapes가 꺼져 있으면 정적 텍스트와 구별할 수 없다. 인지·저시력 사용자는 인터랙티브 텍스트와 장식 텍스트를 시각적 어포던스 없이 구별하지 못한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Read `accessibilityShowButtonShapes` from the environment and add a visible background, border, or underline to custom text-only interactive elements. Standard SwiftUI buttons comply automatically.">환경에서 `accessibilityShowButtonShapes`를 읽어 커스텀 텍스트 전용 인터랙티브 요소에 배경, 테두리, 밑줄을 추가한다. 표준 SwiftUI 버튼은 자동으로 준수한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Affordance — visible interactive boundary">인터랙티브 경계 가시화</span>
+      <code class="impl-sig">@Environment(\.accessibilityShowButtonShapes) var showShapes</code>
+    </div>
+    <p class="impl-when" data-en="Any text-rendered-as-button in a custom component: tappable list footers, inline &quot;See All&quot; links, plain Text with a TapGesture. Standard `Button` views handle this automatically.">커스텀 컴포넌트에서 버튼으로 렌더링된 텍스트: 탭 가능한 리스트 푸터, 인라인 "전체 보기" 링크, TapGesture가 있는 일반 Text. 표준 `Button` 뷰는 자동으로 처리된다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="&quot;See all →&quot; rendered as plain Text with a TapGesture. Button Shapes ON — nothing changes. Looks exactly like adjacent static text.">TapGesture가 있는 일반 Text로 렌더링된 "전체 보기 →". Button Shapes 켜짐 — 아무것도 변하지 않는다. 인접한 정적 텍스트와 정확히 동일하게 보인다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="When showShapes is true, a `RoundedRectangle` stroke appears behind the text — the interactive boundary is unambiguously visible and tappable.">`showShapes`가 true이면 텍스트 뒤에 `RoundedRectangle` 테두리가 나타난다. 인터랙티브 경계가 명확하게 보이고 탭 가능하다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
 </div><!-- /page -->
 
 <script>
