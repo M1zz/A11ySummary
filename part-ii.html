@@ -335,11 +335,11 @@
   </table>
 
 <pre><span class="k">let</span> heartButton = UIButton()
-heartButton.accessibilityLabel = <span class="s">"좋아요"</span>
-heartButton.accessibilityValue = isLiked ? <span class="s">"눌림"</span> : <span class="s">"안 눌림"</span>
-heartButton.accessibilityHint = <span class="s">"두 번 탭하면 게시물을 좋아합니다"</span>
+heartButton.accessibilityLabel = <span class="s">"Favorites"</span>
+heartButton.accessibilityValue = isLiked ? <span class="s">"On"</span> : <span class="s">"Off"</span>
+heartButton.accessibilityHint = <span class="s">"Double-tap to like this post"</span>
 heartButton.accessibilityTraits = [.button]
-heartButton.accessibilityUserInputLabels = [<span class="s">"좋아요"</span>, <span class="s">"하트"</span>, <span class="s">"Like"</span>]
+heartButton.accessibilityUserInputLabels = [<span class="s">"Favorites"</span>, <span class="s">"Heart"</span>, <span class="s">"Like"</span>]
 </pre>
 
   <h3 id="uikit-container" data-en="Container Protocols">컨테이너 프로토콜</h3>
@@ -365,20 +365,20 @@ heartButton.accessibilityUserInputLabels = [<span class="s">"좋아요"</span>, 
   <p class="section-lede" data-en="Standard components generate accessibility labels automatically. We intervene for: (1) places where auto-inference falls short, (2) custom drawing/gesture areas, and (3) semantic grouping and adding actions.">표준 컴포넌트는 자동으로 접근성 레이블을 만든다. 우리가 개입하는 것은 (1) 자동 추론이 부족한 곳, (2) 커스텀 그리기/제스처 영역, (3) 의미 그룹화·액션 추가이다.</p>
 
 <pre>Image(systemName: <span class="s">"heart.fill"</span>)
-    .accessibilityLabel(<span class="s">"좋아요"</span>)
-    .accessibilityValue(isLiked ? <span class="s">"눌림"</span> : <span class="s">"안 눌림"</span>)
-    .accessibilityHint(<span class="s">"두 번 탭하면 좋아요"</span>)
+    .accessibilityLabel(<span class="s">"Favorites"</span>)
+    .accessibilityValue(isLiked ? <span class="s">"On"</span> : <span class="s">"Off"</span>)
+    .accessibilityHint(<span class="s">"Double-tap to add to favorites"</span>)
     .accessibilityAddTraits(.isButton)
-    .accessibilityInputLabels([<span class="s">"좋아요"</span>, <span class="s">"하트"</span>])
+    .accessibilityInputLabels([<span class="s">"Favorites"</span>, <span class="s">"Heart"</span>])
 
-HStack { Image(systemName: <span class="s">"sun.max"</span>); Text(<span class="s">"오늘 24°C 맑음"</span>) }
+HStack { Image(systemName: <span class="s">"sun.max"</span>); Text(<span class="s">"Today 24°C Clear"</span>) }
     .accessibilityElement(children: .combine)
-    .accessibilityLabel(<span class="s">"오늘 날씨, 맑음, 24도"</span>)
+    .accessibilityLabel(<span class="s">"Today's weather, clear, 24°"</span>)
 
 DecorativeIcon().accessibilityHidden(<span class="k">true</span>)
 
 ComplexChart()
-    .accessibilityRepresentation { Text(<span class="s">"매출 차트, 1분기 대비 12% 상승"</span>) }
+    .accessibilityRepresentation { Text(<span class="s">"Sales chart, up 12% vs. Q1"</span>) }
 </pre>
 
   <table>
@@ -440,7 +440,7 @@ ComplexChart()
 Image(<span class="s">"hero"</span>)
     .animation(reduceMotion ? <span class="k">nil</span> : .spring, value: scale)
 
-Text(<span class="s">"제목"</span>).font(.title)
+Text(<span class="s">"Headings"</span>).font(.title)
     .lineLimit(typeSize.isAccessibilitySize ? <span class="k">nil</span> : <span class="n">2</span>)
 </pre>
 </section>
@@ -473,19 +473,19 @@ UIAccessibility.prefersCrossFadeTransitions
   <p data-en="Same name + <code>DidChangeNotification</code>. e.g. <code>UIAccessibility.voiceOverStatusDidChangeNotification</code>, <code>...reduceMotionStatusDidChangeNotification</code>.">같은 이름 + <code>DidChangeNotification</code>. 예: <code>UIAccessibility.voiceOverStatusDidChangeNotification</code>, <code>...reduceMotionStatusDidChangeNotification</code>.</p>
 
   <h4 data-en="Post Notifications">이벤트 게시 (Post Notification)</h4>
-<pre>UIAccessibility.post(notification: .announcement, argument: <span class="s">"전송 완료"</span>)
+<pre>UIAccessibility.post(notification: .announcement, argument: <span class="s">"Message sent"</span>)
 UIAccessibility.post(notification: .layoutChanged, argument: focusTarget)
 UIAccessibility.post(notification: .screenChanged, argument: <span class="k">nil</span>)
 UIAccessibility.post(notification: .pageScrolled, argument: <span class="s">"3페이지 중 2페이지"</span>)
 </pre>
 
   <h4>SwiftUI Announcement</h4>
-<pre>AccessibilityNotification.Announcement(<span class="s">"새 메시지 도착"</span>).post()
+<pre>AccessibilityNotification.Announcement(<span class="s">"New message received"</span>).post()
 AccessibilityNotification.LayoutChanged(focus: target).post()
 AccessibilityNotification.ScreenChanged().post()
 
 <span class="c">// iOS 17+ 우선순위</span>
-<span class="k">var</span> attr = AttributedString(<span class="s">"긴급: 결제 실패"</span>)
+<span class="k">var</span> attr = AttributedString(<span class="s">"Urgent: Payment failed"</span>)
 attr.accessibilitySpeechAnnouncementPriority = .high
 AccessibilityNotification.Announcement(attr).post()
 </pre>
@@ -507,7 +507,7 @@ AccessibilityNotification.Announcement(attr).post()
   <p data-en="Screen reader. The core APIs are <a class=&quot;inline&quot; href=&quot;#uikit&quot;>UIAccessibility attributes</a> and <a class=&quot;inline&quot; href=&quot;#swiftui&quot;>SwiftUI Modifiers</a> in the Foundation section. Here we cover VoiceOver-specific advanced features.">화면 리더. 핵심 API는 Foundation 섹션의 <a class="inline" href="#uikit">UIAccessibility 속성</a>과 <a class="inline" href="#swiftui">SwiftUI Modifier</a>이다. 여기서는 VoiceOver 전용 심화 기능을 다룬다.</p>
 
   <h4 data-en="Custom Rotors (UIKit)">커스텀 로터 (UIKit)</h4>
-<pre><span class="k">let</span> rotor = UIAccessibilityCustomRotor(name: <span class="s">"중요 메시지"</span>) { predicate <span class="k">in</span>
+<pre><span class="k">let</span> rotor = UIAccessibilityCustomRotor(name: <span class="s">"Important Messages"</span>) { predicate <span class="k">in</span>
     <span class="k">let</span> current = predicate.currentItem.targetElement <span class="k">as</span>? MessageCell
     <span class="k">let</span> next = findNext(after: current, direction: predicate.searchDirection)
     <span class="k">guard</span> <span class="k">let</span> cell = next <span class="k">else</span> { <span class="k">return</span> <span class="k">nil</span> }
@@ -518,7 +518,7 @@ view.accessibilityCustomRotors = [rotor]
 
   <h4 data-en="Custom Rotors (SwiftUI)">커스텀 로터 (SwiftUI)</h4>
 <pre>List(messages) { msg <span class="k">in</span> MessageRow(msg) }
-    .accessibilityRotor(<span class="s">"중요 메시지"</span>, entries: messages.filter(\.isImportant), entryID: \.id) { msg <span class="k">in</span>
+    .accessibilityRotor(<span class="s">"Important Messages"</span>, entries: messages.filter(\.isImportant), entryID: \.id) { msg <span class="k">in</span>
         Text(msg.preview)
     }
 </pre>
@@ -526,14 +526,14 @@ view.accessibilityCustomRotors = [rotor]
   <h4 data-en="Custom Actions">커스텀 액션</h4>
 <pre><span class="c">// UIKit</span>
 cell.accessibilityCustomActions = [
-    UIAccessibilityCustomAction(name: <span class="s">"답장"</span>) { _ <span class="k">in</span> reply(); <span class="k">return</span> <span class="k">true</span> },
-    UIAccessibilityCustomAction(name: <span class="s">"삭제"</span>) { _ <span class="k">in</span> delete(); <span class="k">return</span> <span class="k">true</span> }
+    UIAccessibilityCustomAction(name: <span class="s">"Reply"</span>) { _ <span class="k">in</span> reply(); <span class="k">return</span> <span class="k">true</span> },
+    UIAccessibilityCustomAction(name: <span class="s">"Delete"</span>) { _ <span class="k">in</span> delete(); <span class="k">return</span> <span class="k">true</span> }
 ]
 
 <span class="c">// SwiftUI</span>
 MessageRow(message)
-    .accessibilityAction(named: <span class="s">"답장"</span>) { reply() }
-    .accessibilityAction(named: <span class="s">"삭제"</span>) { delete() }
+    .accessibilityAction(named: <span class="s">"Reply"</span>) { reply() }
+    .accessibilityAction(named: <span class="s">"Delete"</span>) { delete() }
     .accessibilityAction(.magicTap) { togglePlayback() }
 </pre>
 
@@ -542,7 +542,7 @@ MessageRow(message)
 
 VStack {
     <span class="k">if</span> showError {
-        Text(<span class="s">"전송 실패"</span>).accessibilityFocused($isErrorFocused)
+        Text(<span class="s">"Send failed"</span>).accessibilityFocused($isErrorFocused)
     }
 }.onChange(of: showError) { _, v <span class="k">in</span> <span class="k">if</span> v { isErrorFocused = <span class="k">true</span> } }
 </pre>
@@ -607,8 +607,8 @@ label.font = UIFontMetrics(forTextStyle: .body).scaledFont(<span class="k">for</
 </pre>
 
   <h4>Dynamic Type — SwiftUI</h4>
-<pre>Text(<span class="s">"본문"</span>).font(.body)
-Text(<span class="s">"본문"</span>).font(.custom(<span class="s">"Fraunces-Regular"</span>, size: <span class="n">17</span>, relativeTo: .body))
+<pre>Text(<span class="s">"Hello"</span>).font(.body)
+Text(<span class="s">"Hello"</span>).font(.custom(<span class="s">"Fraunces-Regular"</span>, size: <span class="n">17</span>, relativeTo: .body))
 
 <span class="c">// 접근성 크기에서 레이아웃 전환</span>
 <span class="k">@Environment</span>(\.dynamicTypeSize) <span class="k">var</span> typeSize
@@ -665,19 +665,19 @@ Image(<span class="s">"hero"</span>)
 
   <h4>Large Content Viewer — UIKit</h4>
 <pre>button.showsLargeContentViewer = <span class="k">true</span>
-button.largeContentTitle = <span class="s">"홈"</span>
+button.largeContentTitle = <span class="s">"Home"</span>
 button.largeContentImage = UIImage(systemName: <span class="s">"house.fill"</span>)
 button.addInteraction(UILargeContentViewerInteraction())
 </pre>
 
   <h4>Large Content Viewer — SwiftUI</h4>
-<pre>Label(<span class="s">"홈"</span>, systemImage: <span class="s">"house.fill"</span>)
+<pre>Label(<span class="s">"Home"</span>, systemImage: <span class="s">"house.fill"</span>)
     .accessibilityShowsLargeContentViewer()
 
 <span class="c">// 커스텀 콘텐츠</span>
 Image(systemName: <span class="s">"star"</span>)
     .accessibilityShowsLargeContentViewer {
-        Label(<span class="s">"즐겨찾기"</span>, systemImage: <span class="s">"star.fill"</span>)
+        Label(<span class="s">"Favorites"</span>, systemImage: <span class="s">"star.fill"</span>)
     }
 </pre>
   <div class="callout note" data-en="<strong>Applies To</strong>Standard controls where the system handles Large Content Viewer automatically (<code>UITabBar</code>, <code>UIToolbar</code>, etc.) need no separate implementation. Apply only to custom tab bars and toolbars."><strong>적용 대상</strong>시스템이 Large Content Viewer를 자동 처리하는 표준 컨트롤(<code>UITabBar</code>, <code>UIToolbar</code> 등)은 별도 구현 불필요. 커스텀 탭바·툴바에만 적용한다.</div>
@@ -701,7 +701,7 @@ view.addGestureRecognizer(hover)
 </pre>
 
   <h4>hoverEffect (SwiftUI)</h4>
-<pre>Button(<span class="s">"편집"</span>) { edit() }
+<pre>Button(<span class="s">"Edit"</span>) { edit() }
     .hoverEffect(.lift)       <span class="c">// .automatic / .lift / .highlight</span>
 </pre>
 </section>
@@ -751,7 +751,7 @@ view.addGestureRecognizer(hover)
 <pre><span class="k">import</span> AppIntents
 
 <span class="k">struct</span> OpenFavorites: AppIntent {
-    <span class="k">static</span> <span class="k">var</span> title: LocalizedStringResource = <span class="s">"즐겨찾기 열기"</span>
+    <span class="k">static</span> <span class="k">var</span> title: LocalizedStringResource = <span class="s">"Open Favorites"</span>
 
     <span class="k">func</span> perform() <span class="k">async</span> <span class="k">throws</span> -> <span class="k">some</span> IntentResult {
         <span class="c">// 즐겨찾기 화면으로 이동</span>
@@ -761,7 +761,7 @@ view.addGestureRecognizer(hover)
 
 <span class="k">struct</span> MyAppShortcuts: AppShortcutsProvider {
     <span class="k">static</span> <span class="k">var</span> appShortcuts: [AppShortcut] {
-        AppShortcut(intent: OpenFavorites(), phrases: [<span class="s">"즐겨찾기 보여줘"</span>])
+        AppShortcut(intent: OpenFavorites(), phrases: [<span class="s">"Show my favorites"</span>])
     }
 }
 </pre>
@@ -1014,12 +1014,12 @@ recognizer.recognitionTask(with: request) { result, error <span class="k">in</sp
   <p data-en="Control the entire app by voice commands. The name shown in the &quot;Show Names&quot; overlay is the <code>accessibilityLabel</code>. When the label differs from on-screen text, specify candidates with <code>accessibilityInputLabels</code>.">음성 명령으로 앱 전체를 조작. "Show Names" 오버레이에 표시되는 이름이 <code>accessibilityLabel</code>이다. 레이블이 화면 텍스트와 다를 때는 <code>accessibilityInputLabels</code>로 후보를 명시한다.</p>
 <pre><span class="c">// SwiftUI</span>
 Button(<span class="s">"♡"</span>) { toggleLike() }
-    .accessibilityLabel(<span class="s">"좋아요"</span>)
-    .accessibilityInputLabels([<span class="s">"좋아요"</span>, <span class="s">"하트"</span>, <span class="s">"Like"</span>])
+    .accessibilityLabel(<span class="s">"Favorites"</span>)
+    .accessibilityInputLabels([<span class="s">"Favorites"</span>, <span class="s">"Heart"</span>, <span class="s">"Like"</span>])
 
 <span class="c">// UIKit</span>
-button.accessibilityLabel = <span class="s">"좋아요"</span>
-button.accessibilityUserInputLabels = [<span class="s">"좋아요"</span>, <span class="s">"하트"</span>, <span class="s">"Like"</span>]
+button.accessibilityLabel = <span class="s">"Favorites"</span>
+button.accessibilityUserInputLabels = [<span class="s">"Favorites"</span>, <span class="s">"Heart"</span>, <span class="s">"Like"</span>]
 </pre>
   <div class="callout tip" data-en="<strong>Tip</strong>The &quot;Show Grid&quot; overlay lets you tap by grid number regardless of labels. Elements without labels are still reachable via the grid, but labels are required for intuitive voice commands."><strong>Tip</strong>"Show Grid" 오버레이는 레이블과 무관하게 격자 번호로 탭을 허용한다. 레이블 없는 요소도 격자로 접근 가능하지만, 레이블이 있어야 음성 명령이 직관적으로 동작한다.</div>
 </section>
@@ -1057,9 +1057,9 @@ NotificationCenter.default.addObserver(
   <p data-en="External keyboard shortcuts, Tab key focus navigation, Full Keyboard Access. Register shortcuts with UIKeyCommand and control the focus flow with UIFocusSystem.">외장 키보드 단축키, Tab 키 포커스 탐색, Full Keyboard Access. UIKeyCommand로 단축키를 등록하고 UIFocusSystem으로 포커스 흐름을 제어한다.</p>
 <pre><span class="c">// UIKit — 키 명령</span>
 <span class="k">override</span> <span class="k">var</span> keyCommands: [UIKeyCommand]? {[
-    UIKeyCommand(title: <span class="s">"새 항목"</span>, action: #selector(addItem),
+    UIKeyCommand(title: <span class="s">"New Item"</span>, action: #selector(addItem),
                  input: <span class="s">"N"</span>, modifierFlags: .command),
-    UIKeyCommand(title: <span class="s">"검색"</span>, action: #selector(openSearch),
+    UIKeyCommand(title: <span class="s">"Search"</span>, action: #selector(openSearch),
                  input: <span class="s">"F"</span>, modifierFlags: .command)
 ]}
 
@@ -1069,9 +1069,9 @@ view.addLayoutGuide(guide)
 guide.preferredFocusEnvironments = [targetButton]
 
 <span class="c">// SwiftUI — 포커스 가능 설정</span>
-Button(<span class="s">"저장"</span>) { save() }.focusable()
+Button(<span class="s">"Save"</span>) { save() }.focusable()
 <span class="k">@FocusState</span> <span class="k">private</span> <span class="k">var</span> fieldFocused: Bool
-TextField(<span class="s">"이름"</span>, text: $name).focused($fieldFocused)
+TextField(<span class="s">"Name"</span>, text: $name).focused($fieldFocused)
 </pre>
 </section>
 
@@ -1100,8 +1100,8 @@ TextField(<span class="s">"이름"</span>, text: $name).focused($fieldFocused)
 
 <span class="c">// 스위치 사용자를 위한 커스텀 액션 필수</span>
 cell.accessibilityCustomActions = [
-    UIAccessibilityCustomAction(name: <span class="s">"답장"</span>) { _ <span class="k">in</span> reply(); <span class="k">return</span> <span class="k">true</span> },
-    UIAccessibilityCustomAction(name: <span class="s">"삭제"</span>, image: UIImage(systemName: <span class="s">"trash"</span>)) { _ <span class="k">in</span>
+    UIAccessibilityCustomAction(name: <span class="s">"Reply"</span>) { _ <span class="k">in</span> reply(); <span class="k">return</span> <span class="k">true</span> },
+    UIAccessibilityCustomAction(name: <span class="s">"Delete"</span>, image: UIImage(systemName: <span class="s">"trash"</span>)) { _ <span class="k">in</span>
         delete(); <span class="k">return</span> <span class="k">true</span>
     }
 ]
@@ -1135,7 +1135,7 @@ textField.keyboardType = .default          <span class="c">// 받아쓰기 활�
 textField.keyboardType = .numberPad        <span class="c">// 받아쓰기 비활성</span>
 
 <span class="c">// SwiftUI</span>
-TextField(<span class="s">"검색"</span>, text: $query).keyboardType(.default)
+TextField(<span class="s">"Search"</span>, text: $query).keyboardType(.default)
 </pre>
 </section>
 </div>
@@ -1157,7 +1157,7 @@ TextField(<span class="s">"검색"</span>, text: $query).keyboardType(.default)
 <pre><span class="k">import</span> AVFoundation
 
 <span class="k">let</span> synth = AVSpeechSynthesizer()
-<span class="k">let</span> u = AVSpeechUtterance(string: <span class="s">"안녕하세요, 주문을 도와드릴까요?"</span>)
+<span class="k">let</span> u = AVSpeechUtterance(string: <span class="s">"Hello, how can I help you today?"</span>)
 u.voice = AVSpeechSynthesisVoice(language: <span class="s">"ko-KR"</span>)
 u.rate = AVSpeechUtteranceDefaultSpeechRate
 u.pitchMultiplier = <span class="n">1.0</span>
@@ -1180,7 +1180,7 @@ synth.stopSpeaking(at: .immediate)
         .first { $0.voiceTraits.contains(.isPersonalVoice) }
 
     <span class="k">guard</span> <span class="k">let</span> voice = myVoice <span class="k">else</span> { <span class="k">return</span> }
-    <span class="k">let</span> u = AVSpeechUtterance(string: <span class="s">"내 목소리로 말합니다"</span>)
+    <span class="k">let</span> u = AVSpeechUtterance(string: <span class="s">"Speaking in my own voice"</span>)
     u.voice = voice
     synth.speak(u)
 }
@@ -1195,10 +1195,10 @@ synth.stopSpeaking(at: .immediate)
 <pre><span class="k">import</span> AppIntents
 
 <span class="k">struct</span> StartWorkout: AppIntent {
-    <span class="k">static</span> <span class="k">var</span> title: LocalizedStringResource = <span class="s">"운동 시작"</span>
-    <span class="k">static</span> <span class="k">var</span> description = IntentDescription(<span class="s">"운동 세션을 시작합니다"</span>)
+    <span class="k">static</span> <span class="k">var</span> title: LocalizedStringResource = <span class="s">"Start Workout"</span>
+    <span class="k">static</span> <span class="k">var</span> description = IntentDescription(<span class="s">"Starts a workout session"</span>)
 
-    <span class="k">@Parameter</span>(title: <span class="s">"운동 종류"</span>)
+    <span class="k">@Parameter</span>(title: <span class="s">"Workout Type"</span>)
     <span class="k">var</span> workoutType: WorkoutType
 
     <span class="k">func</span> perform() <span class="k">async</span> <span class="k">throws</span> -> <span class="k">some</span> IntentResult {
@@ -1212,7 +1212,7 @@ synth.stopSpeaking(at: .immediate)
         AppShortcut(
             intent: StartWorkout(),
             phrases: [<span class="s">"<\(.applicationName)>로 \(\.$workoutType) 시작"</span>],
-            shortTitle: <span class="s">"운동 시작"</span>,
+            shortTitle: <span class="s">"Start Workout"</span>,
             systemImageName: <span class="s">"figure.run"</span>
         )
     }
@@ -1271,7 +1271,7 @@ textView.writingToolsBehavior = .none   <span class="c">// iOS 18+</span>
 <span class="c">// Foundation Models (온디바이스 LLM, iOS 18.1+)</span>
 <span class="k">import</span> FoundationModels
 <span class="k">let</span> session = LanguageModelSession()
-<span class="k">let</span> response = <span class="k">try</span> <span class="k">await</span> session.respond(to: <span class="s">"이 문장을 간단하게 정리해줘"</span>)
+<span class="k">let</span> response = <span class="k">try</span> <span class="k">await</span> session.respond(to: <span class="s">"Summarize this text for me"</span>)
 print(response.content)
 </pre>
 </section>
@@ -1315,7 +1315,7 @@ UIAccessibility.isGuidedAccessEnabled
         [<span class="s">"com.myapp.restrict.chat"</span>]
     }
     <span class="k">func</span> textForGuidedAccessRestriction(withIdentifier id: String) -> String? {
-        id == <span class="s">"com.myapp.restrict.chat"</span> ? <span class="s">"채팅 비활성화"</span> : <span class="k">nil</span>
+        id == <span class="s">"com.myapp.restrict.chat"</span> ? <span class="s">"Disable Chat"</span> : <span class="k">nil</span>
     }
     <span class="k">func</span> guidedAccessRestriction(withIdentifier id: String,
                                   didChange state: UIAccessibilityGuidedAccessRestrictionState) {
@@ -1340,15 +1340,15 @@ UIAccessibility.guidedAccessRestrictionDelegate = MyRestrictions()
 <span class="k">@FocusState</span> <span class="k">private</span> <span class="k">var</span> focused: FormField?
 
 Form {
-    TextField(<span class="s">"이름"</span>, text: $name).focused($focused, equals: .name)
-    TextField(<span class="s">"이메일"</span>, text: $email).focused($focused, equals: .email)
+    TextField(<span class="s">"Name"</span>, text: $name).focused($focused, equals: .name)
+    TextField(<span class="s">"Email"</span>, text: $email).focused($focused, equals: .email)
 }.onAppear { focused = .name }
 
 <span class="c">// 시스템 집중 모드 필터 (iOS 16+)</span>
 <span class="k">import</span> AppIntents
 <span class="k">struct</span> MyFocusFilter: SetFocusFilterIntent {
     <span class="k">static</span> <span class="k">var</span> title: LocalizedStringResource = <span class="s">"MyApp 집중 필터"</span>
-    <span class="k">@Parameter</span>(title: <span class="s">"알림 허용"</span>, default: <span class="k">true</span>)
+    <span class="k">@Parameter</span>(title: <span class="s">"Allow Notifications"</span>, default: <span class="k">true</span>)
     <span class="k">var</span> allowNotifications: Bool
     <span class="k">func</span> perform() <span class="k">async</span> <span class="k">throws</span> -> <span class="k">some</span> IntentResult { .result() }
 }
@@ -1391,7 +1391,7 @@ Form {
   </table>
 <pre><span class="k">class</span> StarButton: NSButton {
     <span class="k">override</span> <span class="k">func</span> accessibilityRole() -> NSAccessibility.Role? { .checkBox }
-    <span class="k">override</span> <span class="k">func</span> accessibilityLabel() -> String? { <span class="s">"즐겨찾기"</span> }
+    <span class="k">override</span> <span class="k">func</span> accessibilityLabel() -> String? { <span class="s">"Favorites"</span> }
     <span class="k">override</span> <span class="k">func</span> accessibilityValue() -> Any? { state == .on ? <span class="n">1</span> : <span class="n">0</span> }
 }
 </pre>

@@ -762,19 +762,19 @@
       <div class="modifiers">
 
         <div class="modifier-card">
-          <code class="m-name">.accessibilityLabel(<span class="s">"좋아요"</span>)</code>
+          <code class="m-name">.accessibilityLabel(<span class="s">"Favorites"</span>)</code>
           <dl class="m-rows">
             <dt data-en="Without">없을 때</dt>
             <dd data-en="A button showing only a heart icon will have VoiceOver read the system icon name in English (e.g. &lt;span class=&quot;vo&quot;&gt;heart fill&lt;/span&gt;), or stay completely silent if no label exists.">하트 모양 아이콘만 있는 버튼은 VoiceOver가 <span class="vo">heart fill</span> 같은 시스템 아이콘 이름을 영어로 읽거나, 라벨이 정말 없으면 그냥 침묵한다.</dd>
             <dt data-en="After">적용 후</dt>
             <dd data-en="The moment focus lands, VoiceOver announces &lt;span class=&quot;vo&quot;&gt;좋아요&lt;/span&gt; clearly. With traits present: &lt;span class=&quot;vo&quot;&gt;좋아요. 버튼.&lt;/span&gt;">포커스되는 순간 <span class="vo">좋아요</span>라고 또렷이 발화. Traits이 함께 있으면 <span class="vo">좋아요. 버튼.</span></dd>
             <dt data-en="When">언제</dt>
-            <dd data-en="Every interactive element showing only an icon or image with no text. Standard components like &lt;code&gt;Button(&quot;저장&quot;)&lt;/code&gt; with a label are captured automatically.">텍스트 없이 아이콘·이미지만 보여 주는 모든 인터랙티브 요소. <code>Button("저장")</code>처럼 라벨이 들어 있는 표준 컴포넌트는 자동으로 잡힌다.</dd>
+            <dd data-en="Every interactive element showing only an icon or image with no text. Standard components like &lt;code&gt;Button(&quot;저장&quot;)&lt;/code&gt; with a label are captured automatically.">텍스트 없이 아이콘·이미지만 보여 주는 모든 인터랙티브 요소. <code>Button("Save")</code>처럼 라벨이 들어 있는 표준 컴포넌트는 자동으로 잡힌다.</dd>
           </dl>
         </div>
 
         <div class="modifier-card">
-          <code class="m-name">.accessibilityValue(<span class="s">"눌림"</span>)</code>
+          <code class="m-name">.accessibilityValue(<span class="s">"On"</span>)</code>
           <dl class="m-rows">
             <dt data-en="Without">없을 때</dt>
             <dd data-en="There is no way to know a toggle's current state (on/off) or a slider's value. Only &lt;span class=&quot;vo&quot;&gt;좋아요. 버튼.&lt;/span&gt; is announced.">토글의 현재 상태(켜짐/꺼짐)나 슬라이더의 값을 알 길이 없다. <span class="vo">좋아요. 버튼.</span>만 들린다.</dd>
@@ -786,7 +786,7 @@
         </div>
 
         <div class="modifier-card">
-          <code class="m-name">.accessibilityHint(<span class="s">"두 번 탭하면 좋아요"</span>)</code>
+          <code class="m-name">.accessibilityHint(<span class="s">"Double-tap to add to favorites"</span>)</code>
           <dl class="m-rows">
             <dt data-en="Without">없을 때</dt>
             <dd data-en="The user has no way to know what will happen when they double-tap this element.">사용자는 이 요소를 두 번 탭했을 때 무엇이 일어날지 모른다.</dd>
@@ -882,7 +882,7 @@
           <div class="vo-bubble" data-en="heart fill — or silence">heart fill — 또는 침묵</div>
         </div>
         <div class="pf">
-          <div class="pf-tag after">.accessibilityLabel("좋아요")</div>
+          <div class="pf-tag after">.accessibilityLabel("Favorites")</div>
           <div class="mock-card">
             <div class="mock-icon vo-focus" style="background:#fce4e4;">♥</div>
             <div>
@@ -922,7 +922,7 @@
         </div>
 
         <div class="modifier-card">
-          <code class="m-name">.accessibilityRepresentation { Text(<span class="s">"매출 차트, 12% 상승"</span>) }</code>
+          <code class="m-name">.accessibilityRepresentation { Text(<span class="s">"Sales chart, up 12%"</span>) }</code>
           <dl class="m-rows">
             <dt data-en="Without">없을 때</dt>
             <dd data-en="A chart drawn with Canvas or UIViewRepresentable is heard as merely &lt;span class=&quot;vo&quot;&gt;image&lt;/span&gt;, or every pixel is silently ignored.">Canvas·UIViewRepresentable로 그린 차트는 그저 <span class="vo">이미지</span>로 들리거나 모든 픽셀이 의미 없이 침묵한다.</dd>
@@ -975,7 +975,7 @@
       <div class="modifiers">
 
         <div class="modifier-card">
-          <code class="m-name">.accessibilityAction(named: <span class="s">"답장"</span>) { reply() }</code>
+          <code class="m-name">.accessibilityAction(named: <span class="s">"Reply"</span>) { reply() }</code>
           <dl class="m-rows">
             <dt data-en="Without">없을 때</dt>
             <dd data-en="Actions tied to gestures like swipe-to-delete are unreachable for VoiceOver users — no access to the feature at all.">스와이프-삭제 같은 제스처에 묶인 동작은 VoiceOver 사용자가 도달할 수 없다 — 기능 자체에 접근 불가.</dd>
@@ -1049,11 +1049,11 @@
       </div>
 
       <h4 data-en="Custom Rotor &amp; Additional Info">커스텀 로터 · 부가 정보</h4>
-<pre>.accessibilityRotor(<span class="s">"중요 메시지"</span>, entries: items, entryID: \.id) { item <span class="k">in</span>
+<pre>.accessibilityRotor(<span class="s">"Important Messages"</span>, entries: items, entryID: \.id) { item <span class="k">in</span>
     Text(item.preview)
 }
-.accessibilityRotor(<span class="s">"제목"</span>, textRanges: headingRanges)
-.accessibilityCustomContent(<span class="s">"우선순위"</span>, <span class="s">"높음"</span>, importance: .high)
+.accessibilityRotor(<span class="s">"Headings"</span>, textRanges: headingRanges)
+.accessibilityCustomContent(<span class="s">"Priority"</span>, <span class="s">"High"</span>, importance: .high)
 </pre>
 
       <h4 data-en="Speech Tuning">발음 튜닝</h4>
@@ -1071,15 +1071,15 @@ str.accessibilitySpeechPhoneticNotation = <span class="s">"həˈloʊ"</span>
       <h4 data-en="Focus &amp; Notifications">포커스 · 알림</h4>
 <pre><span class="k">@AccessibilityFocusState</span> <span class="k">var</span> errorFocused: Bool
 
-Text(<span class="s">"전송 실패"</span>).accessibilityFocused($errorFocused)
+Text(<span class="s">"Send failed"</span>).accessibilityFocused($errorFocused)
 
-AccessibilityNotification.Announcement(<span class="s">"전송 완료"</span>).post()
+AccessibilityNotification.Announcement(<span class="s">"Message sent"</span>).post()
 AccessibilityNotification.LayoutChanged(focus: target).post()
 AccessibilityNotification.ScreenChanged().post()
 AccessibilityNotification.PageScrolled(<span class="s">"3 / 5"</span>).post()
 
 <span class="c">// 우선순위 (iOS 17+)</span>
-<span class="k">var</span> msg = AttributedString(<span class="s">"긴급"</span>)
+<span class="k">var</span> msg = AttributedString(<span class="s">"Urgent"</span>)
 msg.accessibilitySpeechAnnouncementPriority = .high
 AccessibilityNotification.Announcement(msg).post()
 </pre>
@@ -1091,8 +1091,8 @@ AccessibilityNotification.Announcement(msg).post()
 
       <h3 id="swiftui-dynamic" data-en="Dynamic Type — Large Text">Dynamic Type — 큰 글자</h3>
       <div><span class="tag vision">Vision</span></div>
-<pre>Text(<span class="s">"본문"</span>).font(.body)                                  <span class="c">// 자동 스케일</span>
-Text(<span class="s">"본문"</span>).font(.custom(<span class="s">"Fraunces"</span>, size: <span class="n">17</span>, relativeTo: .body))
+<pre>Text(<span class="s">"Hello"</span>).font(.body)                                  <span class="c">// 자동 스케일</span>
+Text(<span class="s">"Hello"</span>).font(.custom(<span class="s">"Fraunces"</span>, size: <span class="n">17</span>, relativeTo: .body))
 
 .dynamicTypeSize(.xSmall ... .accessibility2)
 .minimumScaleFactor(<span class="n">0.8</span>)                                  <span class="c">// 최후의 수단</span>
@@ -1169,7 +1169,7 @@ Rectangle()
 Image(<span class="s">"photo"</span>).accessibilityIgnoresInvertColors()       <span class="c">// 사진 보호</span>
 
 <span class="k">if</span> diffColor {
-    HStack { Image(systemName: <span class="s">"checkmark"</span>); Text(<span class="s">"성공"</span>) }
+    HStack { Image(systemName: <span class="s">"checkmark"</span>); Text(<span class="s">"Success"</span>) }
 } <span class="k">else</span> {
     Circle().fill(.green)
 }
@@ -1218,7 +1218,7 @@ Image(<span class="s">"photo"</span>).accessibilityIgnoresInvertColors()       <
       <div><span class="tag vision">Vision</span></div>
 <pre>Button { ... } label: { Image(systemName: <span class="s">"heart"</span>) }
 .accessibilityShowsLargeContentViewer {
-    Label(<span class="s">"좋아요"</span>, systemImage: <span class="s">"heart.fill"</span>)
+    Label(<span class="s">"Favorites"</span>, systemImage: <span class="s">"heart.fill"</span>)
 }
 </pre>
 
@@ -1270,16 +1270,16 @@ Task {
 <pre>.focusable(<span class="k">true</span>)
 .accessibilityElement(children: .contain)         <span class="c">// 그룹 스캐닝 단위</span>
 .accessibilityRespondsToUserInteraction(<span class="k">true</span>)
-.accessibilityAction(named: <span class="s">"삭제"</span>) { delete() }   <span class="c">// 필수</span>
-.accessibilityCustomContent(<span class="s">"상태"</span>, status)
+.accessibilityAction(named: <span class="s">"Delete"</span>) { delete() }   <span class="c">// 필수</span>
+.accessibilityCustomContent(<span class="s">"Status"</span>, status)
 
 <span class="k">@Environment</span>(\.accessibilitySwitchControlEnabled) <span class="k">var</span> switchOn
 </pre>
 
       <h3 id="swiftui-voice">Voice Control</h3>
       <div><span class="tag motor">Mobility</span></div>
-<pre>.accessibilityLabel(<span class="s">"삭제"</span>)                        <span class="c">// 1순위 명령 이름</span>
-.accessibilityInputLabels([<span class="s">"삭제"</span>, <span class="s">"휴지통"</span>, <span class="s">"trash"</span>, <span class="s">"delete"</span>])
+<pre>.accessibilityLabel(<span class="s">"Delete"</span>)                        <span class="c">// 1순위 명령 이름</span>
+.accessibilityInputLabels([<span class="s">"Delete"</span>, <span class="s">"Trash"</span>, <span class="s">"trash"</span>, <span class="s">"delete"</span>])
 </pre>
       <p data-en="Visible text labels on screen automatically become command candidates, but use &lt;code&gt;accessibilityInputLabels&lt;/code&gt; explicitly when the meaning differs or multilingual commands are needed.">화면에 보이는 텍스트 라벨도 자동으로 명령 후보가 되지만, 의미가 다르거나 다국어 명령이 필요하면 <code>accessibilityInputLabels</code>로 명시한다.</p>
 
@@ -1317,7 +1317,7 @@ TextField(<span class="s">"ID"</span>, text: $id)
         .focusable(<span class="k">true</span>)
 }
 
-Button(<span class="s">"저장"</span>) { save() }
+Button(<span class="s">"Save"</span>) { save() }
     .keyboardShortcut(<span class="s">"s"</span>, modifiers: .command)
 
 <span class="c">// 키 입력 직접 처리 (iOS 17+)</span>
@@ -1341,7 +1341,7 @@ Button(<span class="s">"저장"</span>) { save() }
 <pre><span class="k">import</span> AppIntents
 
 <span class="k">struct</span> PlayFavoriteIntent: AppIntent {
-    <span class="k">static</span> <span class="k">let</span> title: LocalizedStringResource = <span class="s">"즐겨찾기 재생"</span>
+    <span class="k">static</span> <span class="k">let</span> title: LocalizedStringResource = <span class="s">"Play Favorites"</span>
     <span class="k">static</span> <span class="k">let</span> isDiscoverable = <span class="k">true</span>
 
     <span class="k">func</span> perform() <span class="k">async</span> <span class="k">throws</span> -> <span class="k">some</span> IntentResult {
@@ -1369,8 +1369,8 @@ Button(<span class="s">"저장"</span>) { save() }
 
     <span class="k">var</span> body: <span class="k">some</span> View {
         VStack {
-            TextField(<span class="s">"할 말"</span>, text: $input)
-            Button(<span class="s">"말하기"</span>) { speak() }
+            TextField(<span class="s">"What to say"</span>, text: $input)
+            Button(<span class="s">"Speak"</span>) { speak() }
                 .keyboardShortcut(.return)
         }
         .task { <span class="k">await</span> loadVoice() }

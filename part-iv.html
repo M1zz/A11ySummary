@@ -672,11 +672,11 @@
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="c">// 모든 인터랙티브 요소에</span>
-.accessibilityLabel(<span class="s">"좋아요"</span>)
+.accessibilityLabel(<span class="s">"Favorites"</span>)
 .accessibilityAddTraits(.isButton)
 
 <span class="c">// 상태가 있다면</span>
-.accessibilityValue(isLiked ? <span class="s">"눌림"</span> : <span class="s">"안 눌림"</span>)
+.accessibilityValue(isLiked ? <span class="s">"On"</span> : <span class="s">"Off"</span>)
 
 <span class="c">// 장식용 이미지·구분선은 숨김</span>
 .accessibilityHidden(<span class="k">true</span>)
@@ -687,23 +687,23 @@
 
       <h4 data-en="Enhancement — Rich Experience">확장 — 풍부한 경험</h4>
 <pre><span class="c">// 스와이프-삭제의 음성 대체 (필수)</span>
-.accessibilityAction(named: <span class="s">"삭제"</span>) { delete() }
+.accessibilityAction(named: <span class="s">"Delete"</span>) { delete() }
 .accessibilityAction(.magicTap) { togglePlay() }
 
 <span class="c">// 커스텀 그린 차트는 의미를 텍스트로</span>
 ChartView()
-    .accessibilityRepresentation { Text(<span class="s">"1분기 매출 12% 상승"</span>) }
+    .accessibilityRepresentation { Text(<span class="s">"Sales up 12% vs. Q1"</span>) }
 
 <span class="c">// 페이지 변경 / 긴급 알림</span>
 AccessibilityNotification.ScreenChanged().post()
-<span class="k">var</span> msg = AttributedString(<span class="s">"결제 실패"</span>)
+<span class="k">var</span> msg = AttributedString(<span class="s">"Payment failed"</span>)
 msg.accessibilitySpeechAnnouncementPriority = .high
 AccessibilityNotification.Announcement(msg).post()
 
 <span class="c">// 헤딩 · 정렬 · 커스텀 로터</span>
 .accessibilityHeading(.h1)
 .accessibilitySortPriority(<span class="n">100</span>)
-.accessibilityRotor(<span class="s">"중요"</span>, entries: starred, entryID: \.id) { Text($0.title) }
+.accessibilityRotor(<span class="s">"Starred"</span>, entries: starred, entryID: \.id) { Text($0.title) }
 </pre>
 
       <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; Gestures like swipe-to-delete without a paired &lt;code&gt;.accessibilityAction&lt;/code&gt; are completely unreachable for VoiceOver users. Custom UI drawn with Canvas or UIViewRepresentable sounds like an empty shell without &lt;code&gt;.accessibilityRepresentation&lt;/code&gt;. Missing &lt;code&gt;.accessibilityLabel&lt;/code&gt; on icon-only buttons is the most common omission.">
@@ -719,10 +719,10 @@ AccessibilityNotification.Announcement(msg).post()
       <p data-en="Font size set by the user at the system level. <strong>Who loses out.</strong> Users with presbyopia, low vision, age-related vision decline, and anyone fatigued by small text.">사용자가 시스템에서 정한 글자 크기. <strong>잃는 사용자.</strong> 노안·저시력·고령 사용자 + 작은 글자가 피로한 모든 사용자.</p>
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
-<pre>Text(<span class="s">"본문"</span>).font(.body)                                  <span class="c">// 자동 스케일</span>
+<pre>Text(<span class="s">"Hello"</span>).font(.body)                                  <span class="c">// 자동 스케일</span>
 
 <span class="c">// 커스텀 폰트는 relativeTo: 사용</span>
-Text(<span class="s">"본문"</span>).font(.custom(<span class="s">"Fraunces"</span>, size: <span class="n">17</span>, relativeTo: .body))
+Text(<span class="s">"Hello"</span>).font(.custom(<span class="s">"Fraunces"</span>, size: <span class="n">17</span>, relativeTo: .body))
 </pre>
 
       <h4 data-en="Enhancement — Accessibility Sizes">확장 — 접근성 크기 대응</h4>
@@ -757,11 +757,11 @@ ViewThatFits {
 <pre><span class="k">@Environment</span>(\.legibilityWeight) <span class="k">var</span> weight    <span class="c">// .regular | .bold</span>
 
 <span class="c">// 시스템 폰트 — 자동 적용, 별도 작업 불필요</span>
-Text(<span class="s">"본문"</span>).font(.body)
+Text(<span class="s">"Hello"</span>).font(.body)
 
 <span class="c">// 커스텀 폰트 — 분기 필수</span>
 <span class="k">let</span> name = weight == .bold ? <span class="s">"Fraunces-Bold"</span> : <span class="s">"Fraunces-Regular"</span>
-Text(<span class="s">"본문"</span>).font(.custom(name, size: <span class="n">17</span>, relativeTo: .body))
+Text(<span class="s">"Hello"</span>).font(.custom(name, size: <span class="n">17</span>, relativeTo: .body))
 </pre>
 
       <h3 id="rx-contrast">Increase Contrast</h3>
@@ -771,7 +771,7 @@ Text(<span class="s">"본문"</span>).font(.custom(name, size: <span class="n">1
 
 <span class="c">// 방법 1: Asset Catalog의 "High Contrast" 변형 — 자동 적용</span>
 <span class="c">// 방법 2: 코드 분기</span>
-Text(<span class="s">"부가 설명"</span>)
+Text(<span class="s">"Caption"</span>)
     .foregroundStyle(contrast == .increased ? Color.primary : Color.secondary)
 </pre>
       <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; Using gray tones (secondary, tertiary) for body text rather than placeholders. Body text must always meet WCAG AA 4.5:1, large text 3:1. When Increase Contrast is on, go one level higher.">
@@ -835,10 +835,10 @@ Image(<span class="s">"brand-logo"</span>)
 <pre><span class="k">@Environment</span>(\.accessibilityShowButtonShapes) <span class="k">var</span> shapes
 
 <span class="c">// 시스템 Button — 자동</span>
-Button(<span class="s">"저장"</span>) { save() }
+Button(<span class="s">"Save"</span>) { save() }
 
 <span class="c">// 텍스트 링크형 버튼은 분기 필요</span>
-Text(<span class="s">"건너뛰기"</span>)
+Text(<span class="s">"Skip"</span>)
     .padding(.horizontal, <span class="n">12</span>).padding(.vertical, <span class="n">6</span>)
     .overlay(
         shapes ? AnyView(Capsule().stroke(.tint, lineWidth: <span class="n">1</span>)) : AnyView(EmptyView())
@@ -851,7 +851,7 @@ Text(<span class="s">"건너뛰기"</span>)
       <p data-en="Shows a large preview of small controls via tap-and-hold. <strong>Who loses out.</strong> Zoom users, those with low vision, and anyone confused by small tab bar icons.">작은 컨트롤을 탭 앤 홀드로 크게 미리보기. <strong>잃는 사용자.</strong> Zoom 사용자, 저시력, 작은 탭바 아이콘이 헷갈리는 모든 사용자.</p>
 <pre>Button { ... } label: { Image(systemName: <span class="s">"heart"</span>) }
 .accessibilityShowsLargeContentViewer {
-    Label(<span class="s">"좋아요"</span>, systemImage: <span class="s">"heart.fill"</span>)
+    Label(<span class="s">"Favorites"</span>, systemImage: <span class="s">"heart.fill"</span>)
 }
 
 <span class="c">// 인자 없이 호출하면 label/value가 그대로 사용됨</span>
@@ -899,9 +899,9 @@ SubtitleView(text: currentLine)
     <span class="k">var</span> body: <span class="k">some</span> View {
         VStack {
             PlayPauseButton()
-            Picker(<span class="s">"햅틱"</span>, selection: $mode) {
-                Text(<span class="s">"전체"</span>).tag(MusicHapticsMode.full)
-                Text(<span class="s">"보컬만"</span>).tag(MusicHapticsMode.vocalsOnly)
+            Picker(<span class="s">"Haptics"</span>, selection: $mode) {
+                Text(<span class="s">"Full"</span>).tag(MusicHapticsMode.full)
+                Text(<span class="s">"Vocals Only"</span>).tag(MusicHapticsMode.vocalsOnly)
             }
         }
         .task(id: song.id) { <span class="k">await</span> start() }
@@ -931,9 +931,9 @@ SubtitleView(text: currentLine)
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="c">// VoiceOver용 구현(label/traits/actions)이 그대로 적용된다</span>
-.accessibilityLabel(<span class="s">"삭제"</span>)
+.accessibilityLabel(<span class="s">"Delete"</span>)
 .accessibilityAddTraits(.isButton)
-.accessibilityAction(named: <span class="s">"답장"</span>) { reply() }
+.accessibilityAction(named: <span class="s">"Reply"</span>) { reply() }
 </pre>
 
       <h4 data-en="Enhancement — Scan Efficiency">확장 — 스캐닝 효율</h4>
@@ -943,7 +943,7 @@ VStack { Avatar(); Name(); Role(); Actions() }
     .accessibilityRespondsToUserInteraction(<span class="k">true</span>)
 
 <span class="c">// 보조 정보를 customContent로 — 기본 라벨을 짧게 유지</span>
-.accessibilityCustomContent(<span class="s">"우선순위"</span>, item.priority.name)
+.accessibilityCustomContent(<span class="s">"Priority"</span>, item.priority.name)
 </pre>
 
       <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; If the primary cell action is swipe-only (e.g., delete only via a left swipe), Switch Control users can never reach that feature. Always provide the same action via &lt;code&gt;.accessibilityAction&lt;/code&gt;.">
@@ -960,15 +960,15 @@ VStack { Avatar(); Name(); Role(); Actions() }
 
       <h4 data-en="Minimum Implementation">최소 구현</h4>
 <pre><span class="c">// 화면에 보이는 텍스트 라벨이 1순위 명령어가 된다</span>
-Button(<span class="s">"삭제"</span>) { delete() }
+Button(<span class="s">"Delete"</span>) { delete() }
 
 <span class="c">// 아이콘 버튼은 반드시 accessibilityLabel</span>
 Button { delete() } label: { Image(systemName: <span class="s">"trash"</span>) }
-    .accessibilityLabel(<span class="s">"삭제"</span>)
+    .accessibilityLabel(<span class="s">"Delete"</span>)
 </pre>
 
       <h4 data-en="Enhancement — Aliases &amp; Multilingual">확장 — 별칭과 다국어</h4>
-<pre>.accessibilityInputLabels([<span class="s">"삭제"</span>, <span class="s">"휴지통"</span>, <span class="s">"trash"</span>, <span class="s">"delete"</span>])
+<pre>.accessibilityInputLabels([<span class="s">"Delete"</span>, <span class="s">"Trash"</span>, <span class="s">"trash"</span>, <span class="s">"delete"</span>])
 </pre>
 
       <div class="callout warn" data-en="&lt;strong&gt;Common Omissions&lt;/strong&gt; When a screen has multiple buttons with the same name, the system falls back to &quot;show numbers&quot; mode, degrading usability. Use &lt;code&gt;accessibilityInputLabels&lt;/code&gt; to give each button a distinct alias.">
@@ -1015,7 +1015,7 @@ Button { delete() } label: { Image(systemName: <span class="s">"trash"</span>) }
 Form {
     TextField(<span class="s">"ID"</span>, text: $id).focused($field, equals: .id)
     SecureField(<span class="s">"PW"</span>, text: $pw).focused($field, equals: .pw)
-    Button(<span class="s">"로그인"</span>) { login() }
+    Button(<span class="s">"Sign In"</span>) { login() }
         .keyboardShortcut(.return, modifiers: [])
 }
 .defaultFocus($field, .id)
@@ -1071,9 +1071,9 @@ Form {
 
     <span class="k">var</span> body: <span class="k">some</span> View {
         VStack {
-            TextField(<span class="s">"하고 싶은 말"</span>, text: $text, axis: .vertical)
+            TextField(<span class="s">"What would you like to say"</span>, text: $text, axis: .vertical)
                 .font(.system(size: <span class="n">28</span>))
-            Button(<span class="s">"말하기"</span>) { speak() }
+            Button(<span class="s">"Speak"</span>) { speak() }
                 .keyboardShortcut(.return)
         }
         .task { <span class="k">await</span> setup() }
@@ -1145,8 +1145,8 @@ Button(phrase) {
 <span class="k">struct</span> SimpleHomeView: View {
     <span class="k">var</span> body: <span class="k">some</span> View {
         VStack(spacing: <span class="n">24</span>) {
-            BigActionButton(title: <span class="s">"전화 걸기"</span>, icon: <span class="s">"phone.fill"</span>) { ... }
-            BigActionButton(title: <span class="s">"사진 보기"</span>, icon: <span class="s">"photo.fill"</span>) { ... }
+            BigActionButton(title: <span class="s">"Make a Call"</span>, icon: <span class="s">"phone.fill"</span>) { ... }
+            BigActionButton(title: <span class="s">"View Photos"</span>, icon: <span class="s">"photo.fill"</span>) { ... }
         }
         .font(.system(size: <span class="n">32</span>, weight: .semibold))
         .padding(<span class="n">24</span>)
@@ -1156,7 +1156,7 @@ Button(phrase) {
 
       <div class="callout warn" data-en="&lt;strong&gt;Design Principles&lt;/strong&gt; Assistive Access UI must follow: (1) one task per screen, (2) controls at least 1/3 of screen width, (3) simple verbs (&quot;Make a Call&quot;), (4) always-visible back/exit. Modals, deep navigation, and fine gestures are all prohibited.">
         <strong>설계 원칙</strong>
-        Assistive Access UI는 (1) 한 화면 한 작업, (2) 화면 폭의 1/3 이상의 큰 컨트롤, (3) 단순한 동사("전화 걸기"), (4) 항상 보이는 되돌리기·종료. 모달·딥 네비게이션·미세 제스처는 모두 금지.
+        Assistive Access UI는 (1) 한 화면 한 작업, (2) 화면 폭의 1/3 이상의 큰 컨트롤, (3) 단순한 동사("Make a Call"), (4) 항상 보이는 되돌리기·종료. 모달·딥 네비게이션·미세 제스처는 모두 금지.
       </div>
 
       <h3 id="rx-reduce-motion">Reduce Motion</h3>
@@ -1211,7 +1211,7 @@ LottieView(animation: anim, isPlaying: play)
         [<span class="s">"com.app.chat"</span>, <span class="s">"com.app.purchase"</span>]
     }
     <span class="k">func</span> textForGuidedAccessRestriction(withIdentifier id: String) -> String? {
-        id == <span class="s">"com.app.chat"</span> ? <span class="s">"채팅 사용 허용"</span> : <span class="s">"인앱 구매 허용"</span>
+        id == <span class="s">"com.app.chat"</span> ? <span class="s">"Allow Chat"</span> : <span class="s">"Allow In-App Purchases"</span>
     }
     <span class="k">func</span> guidedAccessRestriction(withIdentifier id: String,
                                   didChange state: UIAccessibility.GuidedAccessRestrictionState) {
