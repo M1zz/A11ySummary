@@ -33,14 +33,14 @@
   }
   * { box-sizing: border-box; }
   body {
-    margin: 0; padding: 28px 20px 60px;
+    margin: 0; padding: 0 0 60px;
     background: var(--bg); color: var(--text);
     font-family: var(--font-sans);
     font-size: 15px; line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "kern" 1, "liga" 1;
   }
-  .wrap { max-width: 760px; margin: 0 auto; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 20px 0; }
   .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
   h1 { font-size: 24px; font-weight: 700; margin: 0 0 6px; letter-spacing: -0.02em; color: var(--text); }
   .subtitle { color: var(--text-2); font-size: 13px; margin: 0; font-weight: 400; line-height: 1.5; }
@@ -476,7 +476,6 @@
     align-items: center;
     gap: 20px;
     flex-wrap: wrap;
-    margin: -28px -20px 28px;
   }
   .site-nav .site-home {
     font-weight: 700;
