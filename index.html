@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@400;500;700&family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
-<title>Apple Accessibility — 완전 레퍼런스</title>
+<title>Apple Accessibility — Complete Reference</title>
 <style>
   :root {
     --bg: #f6f3ee;
@@ -580,25 +580,35 @@
   /* Scrollbar */
   aside.toc::-webkit-scrollbar { width: 6px; }
   aside.toc::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  /* ===== Language Toggle ===== */
+  .lang-toggle{display:inline-flex;border:1px solid var(--rule);border-radius:100px;padding:2px;margin-left:auto;}
+  .lang-btn{padding:4px 10px;background:transparent;border:none;color:var(--ink-soft);font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;border-radius:100px;cursor:pointer;transition:all 0.18s;}
+  .lang-btn:hover{color:var(--ink);}
+  .lang-btn.active{background:var(--ink);color:var(--paper);}
 </style>
 </head>
 <body>
 <header class="top-nav">
   <a href="index.html" class="home">Apple <em>Accessibility</em></a>
-  <nav><a href="index.html" class="active">개요</a><a href="part-i.html">I · 사용자 기능</a><a href="part-ii.html">II · 개발자 API</a><a href="part-iii.html">III · 기능 × SwiftUI</a><a href="part-iv.html">IV · 피쳐별 레시피</a><a href="part-v.html">V · 부록</a><a href="apple-accessibility-graph-bilingual.html">그래프</a></nav>
+  <nav><a href="index.html" class="active" data-en="Overview">개요</a><a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a><a href="part-ii.html" data-en="II · Developer APIs">II · 개발자 API</a><a href="part-iii.html" data-en="III · Features × SwiftUI">III · 기능 × SwiftUI</a><a href="part-iv.html" data-en="IV · Per-Feature Recipes">IV · 피쳐별 레시피</a><a href="part-v.html" data-en="V · Appendix">V · 부록</a><a href="apple-accessibility-graph-bilingual.html" data-en="Graph">그래프</a><a href="accessibility_needs_v2.html" data-en="Assessment">평가</a>
+  <div class="lang-toggle" role="group" aria-label="Language / 언어">
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="ko">한국어</button>
+  </div></nav>
 </header>
 <div class="shell">
   <aside class="toc">
     <div class="brand">Apple <em>Accessibility</em></div>
-    <div class="sub">완전 레퍼런스 · v2</div>
+    <div class="sub" data-en="Complete Reference · v2">완전 레퍼런스 · v2</div>
 
-    <h4>5개 파트</h4>
+    <h4 data-en="5 Parts">5개 파트</h4>
     <ul>
-      <li><a href="part-i.html">I · 사용자 기능</a></li>
-      <li><a href="part-ii.html">II · 개발자 API</a></li>
-      <li><a href="part-iii.html">III · 기능 × SwiftUI</a></li>
-      <li><a href="part-iv.html">IV · 피쳐별 레시피</a></li>
-      <li><a href="part-v.html">V · 부록</a></li>
+      <li><a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a></li>
+      <li><a href="part-ii.html" data-en="II · Developer APIs">II · 개발자 API</a></li>
+      <li><a href="part-iii.html" data-en="III · Features × SwiftUI">III · 기능 × SwiftUI</a></li>
+      <li><a href="part-iv.html" data-en="IV · Per-Feature Recipes">IV · 피쳐별 레시피</a></li>
+      <li><a href="part-v.html" data-en="V · Appendix">V · 부록</a></li>
     </ul>
 
     <div class="meta">A reference notebook<br>compiled May 2026 · devkoan</div>
@@ -606,8 +616,8 @@
   <main>
 <header class="hero">
       <div class="eyebrow">A Field Manual / 2026 Edition</div>
-      <h1>Apple <em>Accessibility</em><br>완전 정리</h1>
-      <p class="lede">
+      <h1 data-en="Apple <em>Accessibility</em><br>iOS Developer Guide">Apple <em>Accessibility</em><br>완전 정리</h1>
+      <p class="lede" data-en="From VoiceOver to Brain–Computer Interface — every accessibility feature Apple platforms provide, and the APIs that connect them to your app, on a single page. Coverage as of iOS/iPadOS 19, macOS 16, watchOS 12, and visionOS 3.">
         VoiceOver부터 Brain–Computer Interface까지 — Apple 플랫폼이 제공하는 모든 접근성 기능, 그리고 그 기능을 우리 앱에 연결하는 API를 한 페이지에 모았습니다. iOS/iPadOS 19, macOS 16, watchOS 12, visionOS 3 시점 기준.
       </p>
       <div class="credits">
@@ -616,40 +626,45 @@
     </header>
 
 <section>
-  <div class="eyebrow" style="margin-bottom:14px">이 문서 사용법</div>
-  <h2 style="font-size:32px; margin-bottom:10px"><span class="num">00</span> 다섯 가지 관점</h2>
-  <p class="section-lede">Apple의 접근성을 다섯 가지 관점에서 풀어 정리한 노트입니다. 어떤 관점으로 들어갈지 골라 들어가세요.</p>
+  <div class="eyebrow" style="margin-bottom:14px" data-en="How to use this document">이 문서 사용법</div>
+  <h2 style="font-size:32px; margin-bottom:10px"><span class="num">00</span> <span data-en="Five Perspectives">다섯 가지 관점</span></h2>
+  <p class="section-lede" data-en="A structured reference that explores Apple accessibility from five distinct perspectives. Choose the lens that fits your current task.">Apple의 접근성을 다섯 가지 관점에서 풀어 정리한 노트입니다. 어떤 관점으로 들어갈지 골라 들어가세요.</p>
 
   <div class="part-grid">
     <a class="part-card" href="part-i.html">
       <div class="pnum">Part I</div>
-      <div class="ptitle">사용자 <em>기능</em></div>
-      <p class="pdesc">VoiceOver · Zoom · Switch Control 등 사용자가 켜고 끄는 시스템 기능들. 각 기능이 <em>왜</em> 만들어졌고 무엇을 해결하는지부터.</p>
+      <div class="ptitle" data-en="User <em>Features</em>">사용자 <em>기능</em></div>
+      <p class="pdesc" data-en="System-level features users toggle on and off — VoiceOver, Zoom, Switch Control, and more. Starts with <em>why</em> each feature exists and what problem it solves.">VoiceOver · Zoom · Switch Control 등 사용자가 켜고 끄는 시스템 기능들. 각 기능이 <em>왜</em> 만들어졌고 무엇을 해결하는지부터.</p>
     </a>
     <a class="part-card" href="part-ii.html">
       <div class="pnum">Part II</div>
-      <div class="ptitle">개발자 <em>API</em></div>
-      <p class="pdesc">UIKit · SwiftUI · AppKit의 접근성 API 카탈로그. 속성·모디파이어·환경값·테스트 도구.</p>
+      <div class="ptitle" data-en="Developer <em>APIs</em>">개발자 <em>API</em></div>
+      <p class="pdesc" data-en="Accessibility API catalog for UIKit, SwiftUI, and AppKit. Covers attributes, modifiers, environment values, and testing tools.">UIKit · SwiftUI · AppKit의 접근성 API 카탈로그. 속성·모디파이어·환경값·테스트 도구.</p>
     </a>
     <a class="part-card" href="part-iii.html">
       <div class="pnum">Part III</div>
-      <div class="ptitle">기능 × <em>SwiftUI</em></div>
-      <p class="pdesc">"Vision 카테고리에는 이런 SwiftUI API들이 있다" — 카테고리별 매핑. 그리고 API → 기능 역인덱스.</p>
+      <div class="ptitle" data-en="Features × <em>SwiftUI</em>">기능 × <em>SwiftUI</em></div>
+      <p class="pdesc" data-en='"Here are the SwiftUI APIs for the Vision category" — per-category mappings, plus a reverse index from API to feature.'>"Vision 카테고리에는 이런 SwiftUI API들이 있다" — 카테고리별 매핑. 그리고 API → 기능 역인덱스.</p>
     </a>
     <a class="part-card" href="part-iv.html">
       <div class="pnum">Part IV</div>
-      <div class="ptitle">피쳐별 <em>레시피</em></div>
-      <p class="pdesc">"VoiceOver를 지원하려면 정확히 무엇을 해야 하는가" — 피쳐 27개의 최소 구현 · 확장 · 함정 · 검증.</p>
+      <div class="ptitle" data-en="Per-Feature <em>Recipes</em>">피쳐별 <em>레시피</em></div>
+      <p class="pdesc" data-en='"Exactly what do I need to implement VoiceOver support?" — minimum implementation, extensions, pitfalls, and verification for 27 features.'>"VoiceOver를 지원하려면 정확히 무엇을 해야 하는가" — 피쳐 27개의 최소 구현 · 확장 · 함정 · 검증.</p>
     </a>
     <a class="part-card" href="part-v.html">
       <div class="pnum">Part V</div>
-      <div class="ptitle"><em>부록</em></div>
-      <p class="pdesc">실무에서 가장 자주 빠뜨리는 12가지 체크리스트와 공식 레퍼런스 모음.</p>
+      <div class="ptitle" data-en="<em>Appendix</em>"><em>부록</em></div>
+      <p class="pdesc" data-en="A 12-item checklist of the most commonly missed accessibility requirements in production, plus a curated collection of official references.">실무에서 가장 자주 빠뜨리는 12가지 체크리스트와 공식 레퍼런스 모음.</p>
     </a>
     <a class="part-card" href="apple-accessibility-graph-bilingual.html">
-      <div class="pnum">그래프</div>
-      <div class="ptitle">피쳐 <em>지도</em></div>
-      <p class="pdesc">55가지 기능의 카테고리·상하위 관계를 D3 포스 그래프로 한눈에. 클릭·검색·필터 인터랙션 지원.</p>
+      <div class="pnum" data-en="Graph">그래프</div>
+      <div class="ptitle" data-en="Feature <em>Map</em>">피쳐 <em>지도</em></div>
+      <p class="pdesc" data-en="All 55 features and their category/hierarchy relationships visualized as a D3 force graph. Supports click, search, and filter interactions.">55가지 기능의 카테고리·상하위 관계를 D3 포스 그래프로 한눈에. 클릭·검색·필터 인터랙션 지원.</p>
+    </a>
+    <a class="part-card" href="accessibility_needs_v2.html">
+      <div class="pnum" data-en="Assessment">평가</div>
+      <div class="ptitle" data-en="Needs <em>Assessment</em>">필요도 <em>평가</em></div>
+      <p class="pdesc" data-en="Symptom-based accessibility needs assessment tool. Select conditions across 5 domains to see which Apple features matter most for that user profile.">5개 영역의 증상을 선택하면 해당 사용자에게 중요한 Apple 접근성 기능을 우선순위별로 제시하는 대화형 진단 도구.</p>
     </a>
   </div>
 </section>
@@ -658,50 +673,73 @@
 
     <!-- ===================== OVERVIEW ===================== -->
     <section id="overview">
-      <h2><span class="num">00</span> 개요</h2>
-      <p class="section-lede">Apple의 접근성은 4개 축 — <strong>Vision · Hearing · Mobility · Speech</strong> — 에 <strong>Cognitive</strong>가 더해진 5개 카테고리로 구분된다. 이 5개 카테고리는 시스템 설정의 구조이자, App Store Accessibility Nutrition Labels의 분류이기도 하다.</p>
+      <h2><span class="num">00</span> <span data-en="Overview">개요</span></h2>
+      <p class="section-lede" data-en="Apple accessibility is organized into five categories built on four axes — <strong>Vision · Hearing · Mobility · Speech</strong> — plus <strong>Cognitive</strong>. These five categories mirror the structure of System Settings and the classification used by App Store Accessibility Nutrition Labels.">Apple의 접근성은 4개 축 — <strong>Vision · Hearing · Mobility · Speech</strong> — 에 <strong>Cognitive</strong>가 더해진 5개 카테고리로 구분된다. 이 5개 카테고리는 시스템 설정의 구조이자, App Store Accessibility Nutrition Labels의 분류이기도 하다.</p>
 
       <div class="grid">
         <div class="card">
           <span class="tag vision">Vision</span>
-          <div class="name">시각</div>
-          <p>VoiceOver, Zoom, Magnifier, Display & Text Size, Hover Typing, Spoken Content, Audio Descriptions.</p>
+          <div class="name" data-en="Vision">시각</div>
+          <p>VoiceOver, Zoom, Magnifier, Display &amp; Text Size, Hover Typing, Spoken Content, Audio Descriptions.</p>
         </div>
         <div class="card">
           <span class="tag hearing">Hearing</span>
-          <div class="name">청각</div>
+          <div class="name" data-en="Hearing">청각</div>
           <p>Live Captions, Live Listen, MFi Hearing Devices, Sound Recognition, Music Haptics, RTT, Mono Audio.</p>
         </div>
         <div class="card">
           <span class="tag motor">Mobility</span>
-          <div class="name">신체</div>
+          <div class="name" data-en="Mobility">신체</div>
           <p>Switch Control, Voice Control, AssistiveTouch, Eye Tracking, Head Tracking, Vocal Shortcuts, Full Keyboard Access.</p>
         </div>
         <div class="card">
           <span class="tag speech">Speech</span>
-          <div class="name">발화</div>
+          <div class="name" data-en="Speech">발화</div>
           <p>Personal Voice, Live Speech, Listen for Atypical Speech, Hold for Siri.</p>
         </div>
         <div class="card">
           <span class="tag cog">Cognitive</span>
-          <div class="name">인지</div>
+          <div class="name" data-en="Cognitive">인지</div>
           <p>Assistive Access, Guided Access, Reduce Motion, Background Sounds, Accessibility Reader.</p>
         </div>
         <div class="card">
           <span class="tag new">2025 New</span>
-          <div class="name">올해 신규</div>
+          <div class="name" data-en="New This Year">올해 신규</div>
           <p>Accessibility Nutrition Labels, Magnifier for Mac, Braille Access, BCI for Switch Control, Name Recognition, Accessibility Reader, Enhanced View (visionOS).</p>
         </div>
       </div>
 
       <div class="callout note">
-        <strong>읽는 법</strong>
-        Part I은 사용자 관점의 기능 목록입니다. Part II는 그 기능들과 상호작용하기 위한 개발자 API와 코드 예시입니다. 두 파트는 <em>같은 기능을 양쪽에서 본 것</em>이라고 생각하시면 됩니다.
+        <strong data-en="How to read this">읽는 법</strong>
+        <span data-en="Part I is the feature catalog from the user's perspective. Part II covers the developer APIs and code examples for interacting with those features. Think of the two parts as &lt;em&gt;two views of the same functionality&lt;/em&gt;.">Part I은 사용자 관점의 기능 목록입니다. Part II는 그 기능들과 상호작용하기 위한 개발자 API와 코드 예시입니다. 두 파트는 <em>같은 기능을 양쪽에서 본 것</em>이라고 생각하시면 됩니다.</span>
       </div>
     </section>
 
     
   </main>
 </div>
+<script>
+(function(){
+  var KEY='a11y-lang';
+  function apply(lang){
+    localStorage.setItem(KEY,lang);
+    document.documentElement.lang=lang;
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      if(!el.dataset.ko)el.dataset.ko=el.innerHTML;
+      el.innerHTML=lang==='en'?el.dataset.en:el.dataset.ko;
+    });
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.classList.toggle('active',b.dataset.lang===lang);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var s=localStorage.getItem(KEY)||'en';
+    apply(s);
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.addEventListener('click',function(){apply(b.dataset.lang);});
+    });
+  });
+})();
+</script>
 </body>
 </html>

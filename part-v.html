@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@400;500;700&family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
-<title>Part V · 부록 — Apple Accessibility</title>
+<title>Part V · Appendix — Apple Accessibility</title>
 <style>
   :root {
     --bg: #f6f3ee;
@@ -580,22 +580,33 @@
   /* Scrollbar */
   aside.toc::-webkit-scrollbar { width: 6px; }
   aside.toc::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+
+  /* ===== Language Toggle ===== */
+  .lang-toggle{display:inline-flex;border:1px solid var(--rule);border-radius:100px;padding:2px;margin-left:auto;}
+  .lang-btn{padding:4px 10px;background:transparent;border:none;color:var(--ink-soft);font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;border-radius:100px;cursor:pointer;transition:all 0.18s;}
+  .lang-btn:hover{color:var(--ink);}
+  .lang-btn.active{background:var(--ink);color:var(--paper);}
 </style>
 </head>
 <body>
 <header class="top-nav">
   <a href="index.html" class="home">Apple <em>Accessibility</em></a>
-  <nav><a href="index.html">개요</a><a href="part-i.html">I · 사용자 기능</a><a href="part-ii.html">II · 개발자 API</a><a href="part-iii.html">III · 기능 × SwiftUI</a><a href="part-iv.html">IV · 피쳐별 레시피</a><a href="part-v.html" class="active">V · 부록</a><a href="apple-accessibility-graph-bilingual.html">그래프</a></nav>
+  <nav><a href="index.html" data-en="Overview">개요</a><a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a><a href="part-ii.html" data-en="II · Developer APIs">II · 개발자 API</a><a href="part-iii.html" data-en="III · Features × SwiftUI">III · 기능 × SwiftUI</a><a href="part-iv.html" data-en="IV · Feature Recipes">IV · 피쳐별 레시피</a><a href="part-v.html" class="active" data-en="V · Appendix">V · 부록</a><a href="apple-accessibility-graph-bilingual.html" data-en="Graph">그래프</a><a href="accessibility_needs_v2.html" data-en="Assessment">평가</a>
+  <div class="lang-toggle" role="group" aria-label="Language / 언어">
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="ko">한국어</button>
+  </div>
+  </nav>
 </header>
 <div class="shell">
   <aside class="toc">
     <div class="brand">Apple <em>Accessibility</em></div>
-    <div class="sub">Part V · 부록</div>
+    <div class="sub" data-en="Part V · Appendix">Part V · 부록</div>
 
-    <h4>이 페이지</h4>
+    <h4 data-en="On This Page">이 페이지</h4>
     <ul>
-  <li><a href="#cheatsheet">치트시트</a></li>
-  <li><a href="#refs">공식 레퍼런스</a></li>
+  <li><a href="#cheatsheet" data-en="Cheatsheet">치트시트</a></li>
+  <li><a href="#refs" data-en="Official References">공식 레퍼런스</a></li>
 </ul>
 
     <div class="meta">A reference notebook<br>compiled May 2026 · devkoan</div>
@@ -603,52 +614,75 @@
   <main>
 <header class="hero">
       <div class="eyebrow">A Field Manual / Part V</div>
-      <h1><em>부록</em></h1>
-      <p class="lede">실무에서 가장 자주 빠뜨리는 12가지 체크리스트와, Apple 공식 레퍼런스 모음.</p>
+      <h1><em data-en="Appendix">부록</em></h1>
+      <p class="lede" data-en="A 12-item checklist of the most commonly overlooked accessibility considerations in practice, plus a curated collection of official Apple references.">실무에서 가장 자주 빠뜨리는 12가지 체크리스트와, Apple 공식 레퍼런스 모음.</p>
     </header>
 
 
     <!-- ===================== CHEATSHEET ===================== -->
     <section id="cheatsheet">
-      <h2><span class="num">32</span> 치트시트</h2>
-      <p class="section-lede">실무에서 가장 자주 빠뜨리는 12가지.</p>
+      <h2 data-en="&lt;span class=&quot;num&quot;&gt;32&lt;/span&gt; Cheatsheet"><span class="num">32</span> 치트시트</h2>
+      <p class="section-lede" data-en="The 12 most commonly overlooked items in practice.">실무에서 가장 자주 빠뜨리는 12가지.</p>
       <ol>
-        <li>장식용 이미지에 <code>.accessibilityHidden(true)</code> / <code>isAccessibilityElement = false</code></li>
-        <li>의미를 담은 이미지에 <code>accessibilityLabel</code></li>
-        <li>버튼 모양이 없는 탭 영역에 <code>.isButton</code> trait 추가</li>
-        <li>슬라이더·스테퍼 커스텀이면 <code>.adjustable</code> + increment/decrement</li>
-        <li>스와이프 액션을 <code>accessibilityCustomActions</code>로도 노출</li>
-        <li>모달을 띄울 때 <code>UIAccessibility.post(notification: .screenChanged, …)</code></li>
-        <li>긴급 안내는 announcement priority <code>.high</code></li>
-        <li>Dynamic Type에서 가로 → 세로 레이아웃 전환 (<code>typeSize.isAccessibilitySize</code>)</li>
-        <li>Reduce Motion에서 spring → linear/none</li>
-        <li>색 외의 단서 추가 (아이콘·텍스트·패턴) — Differentiate Without Color</li>
-        <li>WCAG 4.5:1 (본문) / 3:1 (대형 텍스트) 이상 대비</li>
-        <li>Voice Control 사용자를 위해 <code>accessibilityUserInputLabels</code>에 한국어·영어 별칭 함께 등록</li>
+        <li data-en="Apply &lt;code&gt;.accessibilityHidden(true)&lt;/code&gt; / &lt;code&gt;isAccessibilityElement = false&lt;/code&gt; to decorative images.">장식용 이미지에 <code>.accessibilityHidden(true)</code> / <code>isAccessibilityElement = false</code></li>
+        <li data-en="Provide &lt;code&gt;accessibilityLabel&lt;/code&gt; for meaningful images.">의미를 담은 이미지에 <code>accessibilityLabel</code></li>
+        <li data-en="Add the &lt;code&gt;.isButton&lt;/code&gt; trait to tappable areas that don't visually resemble a button.">버튼 모양이 없는 탭 영역에 <code>.isButton</code> trait 추가</li>
+        <li data-en="For custom sliders and steppers, use the &lt;code&gt;.adjustable&lt;/code&gt; trait and implement increment/decrement.">슬라이더·스테퍼 커스텀이면 <code>.adjustable</code> + increment/decrement</li>
+        <li data-en="Expose swipe actions through &lt;code&gt;accessibilityCustomActions&lt;/code&gt; as well.">스와이프 액션을 <code>accessibilityCustomActions</code>로도 노출</li>
+        <li data-en="When presenting a modal, call &lt;code&gt;UIAccessibility.post(notification: .screenChanged, …)&lt;/code&gt;.">모달을 띄울 때 <code>UIAccessibility.post(notification: .screenChanged, …)</code></li>
+        <li data-en="Set announcement priority to &lt;code&gt;.high&lt;/code&gt; for urgent notifications.">긴급 안내는 announcement priority <code>.high</code></li>
+        <li data-en="Switch from horizontal to vertical layout for Dynamic Type at larger sizes (&lt;code&gt;typeSize.isAccessibilitySize&lt;/code&gt;).">Dynamic Type에서 가로 → 세로 레이아웃 전환 (<code>typeSize.isAccessibilitySize</code>)</li>
+        <li data-en="Replace spring animations with linear or no animation when Reduce Motion is enabled.">Reduce Motion에서 spring → linear/none</li>
+        <li data-en="Provide non-color cues (icons, text, patterns) in addition to color — Differentiate Without Color.">색 외의 단서 추가 (아이콘·텍스트·패턴) — Differentiate Without Color</li>
+        <li data-en="Meet WCAG contrast ratios: 4.5:1 for body text, 3:1 for large text.">WCAG 4.5:1 (본문) / 3:1 (대형 텍스트) 이상 대비</li>
+        <li data-en="Register both localized and English aliases in &lt;code&gt;accessibilityUserInputLabels&lt;/code&gt; for Voice Control users.">Voice Control 사용자를 위해 <code>accessibilityUserInputLabels</code>에 한국어·영어 별칭 함께 등록</li>
       </ol>
     </section>
 
     <!-- ===================== REFS ===================== -->
     <section id="refs">
-      <h2><span class="num">33</span> 공식 레퍼런스</h2>
+      <h2 data-en="&lt;span class=&quot;num&quot;&gt;33&lt;/span&gt; Official References"><span class="num">33</span> 공식 레퍼런스</h2>
       <ul>
-        <li><a class="inline" href="https://developer.apple.com/accessibility/">developer.apple.com/accessibility</a> — 허브</li>
+        <li><a class="inline" href="https://developer.apple.com/accessibility/">developer.apple.com/accessibility</a> <span data-en="— Hub">— 허브</span></li>
         <li><a class="inline" href="https://developer.apple.com/documentation/accessibility">Accessibility Framework Reference</a></li>
         <li><a class="inline" href="https://developer.apple.com/documentation/uikit/uiaccessibility">UIAccessibility</a></li>
         <li><a class="inline" href="https://developer.apple.com/documentation/swiftui/view-accessibility">SwiftUI · View Accessibility</a></li>
         <li><a class="inline" href="https://developer.apple.com/documentation/appkit/nsaccessibility">NSAccessibility</a></li>
         <li><a class="inline" href="https://developer.apple.com/design/human-interface-guidelines/accessibility">HIG · Accessibility</a></li>
-        <li><a class="inline" href="https://developer.apple.com/videos/all-videos/?q=accessibility">WWDC Accessibility 세션 전체</a> — 매년 6~10개 세션 업데이트</li>
-        <li><a class="inline" href="https://www.apple.com/accessibility/">apple.com/accessibility</a> — 사용자 관점</li>
+        <li><a class="inline" href="https://developer.apple.com/videos/all-videos/?q=accessibility" data-en="WWDC Accessibility Sessions (all)">WWDC Accessibility 세션 전체</a> <span data-en="— Updated with 6–10 sessions each year">— 매년 6~10개 세션 업데이트</span></li>
+        <li><a class="inline" href="https://www.apple.com/accessibility/">apple.com/accessibility</a> <span data-en="— User perspective">— 사용자 관점</span></li>
       </ul>
     </section>
 
     <footer class="colophon">
-      <strong>Colophon.</strong> 이 문서는 Apple 공식 문서 및 2025년 5월 Apple 보도자료 ("Apple unveils powerful accessibility features coming later this year") 를 기준으로 정리되었습니다. iOS 19 / macOS 16 / watchOS 12 / visionOS 3 / tvOS 19 사이클을 포함합니다. — Compiled May 2026.
+      <strong>Colophon.</strong> <span data-en="This document is based on official Apple documentation and the Apple press release from May 2025 (&ldquo;Apple unveils powerful accessibility features coming later this year&rdquo;). Covers the iOS 19 / macOS 16 / watchOS 12 / visionOS 3 / tvOS 19 cycle. — Compiled May 2026.">이 문서는 Apple 공식 문서 및 2025년 5월 Apple 보도자료 ("Apple unveils powerful accessibility features coming later this year") 를 기준으로 정리되었습니다. iOS 19 / macOS 16 / watchOS 12 / visionOS 3 / tvOS 19 사이클을 포함합니다. — Compiled May 2026.</span>
     </footer>
 
   
   </main>
 </div>
+<script>
+(function(){
+  var KEY='a11y-lang';
+  function apply(lang){
+    localStorage.setItem(KEY,lang);
+    document.documentElement.lang=lang;
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      if(!el.dataset.ko)el.dataset.ko=el.innerHTML;
+      el.innerHTML=lang==='en'?el.dataset.en:el.dataset.ko;
+    });
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.classList.toggle('active',b.dataset.lang===lang);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var s=localStorage.getItem(KEY)||'en';
+    apply(s);
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.addEventListener('click',function(){apply(b.dataset.lang);});
+    });
+  });
+})();
+</script>
 </body>
 </html>

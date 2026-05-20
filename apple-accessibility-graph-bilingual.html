@@ -478,13 +478,14 @@
 <header class="top-nav">
   <a href="index.html" class="home">Apple Accessibility</a>
   <nav>
-    <a href="index.html">개요</a>
-    <a href="part-i.html">I · 사용자 기능</a>
-    <a href="part-ii.html">II · 개발자 API</a>
-    <a href="part-iii.html">III · 기능 × SwiftUI</a>
-    <a href="part-iv.html">IV · 피쳐별 레시피</a>
-    <a href="part-v.html">V · 부록</a>
-    <a href="apple-accessibility-graph-bilingual.html" class="active">그래프</a>
+    <a href="index.html" data-en="Overview">개요</a>
+    <a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a>
+    <a href="part-ii.html" data-en="II · Developer APIs">II · 개발자 API</a>
+    <a href="part-iii.html" data-en="III · Features × SwiftUI">III · 기능 × SwiftUI</a>
+    <a href="part-iv.html" data-en="IV · Per-Feature Recipes">IV · 피쳐별 레시피</a>
+    <a href="part-v.html" data-en="V · Appendix">V · 부록</a>
+    <a href="apple-accessibility-graph-bilingual.html" class="active" data-en="Graph">그래프</a>
+    <a href="accessibility_needs_v2.html" data-en="Assessment">평가</a>
   </nav>
 </header>
 <div class="app">
@@ -1061,7 +1062,7 @@ const SUBFEATURES = {
 };
 
 // ============ STATE ============
-let lang = 'en';
+let lang = localStorage.getItem('a11y-lang') || 'en';
 let hideSubs = false;
 let hideLabels = false;
 let catFilter = null;
@@ -1433,7 +1434,12 @@ document.getElementById('zoom-reset').addEventListener('click', () => {
 function setLanguage(newLang) {
   if (newLang === lang) return;
   lang = newLang;
+  localStorage.setItem('a11y-lang', lang);
   document.documentElement.setAttribute('lang', lang);
+  document.querySelectorAll('[data-en]').forEach(function(el) {
+    if (!el.dataset.ko) el.dataset.ko = el.innerHTML;
+    el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.ko;
+  });
 
   // toggle button states
   document.querySelectorAll('.lang-btn').forEach(b => {

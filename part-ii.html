@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@400;500;700&family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
-<title>Part II · 개발자 API — Apple Accessibility</title>
+<title>Part II · Developer APIs — Apple Accessibility</title>
 <style>
   :root {
     --bg: #f6f3ee;
@@ -161,35 +161,45 @@
   .cat-h2.speech { background: var(--tag-speech); }
   .cat-h2.cog { background: var(--tag-cog); }
   .cat-section { border-top: 3px solid var(--rule); padding-top: 48px; margin-top: 80px; }
+/* ===== Language Toggle ===== */
+.lang-toggle{display:inline-flex;border:1px solid var(--rule);border-radius:100px;padding:2px;margin-left:auto;}
+.lang-btn{padding:4px 10px;background:transparent;border:none;color:var(--ink-soft);font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;border-radius:100px;cursor:pointer;transition:all 0.18s;}
+.lang-btn:hover{color:var(--ink);}
+.lang-btn.active{background:var(--ink);color:var(--paper);}
 </style>
 </head>
 <body>
 <header class="top-nav">
   <a href="index.html" class="home">Apple <em>Accessibility</em></a>
   <nav>
-    <a href="index.html">개요</a>
-    <a href="part-i.html">I · 사용자 기능</a>
-    <a href="part-ii.html" class="active">II · 개발자 API</a>
-    <a href="part-iii.html">III · 기능 × SwiftUI</a>
-    <a href="part-iv.html">IV · 피쳐별 레시피</a>
-    <a href="part-v.html">V · 부록</a>
-    <a href="apple-accessibility-graph-bilingual.html">그래프</a>
+    <a href="index.html" data-en="Overview">개요</a>
+    <a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a>
+    <a href="part-ii.html" class="active" data-en="II · Developer APIs">II · 개발자 API</a>
+    <a href="part-iii.html" data-en="III · Features × SwiftUI">III · 기능 × SwiftUI</a>
+    <a href="part-iv.html" data-en="IV · Feature Recipes">IV · 피쳐별 레시피</a>
+    <a href="part-v.html" data-en="V · Appendix">V · 부록</a>
+    <a href="apple-accessibility-graph-bilingual.html" data-en="Graph">그래프</a>
+    <a href="accessibility_needs_v2.html" data-en="Assessment">평가</a>
   </nav>
+  <div class="lang-toggle" role="group" aria-label="Language / 언어">
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="ko">한국어</button>
+  </div>
 </header>
 <div class="shell">
 <aside class="toc">
   <div class="brand">Apple <em>Accessibility</em></div>
-  <div class="sub">Part II · 개발자 API</div>
+  <div class="sub" data-en="Part II · Developer APIs">Part II · 개발자 API</div>
 
   <h4>Foundation API</h4>
   <ul>
     <li><a href="#uikit">UIKit · UIAccessibility</a>
       <ul class="subs">
-        <li><a href="#uikit-attributes">핵심 속성</a></li>
-        <li><a href="#uikit-container">컨테이너 프로토콜</a></li>
+        <li><a href="#uikit-attributes" data-en="Core Attributes">핵심 속성</a></li>
+        <li><a href="#uikit-container" data-en="Container Protocols">컨테이너 프로토콜</a></li>
       </ul>
     </li>
-    <li><a href="#swiftui">SwiftUI Modifier 카탈로그</a></li>
+    <li><a href="#swiftui" data-en="SwiftUI Modifier Catalog">SwiftUI Modifier 카탈로그</a></li>
     <li><a href="#env">Environment Values</a></li>
     <li><a href="#notifications">Notifications &amp; Queries</a></li>
   </ul>
@@ -276,14 +286,14 @@
     <li><a href="#testing">Testing · Inspector · Audits</a></li>
   </ul>
 
-  <div class="meta">A reference notebook<br>compiled May 2026 · devkoan</div>
+  <div class="meta" data-en="A reference notebook<br>compiled May 2026 · devkoan">A reference notebook<br>compiled May 2026 · devkoan</div>
 </aside>
 
 <main>
 <header class="hero">
   <div class="eyebrow">A Field Manual / Part II</div>
-  <h1>개발자 <em>API</em></h1>
-  <p class="lede">Apple Accessibility 55가지 기능을 개발자 관점에서 정리. UIKit <code>UIAccessibility</code> · SwiftUI 모디파이어 · 환경값부터 피쳐 전용 프레임워크까지, Apple의 5개 카테고리 구조로 배열한다.</p>
+  <h1 data-en="Developer <em>APIs</em>">개발자 <em>API</em></h1>
+  <p class="lede" data-en="All 55 Apple Accessibility features from a developer perspective. From UIKit <code>UIAccessibility</code> · SwiftUI modifiers · environment values to feature-specific frameworks — arranged by Apple's 5-category structure.">Apple Accessibility 55가지 기능을 개발자 관점에서 정리. UIKit <code>UIAccessibility</code> · SwiftUI 모디파이어 · 환경값부터 피쳐 전용 프레임워크까지, Apple의 5개 카테고리 구조로 배열한다.</p>
   <div class="credits">
     <span>55 Features</span><span>5 Categories</span><span>iOS 18 · macOS 15</span>
   </div>
@@ -295,32 +305,32 @@
 
 <section id="uikit">
   <h2><span class="num">01</span> UIKit · UIAccessibility</h2>
-  <p class="section-lede">모든 UIKit 접근성의 시작점. <code>UIView</code>·<code>UIBarItem</code>이 자동으로 채택하며, 속성을 채우는 것만으로 VoiceOver · Voice Control · Switch Control이 연동된다.</p>
+  <p class="section-lede" data-en="The entry point for all UIKit accessibility. <code>UIView</code> and <code>UIBarItem</code> adopt it automatically — filling in properties is enough to connect VoiceOver, Voice Control, and Switch Control.">모든 UIKit 접근성의 시작점. <code>UIView</code>·<code>UIBarItem</code>이 자동으로 채택하며, 속성을 채우는 것만으로 VoiceOver · Voice Control · Switch Control이 연동된다.</p>
 
-  <h3 id="uikit-attributes">핵심 속성 (Accessibility Attributes)</h3>
+  <h3 id="uikit-attributes" data-en="Core Attributes (Accessibility Attributes)">핵심 속성 (Accessibility Attributes)</h3>
   <table>
-    <thead><tr><th>속성</th><th>설명</th></tr></thead>
+    <thead><tr><th data-en="Attribute">속성</th><th data-en="Description">설명</th></tr></thead>
     <tbody>
-      <tr><td><code>isAccessibilityElement</code></td><td>단일 접근성 요소로 노출 여부</td></tr>
-      <tr><td><code>accessibilityLabel</code></td><td>요소의 짧은 이름</td></tr>
-      <tr><td><code>accessibilityAttributedLabel</code></td><td>발음·언어 힌트 포함 속성형 레이블</td></tr>
-      <tr><td><code>accessibilityValue</code></td><td>슬라이더 값, 텍스트필드 내용 등 상태값</td></tr>
-      <tr><td><code>accessibilityHint</code></td><td>"두 번 탭하면 재생됩니다" 같은 행동 결과 힌트</td></tr>
-      <tr><td><code>accessibilityTraits</code></td><td><code>.button .header .selected .adjustable .link .playsSound .startsMediaSession</code> 등 비트마스크</td></tr>
-      <tr><td><code>accessibilityIdentifier</code></td><td>UI 테스트용 ID (VoiceOver 출력에는 미사용)</td></tr>
-      <tr><td><code>accessibilityFrame</code> / <code>accessibilityActivationPoint</code></td><td>화면상 영역과 두 번 탭 활성화 지점</td></tr>
-      <tr><td><code>accessibilityElementsHidden</code></td><td>하위 요소 전체 숨김</td></tr>
-      <tr><td><code>accessibilityViewIsModal</code></td><td>모달 표시 (형제 요소 차단)</td></tr>
-      <tr><td><code>accessibilityLanguage</code></td><td>"ko-KR" 같은 BCP-47 코드로 발음 언어 지정</td></tr>
-      <tr><td><code>accessibilityCustomActions</code></td><td>로터에 추가되는 커스텀 액션 배열</td></tr>
-      <tr><td><code>accessibilityCustomRotors</code></td><td>커스텀 로터 (예: "헤딩", "이미지")</td></tr>
-      <tr><td><code>accessibilityCustomContent</code></td><td>iOS 14+ More Content 로터 항목</td></tr>
-      <tr><td><code>shouldGroupAccessibilityChildren</code></td><td>자식들을 한 그룹으로 묶어 순서 보장</td></tr>
-      <tr><td><code>accessibilityUserInputLabels</code></td><td>Voice Control 명령에 사용할 후보 이름 배열</td></tr>
+      <tr><td><code>isAccessibilityElement</code></td><td data-en="Whether to expose as a single accessibility element">단일 접근성 요소로 노출 여부</td></tr>
+      <tr><td><code>accessibilityLabel</code></td><td data-en="Short name of the element">요소의 짧은 이름</td></tr>
+      <tr><td><code>accessibilityAttributedLabel</code></td><td data-en="Attributed label with pronunciation/language hints">발음·언어 힌트 포함 속성형 레이블</td></tr>
+      <tr><td><code>accessibilityValue</code></td><td data-en="State value such as slider value or text field content">슬라이더 값, 텍스트필드 내용 등 상태값</td></tr>
+      <tr><td><code>accessibilityHint</code></td><td data-en="Action result hint like &quot;Double tap to play&quot;">"두 번 탭하면 재생됩니다" 같은 행동 결과 힌트</td></tr>
+      <tr><td><code>accessibilityTraits</code></td><td data-en="Bitmask: <code>.button .header .selected .adjustable .link .playsSound .startsMediaSession</code> etc."><code>.button .header .selected .adjustable .link .playsSound .startsMediaSession</code> 등 비트마스크</td></tr>
+      <tr><td><code>accessibilityIdentifier</code></td><td data-en="ID for UI testing (not read by VoiceOver)">UI 테스트용 ID (VoiceOver 출력에는 미사용)</td></tr>
+      <tr><td><code>accessibilityFrame</code> / <code>accessibilityActivationPoint</code></td><td data-en="On-screen area and double-tap activation point">화면상 영역과 두 번 탭 활성화 지점</td></tr>
+      <tr><td><code>accessibilityElementsHidden</code></td><td data-en="Hide all child elements">하위 요소 전체 숨김</td></tr>
+      <tr><td><code>accessibilityViewIsModal</code></td><td data-en="Modal flag (blocks sibling elements)">모달 표시 (형제 요소 차단)</td></tr>
+      <tr><td><code>accessibilityLanguage</code></td><td data-en="BCP-47 code such as &quot;ko-KR&quot; to specify pronunciation language">"ko-KR" 같은 BCP-47 코드로 발음 언어 지정</td></tr>
+      <tr><td><code>accessibilityCustomActions</code></td><td data-en="Array of custom actions added to the rotor">로터에 추가되는 커스텀 액션 배열</td></tr>
+      <tr><td><code>accessibilityCustomRotors</code></td><td data-en="Custom rotors (e.g. &quot;Headings&quot;, &quot;Images&quot;)">커스텀 로터 (예: "헤딩", "이미지")</td></tr>
+      <tr><td><code>accessibilityCustomContent</code></td><td data-en="iOS 14+ More Content rotor items">iOS 14+ More Content 로터 항목</td></tr>
+      <tr><td><code>shouldGroupAccessibilityChildren</code></td><td data-en="Group children to guarantee reading order">자식들을 한 그룹으로 묶어 순서 보장</td></tr>
+      <tr><td><code>accessibilityUserInputLabels</code></td><td data-en="Array of candidate names for Voice Control commands">Voice Control 명령에 사용할 후보 이름 배열</td></tr>
       <tr><td><code>accessibilityContainerType</code></td><td><code>.list .dataTable .semanticGroup .landmark</code></td></tr>
-      <tr><td><code>accessibilityShowsLargeContentViewer</code></td><td>탭 앤 홀드 Large Content Viewer 활성화</td></tr>
-      <tr><td><code>accessibilityTextualContext</code></td><td><code>.console .messaging .sourceCode .narrative</code> 등 발음 전략 힌트</td></tr>
-      <tr><td><code>accessibilityDirectTouchOptions</code></td><td>피아노·드로잉처럼 직접 터치가 의미를 갖는 영역</td></tr>
+      <tr><td><code>accessibilityShowsLargeContentViewer</code></td><td data-en="Activate Large Content Viewer on tap-and-hold">탭 앤 홀드 Large Content Viewer 활성화</td></tr>
+      <tr><td><code>accessibilityTextualContext</code></td><td data-en="Pronunciation strategy hint: <code>.console .messaging .sourceCode .narrative</code> etc."><code>.console .messaging .sourceCode .narrative</code> 등 발음 전략 힌트</td></tr>
+      <tr><td><code>accessibilityDirectTouchOptions</code></td><td data-en="Region where direct touch has meaning, like piano or drawing">피아노·드로잉처럼 직접 터치가 의미를 갖는 영역</td></tr>
     </tbody>
   </table>
 
@@ -332,13 +342,13 @@ heartButton.accessibilityTraits = [.button]
 heartButton.accessibilityUserInputLabels = [<span class="s">"좋아요"</span>, <span class="s">"하트"</span>, <span class="s">"Like"</span>]
 </pre>
 
-  <h3 id="uikit-container">컨테이너 프로토콜</h3>
+  <h3 id="uikit-container" data-en="Container Protocols">컨테이너 프로토콜</h3>
   <ul>
-    <li><code>UIAccessibilityContainer</code> — 자식 요소 직접 관리 (<code>accessibilityElements</code>, <code>accessibilityElementCount()</code>)</li>
-    <li><code>UIAccessibilityContainerDataTable</code> / <code>...DataTableCell</code> — 행·열 정보 있는 표</li>
-    <li><code>UIAccessibilityReadingContent</code> — 페이지 가진 텍스트 (스크롤 가능 책 뷰 등)</li>
-    <li><code>UIAccessibilityFocus</code> — 포커스 진입·이탈 시점 콜백</li>
-    <li><code>UIAccessibilityAction</code> — magic tap, escape, increment, decrement 등 시스템 액션</li>
+    <li data-en="<code>UIAccessibilityContainer</code> — manage child elements directly (<code>accessibilityElements</code>, <code>accessibilityElementCount()</code>)"><code>UIAccessibilityContainer</code> — 자식 요소 직접 관리 (<code>accessibilityElements</code>, <code>accessibilityElementCount()</code>)</li>
+    <li data-en="<code>UIAccessibilityContainerDataTable</code> / <code>...DataTableCell</code> — table with row/column information"><code>UIAccessibilityContainerDataTable</code> / <code>...DataTableCell</code> — 행·열 정보 있는 표</li>
+    <li data-en="<code>UIAccessibilityReadingContent</code> — paginated text (scrollable book view, etc.)"><code>UIAccessibilityReadingContent</code> — 페이지 가진 텍스트 (스크롤 가능 책 뷰 등)</li>
+    <li data-en="<code>UIAccessibilityFocus</code> — callbacks when focus enters or leaves"><code>UIAccessibilityFocus</code> — 포커스 진입·이탈 시점 콜백</li>
+    <li data-en="<code>UIAccessibilityAction</code> — system actions: magic tap, escape, increment, decrement, etc."><code>UIAccessibilityAction</code> — magic tap, escape, increment, decrement 등 시스템 액션</li>
   </ul>
 
 <pre><span class="k">override</span> <span class="k">var</span> accessibilityTraits: UIAccessibilityTraits {
@@ -351,8 +361,8 @@ heartButton.accessibilityUserInputLabels = [<span class="s">"좋아요"</span>, 
 </section>
 
 <section id="swiftui">
-  <h2><span class="num">02</span> SwiftUI 접근성 Modifier 카탈로그</h2>
-  <p class="section-lede">표준 컴포넌트는 자동으로 접근성 레이블을 만든다. 우리가 개입하는 것은 (1) 자동 추론이 부족한 곳, (2) 커스텀 그리기/제스처 영역, (3) 의미 그룹화·액션 추가이다.</p>
+  <h2 data-en="<span class=&quot;num&quot;>02</span> SwiftUI Accessibility Modifier Catalog"><span class="num">02</span> SwiftUI 접근성 Modifier 카탈로그</h2>
+  <p class="section-lede" data-en="Standard components generate accessibility labels automatically. We intervene for: (1) places where auto-inference falls short, (2) custom drawing/gesture areas, and (3) semantic grouping and adding actions.">표준 컴포넌트는 자동으로 접근성 레이블을 만든다. 우리가 개입하는 것은 (1) 자동 추론이 부족한 곳, (2) 커스텀 그리기/제스처 영역, (3) 의미 그룹화·액션 추가이다.</p>
 
 <pre>Image(systemName: <span class="s">"heart.fill"</span>)
     .accessibilityLabel(<span class="s">"좋아요"</span>)
@@ -372,55 +382,55 @@ ComplexChart()
 </pre>
 
   <table>
-    <thead><tr><th>Modifier</th><th>용도</th></tr></thead>
+    <thead><tr><th>Modifier</th><th data-en="Purpose">용도</th></tr></thead>
     <tbody>
-      <tr><td><code>.accessibilityLabel</code></td><td>대체 이름</td></tr>
-      <tr><td><code>.accessibilityValue</code></td><td>현재 상태값</td></tr>
-      <tr><td><code>.accessibilityHint</code></td><td>행동 결과 힌트</td></tr>
-      <tr><td><code>.accessibilityIdentifier</code></td><td>UI 테스트 식별자</td></tr>
+      <tr><td><code>.accessibilityLabel</code></td><td data-en="Alternative name">대체 이름</td></tr>
+      <tr><td><code>.accessibilityValue</code></td><td data-en="Current state value">현재 상태값</td></tr>
+      <tr><td><code>.accessibilityHint</code></td><td data-en="Action result hint">행동 결과 힌트</td></tr>
+      <tr><td><code>.accessibilityIdentifier</code></td><td data-en="UI test identifier">UI 테스트 식별자</td></tr>
       <tr><td><code>.accessibilityAddTraits / .accessibilityRemoveTraits</code></td><td><code>.isButton .isHeader .isLink .isSelected .isModal .updatesFrequently .isToggle</code> 등</td></tr>
-      <tr><td><code>.accessibilityHidden</code></td><td>트리에서 제외</td></tr>
+      <tr><td><code>.accessibilityHidden</code></td><td data-en="Exclude from accessibility tree">트리에서 제외</td></tr>
       <tr><td><code>.accessibilityElement(children:)</code></td><td><code>.ignore / .combine / .contain</code></td></tr>
-      <tr><td><code>.accessibilityRepresentation { View }</code></td><td>가상 뷰로 대체</td></tr>
-      <tr><td><code>.accessibilityAction(_:_:)</code></td><td>커스텀 액션 + <code>.magicTap .escape .default</code></td></tr>
-      <tr><td><code>.accessibilityAdjustableAction</code></td><td>스와이프 업/다운 증감</td></tr>
-      <tr><td><code>.accessibilityRotor</code></td><td>커스텀 로터 정의</td></tr>
-      <tr><td><code>.accessibilityCustomContent</code></td><td>More Content 로터 항목</td></tr>
-      <tr><td><code>.accessibilityHeading(.h1/.h2/...)</code></td><td>헤딩 레벨</td></tr>
-      <tr><td><code>.accessibilityFocused($flag)</code></td><td>프로그래매틱 포커스</td></tr>
-      <tr><td><code>.accessibilityShowsLargeContentViewer</code></td><td>탭 앤 홀드 확대 뷰어</td></tr>
-      <tr><td><code>.accessibilityInputLabels(_:)</code></td><td>Voice Control 별칭</td></tr>
-      <tr><td><code>.accessibilityIgnoresInvertColors</code></td><td>색 반전 무시 (사진 등)</td></tr>
-      <tr><td><code>.accessibilityTextContentType(_:)</code></td><td>console · sourceCode · spreadsheet 등</td></tr>
-      <tr><td><code>.speechSpellsOutCharacters()</code></td><td>한 글자씩 발음</td></tr>
-      <tr><td><code>.speechAdjustedPitch(_:)</code></td><td>피치 조정</td></tr>
-      <tr><td><code>.speechAlwaysIncludesPunctuation()</code></td><td>구두점도 읽음</td></tr>
-      <tr><td><code>.speechAnnouncementsQueued()</code></td><td>알림을 큐로 처리</td></tr>
+      <tr><td><code>.accessibilityRepresentation { View }</code></td><td data-en="Replace with a virtual view">가상 뷰로 대체</td></tr>
+      <tr><td><code>.accessibilityAction(_:_:)</code></td><td data-en="Custom actions + <code>.magicTap .escape .default</code>">커스텀 액션 + <code>.magicTap .escape .default</code></td></tr>
+      <tr><td><code>.accessibilityAdjustableAction</code></td><td data-en="Swipe up/down increment/decrement">스와이프 업/다운 증감</td></tr>
+      <tr><td><code>.accessibilityRotor</code></td><td data-en="Define custom rotor">커스텀 로터 정의</td></tr>
+      <tr><td><code>.accessibilityCustomContent</code></td><td data-en="More Content rotor items">More Content 로터 항목</td></tr>
+      <tr><td><code>.accessibilityHeading(.h1/.h2/...)</code></td><td data-en="Heading level">헤딩 레벨</td></tr>
+      <tr><td><code>.accessibilityFocused($flag)</code></td><td data-en="Programmatic focus">프로그래매틱 포커스</td></tr>
+      <tr><td><code>.accessibilityShowsLargeContentViewer</code></td><td data-en="Tap-and-hold large content viewer">탭 앤 홀드 확대 뷰어</td></tr>
+      <tr><td><code>.accessibilityInputLabels(_:)</code></td><td data-en="Voice Control aliases">Voice Control 별칭</td></tr>
+      <tr><td><code>.accessibilityIgnoresInvertColors</code></td><td data-en="Ignore color inversion (photos, etc.)">색 반전 무시 (사진 등)</td></tr>
+      <tr><td><code>.accessibilityTextContentType(_:)</code></td><td data-en="console · sourceCode · spreadsheet etc.">console · sourceCode · spreadsheet 등</td></tr>
+      <tr><td><code>.speechSpellsOutCharacters()</code></td><td data-en="Spell out characters one by one">한 글자씩 발음</td></tr>
+      <tr><td><code>.speechAdjustedPitch(_:)</code></td><td data-en="Adjust pitch">피치 조정</td></tr>
+      <tr><td><code>.speechAlwaysIncludesPunctuation()</code></td><td data-en="Read punctuation aloud">구두점도 읽음</td></tr>
+      <tr><td><code>.speechAnnouncementsQueued()</code></td><td data-en="Queue announcements">알림을 큐로 처리</td></tr>
     </tbody>
   </table>
 </section>
 
 <section id="env">
   <h2><span class="num">03</span> SwiftUI Environment Values</h2>
-  <p class="section-lede">사용자의 시스템 접근성 설정을 SwiftUI에서 읽기. 분기 처리와 애니메이션 비활성화에 모두 쓴다.</p>
+  <p class="section-lede" data-en="Read the user's system accessibility settings from SwiftUI. Used for conditional logic and disabling animations.">사용자의 시스템 접근성 설정을 SwiftUI에서 읽기. 분기 처리와 애니메이션 비활성화에 모두 쓴다.</p>
 
   <table>
-    <thead><tr><th>Environment Key</th><th>의미</th></tr></thead>
+    <thead><tr><th>Environment Key</th><th data-en="Meaning">의미</th></tr></thead>
     <tbody>
-      <tr><td><code>\.accessibilityVoiceOverEnabled</code></td><td>VoiceOver 실행 여부</td></tr>
-      <tr><td><code>\.accessibilitySwitchControlEnabled</code></td><td>Switch Control 실행 여부</td></tr>
-      <tr><td><code>\.accessibilityReduceMotion</code></td><td>Motion settings — 모션 줄이기</td></tr>
-      <tr><td><code>\.accessibilityPrefersCrossFadeTransitions</code></td><td>슬라이드 대신 크로스 페이드</td></tr>
-      <tr><td><code>\.accessibilityReduceTransparency</code></td><td>투명도 줄이기</td></tr>
-      <tr><td><code>\.accessibilityDifferentiateWithoutColor</code></td><td>색만으로 구분하지 않기</td></tr>
-      <tr><td><code>\.accessibilityInvertColors</code></td><td>색 반전</td></tr>
-      <tr><td><code>\.accessibilityShowButtonShapes</code></td><td>버튼 모양 표시</td></tr>
-      <tr><td><code>\.accessibilityLargeContentViewerEnabled</code></td><td>Large Content Viewer 사용 가능</td></tr>
-      <tr><td><code>\.accessibilityPlayAnimatedImages</code></td><td>애니메이션 이미지 재생 여부</td></tr>
+      <tr><td><code>\.accessibilityVoiceOverEnabled</code></td><td data-en="Whether VoiceOver is running">VoiceOver 실행 여부</td></tr>
+      <tr><td><code>\.accessibilitySwitchControlEnabled</code></td><td data-en="Whether Switch Control is running">Switch Control 실행 여부</td></tr>
+      <tr><td><code>\.accessibilityReduceMotion</code></td><td data-en="Motion settings — Reduce Motion">Motion settings — 모션 줄이기</td></tr>
+      <tr><td><code>\.accessibilityPrefersCrossFadeTransitions</code></td><td data-en="Cross-fade instead of slide">슬라이드 대신 크로스 페이드</td></tr>
+      <tr><td><code>\.accessibilityReduceTransparency</code></td><td data-en="Reduce transparency">투명도 줄이기</td></tr>
+      <tr><td><code>\.accessibilityDifferentiateWithoutColor</code></td><td data-en="Don't use color alone to differentiate">색만으로 구분하지 않기</td></tr>
+      <tr><td><code>\.accessibilityInvertColors</code></td><td data-en="Invert colors">색 반전</td></tr>
+      <tr><td><code>\.accessibilityShowButtonShapes</code></td><td data-en="Show button shapes">버튼 모양 표시</td></tr>
+      <tr><td><code>\.accessibilityLargeContentViewerEnabled</code></td><td data-en="Large Content Viewer available">Large Content Viewer 사용 가능</td></tr>
+      <tr><td><code>\.accessibilityPlayAnimatedImages</code></td><td data-en="Whether to play animated images">애니메이션 이미지 재생 여부</td></tr>
       <tr><td><code>\.legibilityWeight</code></td><td>Bold Text → <code>.bold</code> / <code>.regular</code></td></tr>
       <tr><td><code>\.colorSchemeContrast</code></td><td>Increase Contrast → <code>.increased</code></td></tr>
-      <tr><td><code>\.dynamicTypeSize</code></td><td>현재 Dynamic Type 크기 (<code>.xSmall</code> ~ <code>.accessibility5</code>)</td></tr>
-      <tr><td><code>\.sizeCategory</code> (legacy)</td><td>구버전 환경 키</td></tr>
+      <tr><td><code>\.dynamicTypeSize</code></td><td data-en="Current Dynamic Type size (<code>.xSmall</code> ~ <code>.accessibility5</code>)">현재 Dynamic Type 크기 (<code>.xSmall</code> ~ <code>.accessibility5</code>)</td></tr>
+      <tr><td><code>\.sizeCategory</code> (legacy)</td><td data-en="Legacy environment key">구버전 환경 키</td></tr>
     </tbody>
   </table>
 
@@ -437,9 +447,9 @@ Text(<span class="s">"제목"</span>).font(.title)
 
 <section id="notifications">
   <h2><span class="num">04</span> Notifications &amp; Status Queries</h2>
-  <p class="section-lede">시스템 접근성 설정 상태를 묻고, 앱에서 일어난 일을 보조 기술에 알리는 방법.</p>
+  <p class="section-lede" data-en="How to query system accessibility status and notify assistive technologies of events in your app.">시스템 접근성 설정 상태를 묻고, 앱에서 일어난 일을 보조 기술에 알리는 방법.</p>
 
-  <h4>상태 조회 (UIKit)</h4>
+  <h4 data-en="Status Queries (UIKit)">상태 조회 (UIKit)</h4>
 <pre>UIAccessibility.isVoiceOverRunning
 UIAccessibility.isSwitchControlRunning
 UIAccessibility.isAssistiveTouchRunning
@@ -459,10 +469,10 @@ UIAccessibility.buttonShapesEnabled
 UIAccessibility.prefersCrossFadeTransitions
 </pre>
 
-  <h4>변경 알림</h4>
-  <p>같은 이름 + <code>DidChangeNotification</code>. 예: <code>UIAccessibility.voiceOverStatusDidChangeNotification</code>, <code>...reduceMotionStatusDidChangeNotification</code>.</p>
+  <h4 data-en="Change Notifications">변경 알림</h4>
+  <p data-en="Same name + <code>DidChangeNotification</code>. e.g. <code>UIAccessibility.voiceOverStatusDidChangeNotification</code>, <code>...reduceMotionStatusDidChangeNotification</code>.">같은 이름 + <code>DidChangeNotification</code>. 예: <code>UIAccessibility.voiceOverStatusDidChangeNotification</code>, <code>...reduceMotionStatusDidChangeNotification</code>.</p>
 
-  <h4>이벤트 게시 (Post Notification)</h4>
+  <h4 data-en="Post Notifications">이벤트 게시 (Post Notification)</h4>
 <pre>UIAccessibility.post(notification: .announcement, argument: <span class="s">"전송 완료"</span>)
 UIAccessibility.post(notification: .layoutChanged, argument: focusTarget)
 UIAccessibility.post(notification: .screenChanged, argument: <span class="k">nil</span>)
@@ -488,15 +498,15 @@ AccessibilityNotification.Announcement(attr).post()
 <div class="cat-section">
 <section id="vision-intro">
   <h2><span class="cat-h2 vision">Vision</span></h2>
-  <p class="section-lede">시각 관련 16가지 기능의 개발자 API. VoiceOver가 중심이며, Dynamic Type · Zoom · Motion · Audio Descriptions 등이 각자의 API를 가진다.</p>
+  <p class="section-lede" data-en="Developer APIs for 16 vision-related features. VoiceOver is central; Dynamic Type, Zoom, Motion, and Audio Descriptions each have their own APIs.">시각 관련 16가지 기능의 개발자 API. VoiceOver가 중심이며, Dynamic Type · Zoom · Motion · Audio Descriptions 등이 각자의 API를 가진다.</p>
 </section>
 
 <section id="voiceover">
   <h3>VoiceOver</h3>
   <div class="avail"><span>iOS 3+</span><span>macOS 10.4+</span><span>watchOS 7+</span><span>visionOS 1+</span></div>
-  <p>화면 리더. 핵심 API는 Foundation 섹션의 <a class="inline" href="#uikit">UIAccessibility 속성</a>과 <a class="inline" href="#swiftui">SwiftUI Modifier</a>이다. 여기서는 VoiceOver 전용 심화 기능을 다룬다.</p>
+  <p data-en="Screen reader. The core APIs are <a class=&quot;inline&quot; href=&quot;#uikit&quot;>UIAccessibility attributes</a> and <a class=&quot;inline&quot; href=&quot;#swiftui&quot;>SwiftUI Modifiers</a> in the Foundation section. Here we cover VoiceOver-specific advanced features.">화면 리더. 핵심 API는 Foundation 섹션의 <a class="inline" href="#uikit">UIAccessibility 속성</a>과 <a class="inline" href="#swiftui">SwiftUI Modifier</a>이다. 여기서는 VoiceOver 전용 심화 기능을 다룬다.</p>
 
-  <h4>커스텀 로터 (UIKit)</h4>
+  <h4 data-en="Custom Rotors (UIKit)">커스텀 로터 (UIKit)</h4>
 <pre><span class="k">let</span> rotor = UIAccessibilityCustomRotor(name: <span class="s">"중요 메시지"</span>) { predicate <span class="k">in</span>
     <span class="k">let</span> current = predicate.currentItem.targetElement <span class="k">as</span>? MessageCell
     <span class="k">let</span> next = findNext(after: current, direction: predicate.searchDirection)
@@ -506,14 +516,14 @@ AccessibilityNotification.Announcement(attr).post()
 view.accessibilityCustomRotors = [rotor]
 </pre>
 
-  <h4>커스텀 로터 (SwiftUI)</h4>
+  <h4 data-en="Custom Rotors (SwiftUI)">커스텀 로터 (SwiftUI)</h4>
 <pre>List(messages) { msg <span class="k">in</span> MessageRow(msg) }
     .accessibilityRotor(<span class="s">"중요 메시지"</span>, entries: messages.filter(\.isImportant), entryID: \.id) { msg <span class="k">in</span>
         Text(msg.preview)
     }
 </pre>
 
-  <h4>커스텀 액션</h4>
+  <h4 data-en="Custom Actions">커스텀 액션</h4>
 <pre><span class="c">// UIKit</span>
 cell.accessibilityCustomActions = [
     UIAccessibilityCustomAction(name: <span class="s">"답장"</span>) { _ <span class="k">in</span> reply(); <span class="k">return</span> <span class="k">true</span> },
@@ -527,7 +537,7 @@ MessageRow(message)
     .accessibilityAction(.magicTap) { togglePlayback() }
 </pre>
 
-  <h4>포커스 제어 (SwiftUI)</h4>
+  <h4 data-en="Focus Control (SwiftUI)">포커스 제어 (SwiftUI)</h4>
 <pre><span class="k">@AccessibilityFocusState</span> <span class="k">private</span> <span class="k">var</span> isErrorFocused: Bool
 
 VStack {
@@ -536,20 +546,20 @@ VStack {
     }
 }.onChange(of: showError) { _, v <span class="k">in</span> <span class="k">if</span> v { isErrorFocused = <span class="k">true</span> } }
 </pre>
-  <div class="callout tip"><strong>Tip</strong>스와이프 액션이 있는 셀에는 반드시 같은 동작을 <code>accessibilityCustomActions</code>로도 제공해야 한다. 그렇지 않으면 VoiceOver 사용자는 그 기능에 접근할 수 없다.</div>
+  <div class="callout tip" data-en="<strong>Tip</strong>Cells with swipe actions must also expose the same actions via <code>accessibilityCustomActions</code>. Otherwise VoiceOver users cannot access those features."><strong>Tip</strong>스와이프 액션이 있는 셀에는 반드시 같은 동작을 <code>accessibilityCustomActions</code>로도 제공해야 한다. 그렇지 않으면 VoiceOver 사용자는 그 기능에 접근할 수 없다.</div>
 </section>
 
 <section id="magnifier">
   <h3>Magnifier</h3>
   <div class="avail"><span>iOS 10+</span></div>
-  <p>카메라로 피사체를 크게 보는 시스템 앱. 서드파티가 직접 호출할 수 있는 API는 없다. <code>UIActivityViewController</code>로 이미지를 공유하면 사용자가 Magnifier에서 열 수 있다.</p>
-  <div class="callout note"><strong>개발자 할 일</strong>앱 내 이미지·텍스트는 @3x 고해상도를 유지한다. Magnifier가 확대했을 때 픽셀이 깨지지 않아야 한다.</div>
+  <p data-en="System app that magnifies subjects via the camera. No API for third-party apps to invoke directly. Users can open images in Magnifier via <code>UIActivityViewController</code>.">카메라로 피사체를 크게 보는 시스템 앱. 서드파티가 직접 호출할 수 있는 API는 없다. <code>UIActivityViewController</code>로 이미지를 공유하면 사용자가 Magnifier에서 열 수 있다.</p>
+  <div class="callout note" data-en="<strong>Developer Task</strong>Keep in-app images and text at @3x high resolution. Pixels must not break apart when Magnifier zooms in."><strong>개발자 할 일</strong>앱 내 이미지·텍스트는 @3x 고해상도를 유지한다. Magnifier가 확대했을 때 픽셀이 깨지지 않아야 한다.</div>
 </section>
 
 <section id="braille-access">
   <h3>Braille Access</h3>
   <div class="avail"><span>iOS 10+</span><span>macOS</span></div>
-  <p>MFi 점자 디스플레이 연동. 별도 SDK 없이 VoiceOver가 브리지 역할을 한다. 개발자는 <code>accessibilityAttributedLabel</code>에 <code>UIAccessibilitySpeechAttributeIPANotation</code>을 설정해 점자 변환 힌트를 줄 수 있다.</p>
+  <p data-en="Integration with MFi Braille displays. VoiceOver bridges without a separate SDK. Developers can set <code>UIAccessibilitySpeechAttributeIPANotation</code> on <code>accessibilityAttributedLabel</code> to provide Braille conversion hints.">MFi 점자 디스플레이 연동. 별도 SDK 없이 VoiceOver가 브리지 역할을 한다. 개발자는 <code>accessibilityAttributedLabel</code>에 <code>UIAccessibilitySpeechAttributeIPANotation</code>을 설정해 점자 변환 힌트를 줄 수 있다.</p>
 <pre><span class="k">var</span> attrs = AttributedString(<span class="s">"Mgmt"</span>)
 attrs[attrs.startIndex...].accessibilityTextCustom = <span class="s">"Management"</span>   <span class="c">// 점자 전개</span>
 label.accessibilityAttributedLabel = NSAttributedString(attrs)
@@ -559,21 +569,21 @@ label.accessibilityAttributedLabel = NSAttributedString(attrs)
 <section id="accessibility-reader">
   <h3>Accessibility Reader</h3>
   <div class="avail"><span>iOS 18+</span><span>iPadOS 18+</span></div>
-  <p>화면의 어느 텍스트든 읽어주는 시스템 읽기 모드. 별도 API 없이 앱의 시맨틱 구조(헤딩 트레잇, 논리적 읽기 순서)가 좋으면 더 잘 작동한다.</p>
-  <div class="callout note"><strong>개발자 할 일</strong><code>.accessibilityHeading(.h1)</code> 등 헤딩 트레잇을 올바르게 지정하고, <code>accessibilityElements</code> 순서가 읽기 흐름과 일치하도록 한다.</div>
+  <p data-en="System reading mode that reads any text on screen. No separate API — a good semantic structure (heading traits, logical reading order) makes it work better.">화면의 어느 텍스트든 읽어주는 시스템 읽기 모드. 별도 API 없이 앱의 시맨틱 구조(헤딩 트레잇, 논리적 읽기 순서)가 좋으면 더 잘 작동한다.</p>
+  <div class="callout note" data-en="<strong>Developer Task</strong>Correctly specify heading traits such as <code>.accessibilityHeading(.h1)</code>, and ensure <code>accessibilityElements</code> order matches the reading flow."><strong>개발자 할 일</strong><code>.accessibilityHeading(.h1)</code> 등 헤딩 트레잇을 올바르게 지정하고, <code>accessibilityElements</code> 순서가 읽기 흐름과 일치하도록 한다.</div>
 </section>
 
 <section id="read-speak">
   <h3>Read &amp; Speak settings</h3>
   <div class="avail"><span>iOS 8+</span></div>
-  <p>Speak Screen · Speak Selection · Typing Feedback 등 시스템 음성 읽기 설정. 앱 내 텍스트 발음을 세밀하게 제어할 때 SwiftUI Speech 모디파이어를 사용한다.</p>
+  <p data-en="System speech settings including Speak Screen, Speak Selection, and Typing Feedback. Use SwiftUI Speech modifiers for fine-grained control over in-app text pronunciation.">Speak Screen · Speak Selection · Typing Feedback 등 시스템 음성 읽기 설정. 앱 내 텍스트 발음을 세밀하게 제어할 때 SwiftUI Speech 모디파이어를 사용한다.</p>
   <table>
-    <thead><tr><th>Modifier</th><th>효과</th></tr></thead>
+    <thead><tr><th>Modifier</th><th data-en="Effect">효과</th></tr></thead>
     <tbody>
-      <tr><td><code>.speechSpellsOutCharacters()</code></td><td>한 글자씩 발음 (비밀번호 등)</td></tr>
-      <tr><td><code>.speechAlwaysIncludesPunctuation()</code></td><td>구두점도 읽음</td></tr>
-      <tr><td><code>.speechAdjustedPitch(_ pitch: Double)</code></td><td>피치 조정 (0.0–2.0)</td></tr>
-      <tr><td><code>.speechAnnouncementsQueued()</code></td><td>알림을 큐로 처리 (겹침 방지)</td></tr>
+      <tr><td><code>.speechSpellsOutCharacters()</code></td><td data-en="Spell out characters one by one (passwords, etc.)">한 글자씩 발음 (비밀번호 등)</td></tr>
+      <tr><td><code>.speechAlwaysIncludesPunctuation()</code></td><td data-en="Read punctuation aloud">구두점도 읽음</td></tr>
+      <tr><td><code>.speechAdjustedPitch(_ pitch: Double)</code></td><td data-en="Adjust pitch (0.0–2.0)">피치 조정 (0.0–2.0)</td></tr>
+      <tr><td><code>.speechAnnouncementsQueued()</code></td><td data-en="Queue announcements (prevent overlap)">알림을 큐로 처리 (겹침 방지)</td></tr>
     </tbody>
   </table>
 <pre><span class="c">// 상태 조회</span>
@@ -585,7 +595,7 @@ UIAccessibility.isSpeakSelectionEnabled
 <section id="display-text-size">
   <h3>Display settings &amp; Text Size</h3>
   <div class="avail"><span>iOS 7+</span></div>
-  <p>Dynamic Type (7단계 일반 + 5단계 접근성), Bold Text, Increase Contrast, Smart Invert Colors, Grayscale. 앱이 이 설정들을 모두 존중해야 한다.</p>
+  <p data-en="Dynamic Type (7 regular + 5 accessibility sizes), Bold Text, Increase Contrast, Smart Invert Colors, Grayscale. Your app must respect all of these settings.">Dynamic Type (7단계 일반 + 5단계 접근성), Bold Text, Increase Contrast, Smart Invert Colors, Grayscale. 앱이 이 설정들을 모두 존중해야 한다.</p>
 
   <h4>Dynamic Type — UIKit</h4>
 <pre>label.font = UIFont.preferredFont(forTextStyle: .body)
@@ -620,19 +630,19 @@ UIAccessibility.isGrayscaleEnabled
 <span class="c">// 사진 등 색반전 제외</span>
 Image(<span class="s">"photo"</span>).accessibilityIgnoresInvertColors(<span class="k">true</span>)
 </pre>
-  <div class="callout tip"><strong>Tip</strong>접근성 크기(<code>.accessibilityMedium</code>~<code>.accessibility5</code>)에서는 가로 레이아웃을 세로로 전환하는 게 정답일 때가 많다. <code>ViewThatFits</code> 또는 <code>typeSize.isAccessibilitySize</code> 분기로 대응한다.</div>
+  <div class="callout tip" data-en="<strong>Tip</strong>At accessibility sizes (<code>.accessibilityMedium</code>~<code>.accessibility5</code>), switching from horizontal to vertical layout is often the right answer. Handle it with <code>ViewThatFits</code> or the <code>typeSize.isAccessibilitySize</code> branch."><strong>Tip</strong>접근성 크기(<code>.accessibilityMedium</code>~<code>.accessibility5</code>)에서는 가로 레이아웃을 세로로 전환하는 게 정답일 때가 많다. <code>ViewThatFits</code> 또는 <code>typeSize.isAccessibilitySize</code> 분기로 대응한다.</div>
 </section>
 
 <section id="vehicle-motion-cues">
   <h3>Vehicle Motion Cues</h3>
   <div class="avail"><span>iOS 17.4+</span></div>
-  <p>차량 이동 중 멀미를 줄이기 위해 화면 가장자리에 애니메이션 점을 표시하는 시스템 기능. 별도 개발자 API 없음. 앱이 <code>accessibilityReduceMotion</code>을 이미 존중하고 있다면 자동으로 조화를 이룬다.</p>
+  <p data-en="System feature that displays animated dots at screen edges to reduce motion sickness while in a vehicle. No separate developer API. If your app already respects <code>accessibilityReduceMotion</code>, it works harmoniously automatically.">차량 이동 중 멀미를 줄이기 위해 화면 가장자리에 애니메이션 점을 표시하는 시스템 기능. 별도 개발자 API 없음. 앱이 <code>accessibilityReduceMotion</code>을 이미 존중하고 있다면 자동으로 조화를 이룬다.</p>
 </section>
 
 <section id="motion-settings">
   <h3>Motion settings</h3>
   <div class="avail"><span>iOS 7+</span></div>
-  <p>Reduce Motion, Cross-Fade Transitions. 모션 민감 사용자를 위해 앱의 애니메이션을 비활성화하거나 대체한다.</p>
+  <p data-en="Reduce Motion, Cross-Fade Transitions. Disable or substitute app animations for motion-sensitive users.">Reduce Motion, Cross-Fade Transitions. 모션 민감 사용자를 위해 앱의 애니메이션을 비활성화하거나 대체한다.</p>
 <pre><span class="c">// UIKit</span>
 UIAccessibility.isReduceMotionEnabled
 UIAccessibility.prefersCrossFadeTransitions
@@ -645,13 +655,13 @@ Image(<span class="s">"hero"</span>)
     .scaleEffect(scale)
     .animation(reduceMotion ? <span class="k">nil</span> : .spring(duration: <span class="n">0.4</span>), value: scale)
 </pre>
-  <div class="callout warn"><strong>주의</strong>Lottie 등 서드파티 애니메이션 라이브러리는 Reduce Motion을 자동 감지하지 않는다. 직접 분기 처리해야 한다.</div>
+  <div class="callout warn" data-en="<strong>Warning</strong>Third-party animation libraries like Lottie do not automatically detect Reduce Motion. You must handle the branching yourself."><strong>주의</strong>Lottie 등 서드파티 애니메이션 라이브러리는 Reduce Motion을 자동 감지하지 않는다. 직접 분기 처리해야 한다.</div>
 </section>
 
 <section id="zoom">
   <h3>Zoom</h3>
   <div class="avail"><span>iOS 5+</span><span>macOS</span></div>
-  <p>화면 전체 또는 창 단위로 확대하는 시스템 줌. 개발자가 직접 제어할 API는 없으나, 탭 바나 커스텀 버튼처럼 작은 텍스트가 있는 곳에 <strong>Large Content Viewer</strong>를 구현하면 Zoom과 함께 사용하는 사용자 경험이 향상된다.</p>
+  <p data-en="System zoom that magnifies the entire screen or per-window. No API for developers to control directly. Implementing <strong>Large Content Viewer</strong> for small-text areas like tab bars and custom buttons enhances the experience for users who combine Zoom with those controls.">화면 전체 또는 창 단위로 확대하는 시스템 줌. 개발자가 직접 제어할 API는 없으나, 탭 바나 커스텀 버튼처럼 작은 텍스트가 있는 곳에 <strong>Large Content Viewer</strong>를 구현하면 Zoom과 함께 사용하는 사용자 경험이 향상된다.</p>
 
   <h4>Large Content Viewer — UIKit</h4>
 <pre>button.showsLargeContentViewer = <span class="k">true</span>
@@ -670,13 +680,13 @@ Image(systemName: <span class="s">"star"</span>)
         Label(<span class="s">"즐겨찾기"</span>, systemImage: <span class="s">"star.fill"</span>)
     }
 </pre>
-  <div class="callout note"><strong>적용 대상</strong>시스템이 Large Content Viewer를 자동 처리하는 표준 컨트롤(<code>UITabBar</code>, <code>UIToolbar</code> 등)은 별도 구현 불필요. 커스텀 탭바·툴바에만 적용한다.</div>
+  <div class="callout note" data-en="<strong>Applies To</strong>Standard controls where the system handles Large Content Viewer automatically (<code>UITabBar</code>, <code>UIToolbar</code>, etc.) need no separate implementation. Apply only to custom tab bars and toolbars."><strong>적용 대상</strong>시스템이 Large Content Viewer를 자동 처리하는 표준 컨트롤(<code>UITabBar</code>, <code>UIToolbar</code> 등)은 별도 구현 불필요. 커스텀 탭바·툴바에만 적용한다.</div>
 </section>
 
 <section id="hover-settings">
   <h3>Hover settings</h3>
   <div class="avail"><span>iPadOS 13.4+</span><span>Mac Catalyst</span><span>macOS</span></div>
-  <p>포인터(마우스·트랙패드·Apple Pencil Hover)에 반응하는 UI. Hover Typing은 iPad를 세워 놓고 트랙패드로 타이핑할 때 텍스트 커서 위 확대 뷰를 보여주는 시스템 기능으로, 별도 API 없음.</p>
+  <p data-en="UI that responds to the pointer (mouse, trackpad, Apple Pencil Hover). Hover Typing is a system feature that shows an enlarged view above the text cursor when typing on a propped-up iPad with a trackpad — no separate API.">포인터(마우스·트랙패드·Apple Pencil Hover)에 반응하는 UI. Hover Typing은 iPad를 세워 놓고 트랙패드로 타이핑할 때 텍스트 커서 위 확대 뷰를 보여주는 시스템 기능으로, 별도 API 없음.</p>
 
   <h4>UIHoverGestureRecognizer (UIKit)</h4>
 <pre><span class="k">let</span> hover = UIHoverGestureRecognizer(target: <span class="k">self</span>, action: #selector(handleHover))
@@ -698,13 +708,13 @@ view.addGestureRecognizer(hover)
 
 <section id="iwork">
   <h3>iWork</h3>
-  <p>Pages · Numbers · Keynote 내 접근성 기능 (스크린 리더 지원, 대체 텍스트 등). Apple 내부 앱에 해당하므로 서드파티 개발자가 직접 호출할 API 없음.</p>
+  <p data-en="Accessibility features inside Pages, Numbers, and Keynote (screen reader support, alternative text, etc.). These are Apple internal apps; no API for third-party developers to invoke directly.">Pages · Numbers · Keynote 내 접근성 기능 (스크린 리더 지원, 대체 텍스트 등). Apple 내부 앱에 해당하므로 서드파티 개발자가 직접 호출할 API 없음.</p>
 </section>
 
 <section id="audio-descriptions">
   <h3>Audio Descriptions</h3>
   <div class="avail"><span>iOS 5+</span><span>tvOS</span></div>
-  <p>영상 속 시각 정보를 음성으로 설명하는 오디오 트랙. AVKit이 자동으로 선택해 주므로, 미디어 파일에 오디오 설명 트랙이 포함되어 있으면 된다.</p>
+  <p data-en="An audio track that narrates visual information in a video. AVKit selects it automatically, so you just need to include an audio description track in the media file.">영상 속 시각 정보를 음성으로 설명하는 오디오 트랙. AVKit이 자동으로 선택해 주므로, 미디어 파일에 오디오 설명 트랙이 포함되어 있으면 된다.</p>
 <pre><span class="k">import</span> AVFoundation
 
 <span class="c">// 오디오 설명 트랙 존재 여부 확인</span>
@@ -718,13 +728,13 @@ view.addGestureRecognizer(hover)
 )
 <span class="c">// adOptions가 비어있지 않으면 오디오 설명 트랙 있음</span>
 </pre>
-  <div class="callout note"><strong>콘텐츠 제작</strong><code>AVMediaCharacteristicDescribesVideoForAccessibility</code> 특성을 가진 오디오 트랙을 포함시키면 시스템이 자동 감지한다. AVPlayerViewController는 Audio Descriptions 설정이 켜져 있으면 해당 트랙을 자동 선택한다.</div>
+  <div class="callout note" data-en="<strong>Content Authoring</strong>Include an audio track with the <code>AVMediaCharacteristicDescribesVideoForAccessibility</code> characteristic and the system detects it automatically. AVPlayerViewController auto-selects that track when Audio Descriptions is enabled."><strong>콘텐츠 제작</strong><code>AVMediaCharacteristicDescribesVideoForAccessibility</code> 특성을 가진 오디오 트랙을 포함시키면 시스템이 자동 감지한다. AVPlayerViewController는 Audio Descriptions 설정이 켜져 있으면 해당 트랙을 자동 선택한다.</div>
 </section>
 
 <section id="quickly-toggle">
   <h3>Quickly Toggle Settings</h3>
   <div class="avail"><span>iOS</span><span>macOS</span></div>
-  <p>사이드 버튼 3회 탭으로 VoiceOver · Zoom · AssistiveTouch 등을 켜고 끄는 Accessibility Shortcut. 앱이 직접 제어할 API 없음. 다만 접근성 기능이 토글될 때 앱이 적절히 반응하려면 <code>...DidChangeNotification</code>을 구독해야 한다.</p>
+  <p data-en="Accessibility Shortcut that toggles VoiceOver, Zoom, AssistiveTouch, etc. with 3 taps of the side button. No API for direct app control. However, subscribe to <code>...DidChangeNotification</code> to react appropriately when an accessibility feature is toggled.">사이드 버튼 3회 탭으로 VoiceOver · Zoom · AssistiveTouch 등을 켜고 끄는 Accessibility Shortcut. 앱이 직접 제어할 API 없음. 다만 접근성 기능이 토글될 때 앱이 적절히 반응하려면 <code>...DidChangeNotification</code>을 구독해야 한다.</p>
 <pre>NotificationCenter.default.addObserver(
     forName: UIAccessibility.voiceOverStatusDidChangeNotification,
     object: <span class="k">nil</span>, queue: .main
@@ -737,7 +747,7 @@ view.addGestureRecognizer(hover)
 <section id="shortcuts-app">
   <h3>Shortcuts app</h3>
   <div class="avail"><span>iOS 13+</span><span>macOS 12+</span></div>
-  <p>사용자가 앱 기능을 자동화하거나 Siri로 실행할 수 있게 해주는 App Intents 프레임워크. Vocal Shortcuts의 기반이기도 하다.</p>
+  <p data-en="The App Intents framework that lets users automate app features or run them with Siri. Also the foundation for Vocal Shortcuts.">사용자가 앱 기능을 자동화하거나 Siri로 실행할 수 있게 해주는 App Intents 프레임워크. Vocal Shortcuts의 기반이기도 하다.</p>
 <pre><span class="k">import</span> AppIntents
 
 <span class="k">struct</span> OpenFavorites: AppIntent {
@@ -760,13 +770,13 @@ view.addGestureRecognizer(hover)
 <section id="share-settings">
   <h3>Share Accessibility Settings</h3>
   <div class="avail"><span>iOS 17+</span></div>
-  <p>iCloud를 통해 접근성 설정을 여러 기기에서 동기화하는 시스템 기능. 개발자 API 없음. 앱은 시스템 설정을 읽는 기존 방법으로 자연스럽게 동작한다.</p>
+  <p data-en="System feature that syncs accessibility settings across devices via iCloud. No developer API. Apps naturally work using the existing way of reading system settings.">iCloud를 통해 접근성 설정을 여러 기기에서 동기화하는 시스템 기능. 개발자 API 없음. 앱은 시스템 설정을 읽는 기존 방법으로 자연스럽게 동작한다.</p>
 </section>
 
 <section id="sensory-alerts">
   <h3>Sensory Alerts</h3>
   <div class="avail"><span>iOS</span><span>macOS</span></div>
-  <p>청각 장애 사용자를 위해 알림을 LED 플래시·화면 깜빡임으로 전달하는 시스템 기능. 앱이 직접 제어할 수 없고, 시스템 알림(푸시, 전화)에 자동 적용된다. 앱 내 자체 진동/사운드는 아래로 구현한다.</p>
+  <p data-en="System feature that delivers notifications via LED flash or screen flash for users with hearing impairments. Apps cannot control it directly; it applies automatically to system notifications (push, calls). Implement your own in-app vibration/sounds as shown below.">청각 장애 사용자를 위해 알림을 LED 플래시·화면 깜빡임으로 전달하는 시스템 기능. 앱이 직접 제어할 수 없고, 시스템 알림(푸시, 전화)에 자동 적용된다. 앱 내 자체 진동/사운드는 아래로 구현한다.</p>
 <pre><span class="k">import</span> AudioToolbox
 AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)   <span class="c">// 햅틱</span>
 AudioServicesPlayAlertSound(SystemSoundID(<span class="n">1322</span>))       <span class="c">// 알림음</span>
@@ -785,13 +795,13 @@ AudioServicesPlayAlertSound(SystemSoundID(<span class="n">1322</span>))       <s
 <div class="cat-section">
 <section id="hearing-intro">
   <h2><span class="cat-h2 hearing">Hearing</span></h2>
-  <p class="section-lede">청각 관련 14가지 기능. Music Haptics · SoundAnalysis · Closed Captions가 직접 API를 제공한다.</p>
+  <p class="section-lede" data-en="14 hearing-related features. Music Haptics, SoundAnalysis, and Closed Captions provide direct APIs.">청각 관련 14가지 기능. Music Haptics · SoundAnalysis · Closed Captions가 직접 API를 제공한다.</p>
 </section>
 
 <section id="hearing-health">
   <h3>Hearing Health</h3>
   <div class="avail"><span>iOS 18+</span><span>watchOS 11+</span></div>
-  <p>헤드폰 청력 손상 위험 측정, 오디오그램 관리. 미디어 앱은 <code>AVAudioSession</code> 설정으로 헤드폰 레벨 관리에 기여한다.</p>
+  <p data-en="Measures headphone hearing damage risk and manages audiograms. Media apps contribute to headphone level management through <code>AVAudioSession</code> configuration.">헤드폰 청력 손상 위험 측정, 오디오그램 관리. 미디어 앱은 <code>AVAudioSession</code> 설정으로 헤드폰 레벨 관리에 기여한다.</p>
 <pre><span class="k">import</span> AVFoundation
 
 <span class="c">// 재생 세션 설정 (적절한 카테고리는 헤드폰 레벨 측정에 영향)</span>
@@ -809,7 +819,7 @@ AudioServicesPlayAlertSound(SystemSoundID(<span class="n">1322</span>))       <s
 <section id="mfi-hearing">
   <h3>Made for iPhone hearing devices</h3>
   <div class="avail"><span>iOS 7+</span></div>
-  <p>MFi 인증 보청기와 iPhone의 직접 연동. 서드파티 앱이 보청기 스트리밍을 직접 제어하는 API는 없으나, <code>AVAudioSession</code>으로 입력 경로를 확인하고 <code>ExternalAccessory</code> 프레임워크로 MFi 액세서리를 감지할 수 있다.</p>
+  <p data-en="Direct pairing between MFi-certified hearing devices and iPhone. No API for third-party apps to control hearing device streaming directly, but you can check the input path with <code>AVAudioSession</code> and detect MFi accessories via the <code>ExternalAccessory</code> framework.">MFi 인증 보청기와 iPhone의 직접 연동. 서드파티 앱이 보청기 스트리밍을 직접 제어하는 API는 없으나, <code>AVAudioSession</code>으로 입력 경로를 확인하고 <code>ExternalAccessory</code> 프레임워크로 MFi 액세서리를 감지할 수 있다.</p>
 <pre><span class="k">import</span> ExternalAccessory
 
 <span class="k">let</span> manager = EAAccessoryManager.shared()
@@ -828,7 +838,7 @@ NotificationCenter.default.addObserver(
 <section id="music-haptics">
   <h3>Music Haptics</h3>
   <div class="avail"><span>iOS 18+</span></div>
-  <p>음악에 맞춰 진동으로 음악을 느끼게 해주는 기능. 자체 음악 플레이어 앱에서 MusicHapticsManager API로 동일 경험을 제공할 수 있다.</p>
+  <p data-en="Feature that lets users feel music through vibrations synced to the audio. Custom music player apps can deliver the same experience via the MusicHapticsManager API.">음악에 맞춰 진동으로 음악을 느끼게 해주는 기능. 자체 음악 플레이어 앱에서 MusicHapticsManager API로 동일 경험을 제공할 수 있다.</p>
 <pre><span class="k">import</span> MusicHaptics
 
 Task {
@@ -840,13 +850,13 @@ Task {
     }
 }
 </pre>
-  <p>모드는 <code>.full</code>·<code>.vocalsOnly</code>, 강도는 0~1. 사용자가 시스템 설정에서 글로벌 강도를 조정할 수 있다.</p>
+  <p data-en="Modes are <code>.full</code> and <code>.vocalsOnly</code>; intensity is 0–1. Users can adjust the global intensity in system settings.">모드는 <code>.full</code>·<code>.vocalsOnly</code>, 강도는 0~1. 사용자가 시스템 설정에서 글로벌 강도를 조정할 수 있다.</p>
 </section>
 
 <section id="audio-settings">
   <h3>Audio settings</h3>
   <div class="avail"><span>iOS</span><span>macOS</span></div>
-  <p>Mono Audio (스테레오를 한 채널로), 좌우 Balance, Headphone Accommodations 등. 앱은 이 설정이 켜진 상태에서도 자연스럽게 동작해야 한다.</p>
+  <p data-en="Mono Audio (stereo down-mixed to one channel), left/right Balance, Headphone Accommodations, etc. Your app must work naturally with these settings enabled.">Mono Audio (스테레오를 한 채널로), 좌우 Balance, Headphone Accommodations 등. 앱은 이 설정이 켜진 상태에서도 자연스럽게 동작해야 한다.</p>
 <pre><span class="c">// 상태 조회</span>
 UIAccessibility.isMonoAudioEnabled
 
@@ -865,7 +875,7 @@ NotificationCenter.default.addObserver(
 <section id="sound-recognition">
   <h3>Sound &amp; Name Recognition</h3>
   <div class="avail"><span>iOS 14+</span></div>
-  <p>환경음(화재 경보, 아기 울음소리 등)과 사용자 이름 부름 감지. 시스템 기능이지만, 앱이 직접 환경음 분류를 구현할 때도 같은 <code>SoundAnalysis</code> 프레임워크를 사용한다.</p>
+  <p data-en="Detects ambient sounds (fire alarms, baby crying, etc.) and the user's name being called. A system feature, but apps can use the same <code>SoundAnalysis</code> framework to implement their own sound classification.">환경음(화재 경보, 아기 울음소리 등)과 사용자 이름 부름 감지. 시스템 기능이지만, 앱이 직접 환경음 분류를 구현할 때도 같은 <code>SoundAnalysis</code> 프레임워크를 사용한다.</p>
 <pre><span class="k">import</span> SoundAnalysis
 
 <span class="k">let</span> analyzer = SNAudioStreamAnalyzer(format: audioFormat)
@@ -887,24 +897,24 @@ NotificationCenter.default.addObserver(
 <section id="facetime">
   <h3>FaceTime</h3>
   <div class="avail"><span>iOS</span><span>macOS</span></div>
-  <p>Sign Language Prominence — 수화를 사용하는 참가자의 화면을 자동으로 크게 표시하는 Apple 시스템 기능. FaceTime 앱 전용이며 서드파티 화상통화 앱에는 적용되지 않는다. 자체 화상통화 앱을 개발하는 경우, 동작 감지 기반으로 활발하게 움직이는 참가자를 강조 표시하는 로직을 직접 구현할 수 있다.</p>
+  <p data-en="Sign Language Prominence — an Apple system feature that automatically enlarges the view of participants using sign language. Exclusive to the FaceTime app; does not apply to third-party video-calling apps. If building your own video-calling app, you can implement your own logic to highlight the most active participant based on motion detection.">Sign Language Prominence — 수화를 사용하는 참가자의 화면을 자동으로 크게 표시하는 Apple 시스템 기능. FaceTime 앱 전용이며 서드파티 화상통화 앱에는 적용되지 않는다. 자체 화상통화 앱을 개발하는 경우, 동작 감지 기반으로 활발하게 움직이는 참가자를 강조 표시하는 로직을 직접 구현할 수 있다.</p>
 </section>
 
 <section id="live-listen">
   <h3>Live Listen</h3>
   <div class="avail"><span>iOS 12+</span></div>
-  <p>iPhone을 마이크로 사용해 MFi 보청기로 증폭 스트리밍. 시스템 기능이며 서드파티 API 없음. 앱의 <code>AVAudioSession</code> 설정이 Live Listen 스트림을 방해하지 않도록 <code>.allowBluetooth</code> 옵션을 적절히 설정한다.</p>
+  <p data-en="Uses iPhone as a microphone to stream amplified audio to MFi hearing devices. A system feature with no third-party API. Set the <code>.allowBluetooth</code> option on your app's <code>AVAudioSession</code> so it doesn't interfere with the Live Listen stream.">iPhone을 마이크로 사용해 MFi 보청기로 증폭 스트리밍. 시스템 기능이며 서드파티 API 없음. 앱의 <code>AVAudioSession</code> 설정이 Live Listen 스트림을 방해하지 않도록 <code>.allowBluetooth</code> 옵션을 적절히 설정한다.</p>
 </section>
 
 <section id="sensory-alerts-hearing">
   <h3>Sensory Alerts</h3>
-  <div class="xref">→ Vision 섹션 <a href="#sensory-alerts">Sensory Alerts</a> 참고</div>
+  <div class="xref" data-en="→ See Vision section <a href=&quot;#sensory-alerts&quot;>Sensory Alerts</a>">→ Vision 섹션 <a href="#sensory-alerts">Sensory Alerts</a> 참고</div>
 </section>
 
 <section id="rtt">
   <h3>Real-Time Text (RTT)</h3>
   <div class="avail"><span>iOS 10+</span></div>
-  <p>통화 중 텍스트를 실시간으로 전송하는 표준. 시스템 전화 앱에 내장되어 있으며 서드파티가 직접 RTT 세션을 열 수 있는 공개 API는 없다. 자체 통신 앱은 <code>CallKit</code>을 통해 RTT 지원 여부를 표시할 수 있다.</p>
+  <p data-en="Standard for transmitting text in real time during a call. Built into the system Phone app; no public API for third parties to open an RTT session directly. Custom communication apps can indicate RTT support via <code>CallKit</code>.">통화 중 텍스트를 실시간으로 전송하는 표준. 시스템 전화 앱에 내장되어 있으며 서드파티가 직접 RTT 세션을 열 수 있는 공개 API는 없다. 자체 통신 앱은 <code>CallKit</code>을 통해 RTT 지원 여부를 표시할 수 있다.</p>
 <pre><span class="k">import</span> CallKit
 
 <span class="k">let</span> callUpdate = CXCallUpdate()
@@ -918,7 +928,7 @@ provider.reportCall(with: uuid, updated: callUpdate)
 <section id="closed-captions">
   <h3>Closed Captions</h3>
   <div class="avail"><span>iOS 7+</span><span>tvOS</span><span>macOS</span></div>
-  <p>영상에 자막 트랙 제공. <code>AVPlayerViewController</code>는 자막 트랙이 있으면 자동으로 CC 버튼을 표시한다.</p>
+  <p data-en="Provide a caption track for video. <code>AVPlayerViewController</code> automatically shows a CC button when a caption track is present.">영상에 자막 트랙 제공. <code>AVPlayerViewController</code>는 자막 트랙이 있으면 자동으로 CC 버튼을 표시한다.</p>
 <pre><span class="k">import</span> AVFoundation
 <span class="k">import</span> MediaAccessibility
 
@@ -941,7 +951,7 @@ UIAccessibility.isClosedCaptioningEnabled
 <section id="transcriptions">
   <h3>Transcriptions</h3>
   <div class="avail"><span>iOS 10+</span></div>
-  <p>음성을 텍스트로 변환. <code>SFSpeechRecognizer</code>를 사용해 실시간 또는 파일 기반 변환을 구현한다.</p>
+  <p data-en="Convert speech to text. Use <code>SFSpeechRecognizer</code> to implement real-time or file-based transcription.">음성을 텍스트로 변환. <code>SFSpeechRecognizer</code>를 사용해 실시간 또는 파일 기반 변환을 구현한다.</p>
 <pre><span class="k">import</span> Speech
 
 SFSpeechRecognizer.requestAuthorization { _ <span class="k">in</span> }
@@ -962,7 +972,7 @@ recognizer.recognitionTask(with: request) { result, error <span class="k">in</sp
 <section id="noise-app">
   <h3>Noise app</h3>
   <div class="avail"><span>watchOS 6+</span></div>
-  <p>주변 소음 측정 시스템 앱. Apple Watch 전용이며 서드파티 API 없음. 소음 노출 데이터는 HealthKit <code>HKQuantityType.environmentalAudioExposure</code>로 읽을 수 있다.</p>
+  <p data-en="System app that measures ambient noise. Apple Watch only; no third-party API. Noise exposure data can be read via HealthKit <code>HKQuantityType.environmentalAudioExposure</code>.">주변 소음 측정 시스템 앱. Apple Watch 전용이며 서드파티 API 없음. 소음 노출 데이터는 HealthKit <code>HKQuantityType.environmentalAudioExposure</code>로 읽을 수 있다.</p>
 <pre><span class="k">import</span> HealthKit
 <span class="k">let</span> noiseType = HKQuantityType(.environmentalAudioExposure)
 <span class="k">let</span> store = HKHealthStore()
@@ -973,13 +983,13 @@ recognizer.recognitionTask(with: request) { result, error <span class="k">in</sp
 <section id="live-captions">
   <h3>Live Captions</h3>
   <div class="avail"><span>iOS 16+</span><span>macOS 13+</span></div>
-  <p>기기에서 재생되는 모든 오디오를 실시간으로 자막 표시. 시스템 레벨 기능이므로 앱이 별도 구현 없이 자동 적용된다. 앱 오디오 품질(노이즈 제거, 충분한 볼륨)이 자막 정확도에 영향을 준다.</p>
+  <p data-en="Real-time captions for all audio playing on the device. A system-level feature applied automatically with no implementation required by apps. App audio quality (noise reduction, sufficient volume) affects caption accuracy.">기기에서 재생되는 모든 오디오를 실시간으로 자막 표시. 시스템 레벨 기능이므로 앱이 별도 구현 없이 자동 적용된다. 앱 오디오 품질(노이즈 제거, 충분한 볼륨)이 자막 정확도에 영향을 준다.</p>
 </section>
 
 <section id="background-sounds">
   <h3>Background Sounds</h3>
   <div class="avail"><span>iOS 15+</span></div>
-  <p>집중·수면을 돕는 배경 소음(빗소리, 화이트노이즈 등) 시스템 재생. 앱이 직접 제어할 API 없음. 앱의 <code>AVAudioSession</code> 카테고리를 <code>.ambient</code>나 <code>.playback</code> with <code>.mixWithOthers</code>로 설정하면 Background Sounds와 공존한다.</p>
+  <p data-en="System playback of background sounds (rain, white noise, etc.) to aid focus and sleep. No API for apps to control directly. Setting your app's <code>AVAudioSession</code> category to <code>.ambient</code> or <code>.playback</code> with <code>.mixWithOthers</code> allows coexistence with Background Sounds.">집중·수면을 돕는 배경 소음(빗소리, 화이트노이즈 등) 시스템 재생. 앱이 직접 제어할 API 없음. 앱의 <code>AVAudioSession</code> 카테고리를 <code>.ambient</code>나 <code>.playback</code> with <code>.mixWithOthers</code>로 설정하면 Background Sounds와 공존한다.</p>
 <pre><span class="k">try</span> AVAudioSession.sharedInstance().setCategory(
     .playback,
     options: [.mixWithOthers]   <span class="c">// Background Sounds와 공존</span>
@@ -995,13 +1005,13 @@ recognizer.recognitionTask(with: request) { result, error <span class="k">in</sp
 <div class="cat-section">
 <section id="mobility-intro">
   <h2><span class="cat-h2 mobility">Mobility</span></h2>
-  <p class="section-lede">이동성 관련 11가지 기능. Voice Control의 레이블 API, Switch Control의 상태 쿼리, 키보드 포커스 API가 핵심이다.</p>
+  <p class="section-lede" data-en="11 mobility-related features. The label API for Voice Control, status query for Switch Control, and the keyboard focus API are the core pieces.">이동성 관련 11가지 기능. Voice Control의 레이블 API, Switch Control의 상태 쿼리, 키보드 포커스 API가 핵심이다.</p>
 </section>
 
 <section id="voice-control">
   <h3>Voice Control</h3>
   <div class="avail"><span>iOS 13+</span><span>macOS 10.15+</span></div>
-  <p>음성 명령으로 앱 전체를 조작. "Show Names" 오버레이에 표시되는 이름이 <code>accessibilityLabel</code>이다. 레이블이 화면 텍스트와 다를 때는 <code>accessibilityInputLabels</code>로 후보를 명시한다.</p>
+  <p data-en="Control the entire app by voice commands. The name shown in the &quot;Show Names&quot; overlay is the <code>accessibilityLabel</code>. When the label differs from on-screen text, specify candidates with <code>accessibilityInputLabels</code>.">음성 명령으로 앱 전체를 조작. "Show Names" 오버레이에 표시되는 이름이 <code>accessibilityLabel</code>이다. 레이블이 화면 텍스트와 다를 때는 <code>accessibilityInputLabels</code>로 후보를 명시한다.</p>
 <pre><span class="c">// SwiftUI</span>
 Button(<span class="s">"♡"</span>) { toggleLike() }
     .accessibilityLabel(<span class="s">"좋아요"</span>)
@@ -1011,19 +1021,19 @@ Button(<span class="s">"♡"</span>) { toggleLike() }
 button.accessibilityLabel = <span class="s">"좋아요"</span>
 button.accessibilityUserInputLabels = [<span class="s">"좋아요"</span>, <span class="s">"하트"</span>, <span class="s">"Like"</span>]
 </pre>
-  <div class="callout tip"><strong>Tip</strong>"Show Grid" 오버레이는 레이블과 무관하게 격자 번호로 탭을 허용한다. 레이블 없는 요소도 격자로 접근 가능하지만, 레이블이 있어야 음성 명령이 직관적으로 동작한다.</div>
+  <div class="callout tip" data-en="<strong>Tip</strong>The &quot;Show Grid&quot; overlay lets you tap by grid number regardless of labels. Elements without labels are still reachable via the grid, but labels are required for intuitive voice commands."><strong>Tip</strong>"Show Grid" 오버레이는 레이블과 무관하게 격자 번호로 탭을 허용한다. 레이블 없는 요소도 격자로 접근 가능하지만, 레이블이 있어야 음성 명령이 직관적으로 동작한다.</div>
 </section>
 
 <section id="eye-tracking">
   <h3>Eye Tracking</h3>
   <div class="avail"><span>iOS 18+</span><span>iPadOS 18+</span></div>
-  <p>전면 카메라로 시선을 추적해 포인터를 제어하는 시스템 기능. 별도 API 없음. 기존 UIAccessibility 포인터 지원 코드가 그대로 적용된다. 설계 시 hit target을 44pt 이상으로 유지하고, hover-only 상태(hover해야만 보이는 버튼)를 피한다.</p>
+  <p data-en="System feature that uses the front camera to track gaze and control the pointer. No separate API. Existing UIAccessibility pointer-support code applies as-is. Design for hit targets of 44pt or larger, and avoid hover-only states (buttons that appear only on hover).">전면 카메라로 시선을 추적해 포인터를 제어하는 시스템 기능. 별도 API 없음. 기존 UIAccessibility 포인터 지원 코드가 그대로 적용된다. 설계 시 hit target을 44pt 이상으로 유지하고, hover-only 상태(hover해야만 보이는 버튼)를 피한다.</p>
 </section>
 
 <section id="assistivetouch">
   <h3>AssistiveTouch</h3>
   <div class="avail"><span>iOS 5+</span></div>
-  <p>화면에 떠 있는 소프트 홈버튼으로 제스처·기기 기능을 대체. 앱 설계 시 흔들기, 두 손가락 제스처, 3D Touch를 필수 동작으로 쓰지 말고 대안을 제공한다.</p>
+  <p data-en="A soft on-screen home button that substitutes gestures and device functions. When designing your app, don't make shake, two-finger gestures, or 3D Touch required actions — provide alternatives.">화면에 떠 있는 소프트 홈버튼으로 제스처·기기 기능을 대체. 앱 설계 시 흔들기, 두 손가락 제스처, 3D Touch를 필수 동작으로 쓰지 말고 대안을 제공한다.</p>
 <pre>UIAccessibility.isAssistiveTouchRunning
 
 NotificationCenter.default.addObserver(
@@ -1038,13 +1048,13 @@ NotificationCenter.default.addObserver(
 <section id="touch-accommodations">
   <h3>Touch Accommodations</h3>
   <div class="avail"><span>iOS 5+</span></div>
-  <p>Hold Duration, Ignore Repeat, Touch Assist 등 터치 반응 조정. 시스템이 처리하므로 앱은 별도 API 없음. 개발자 할 일: 빠른 tap-and-drag를 필수 동작으로 요구하지 말 것. 길게 누르기(hold-to-reveal) UI는 다른 접근 수단도 제공한다.</p>
+  <p data-en="Adjusts touch response with Hold Duration, Ignore Repeat, Touch Assist, etc. Handled by the system; no separate API for apps. Developer task: don't require fast tap-and-drag as a necessary action. For hold-to-reveal UIs, provide alternative access paths.">Hold Duration, Ignore Repeat, Touch Assist 등 터치 반응 조정. 시스템이 처리하므로 앱은 별도 API 없음. 개발자 할 일: 빠른 tap-and-drag를 필수 동작으로 요구하지 말 것. 길게 누르기(hold-to-reveal) UI는 다른 접근 수단도 제공한다.</p>
 </section>
 
 <section id="hardware-keyboard">
   <h3>Hardware Keyboard Support</h3>
   <div class="avail"><span>iOS 13.4+</span><span>macOS</span><span>iPadOS</span></div>
-  <p>외장 키보드 단축키, Tab 키 포커스 탐색, Full Keyboard Access. UIKeyCommand로 단축키를 등록하고 UIFocusSystem으로 포커스 흐름을 제어한다.</p>
+  <p data-en="External keyboard shortcuts, Tab key focus navigation, Full Keyboard Access. Register shortcuts with UIKeyCommand and control the focus flow with UIFocusSystem.">외장 키보드 단축키, Tab 키 포커스 탐색, Full Keyboard Access. UIKeyCommand로 단축키를 등록하고 UIFocusSystem으로 포커스 흐름을 제어한다.</p>
 <pre><span class="c">// UIKit — 키 명령</span>
 <span class="k">override</span> <span class="k">var</span> keyCommands: [UIKeyCommand]? {[
     UIKeyCommand(title: <span class="s">"새 항목"</span>, action: #selector(addItem),
@@ -1068,13 +1078,13 @@ TextField(<span class="s">"이름"</span>, text: $name).focused($fieldFocused)
 <section id="accessibility-keyboard">
   <h3>Accessibility Keyboard</h3>
   <div class="avail"><span>macOS</span></div>
-  <p>macOS 전용 화상 키보드. <code>UITextInput</code> / <code>NSTextInputClient</code> 프로토콜을 올바르게 구현하면 자동으로 연동된다. 커스텀 텍스트 입력 뷰가 있다면 <code>UITextInputTraits</code>도 구현한다.</p>
+  <p data-en="macOS-only on-screen keyboard. Correctly implementing the <code>UITextInput</code> / <code>NSTextInputClient</code> protocol integrates with it automatically. If you have a custom text input view, also implement <code>UITextInputTraits</code>.">macOS 전용 화상 키보드. <code>UITextInput</code> / <code>NSTextInputClient</code> 프로토콜을 올바르게 구현하면 자동으로 연동된다. 커스텀 텍스트 입력 뷰가 있다면 <code>UITextInputTraits</code>도 구현한다.</p>
 </section>
 
 <section id="fitness-apps">
   <h3>Fitness apps</h3>
   <div class="avail"><span>iOS</span><span>watchOS</span></div>
-  <p>Apple Fitness+ 및 HealthKit 기반 운동 앱. 이동성 제한 사용자를 위해 운동 데이터 시각화에 충분히 큰 숫자와 VoiceOver 레이블을 제공하고, 차트에 <code>accessibilityRepresentation</code>으로 대체 텍스트 요약을 붙인다.</p>
+  <p data-en="Apple Fitness+ and HealthKit-based workout apps. For users with mobility limitations, provide sufficiently large numbers and VoiceOver labels in workout data visualizations, and attach an alternative text summary to charts with <code>accessibilityRepresentation</code>.">Apple Fitness+ 및 HealthKit 기반 운동 앱. 이동성 제한 사용자를 위해 운동 데이터 시각화에 충분히 큰 숫자와 VoiceOver 레이블을 제공하고, 차트에 <code>accessibilityRepresentation</code>으로 대체 텍스트 요약을 붙인다.</p>
 <pre><span class="k">import</span> HealthKit
 <span class="k">let</span> store = HKHealthStore()
 <span class="k">let</span> stepType = HKQuantityType(.stepCount)
@@ -1085,7 +1095,7 @@ TextField(<span class="s">"이름"</span>, text: $name).focused($fieldFocused)
 <section id="switch-control">
   <h3>Switch Control</h3>
   <div class="avail"><span>iOS 7+</span><span>macOS</span></div>
-  <p>물리적 스위치나 버튼으로 화면을 순차 탐색. 모든 기능을 Custom Actions로 노출해야 스위치 사용자가 접근할 수 있다.</p>
+  <p data-en="Sequentially scan the screen with physical switches or buttons. All features must be exposed as Custom Actions so switch users can access them.">물리적 스위치나 버튼으로 화면을 순차 탐색. 모든 기능을 Custom Actions로 노출해야 스위치 사용자가 접근할 수 있다.</p>
 <pre>UIAccessibility.isSwitchControlRunning
 
 <span class="c">// 스위치 사용자를 위한 커스텀 액션 필수</span>
@@ -1102,24 +1112,24 @@ cell.accessibilityCustomActions = [
     <span class="k">return</span> <span class="k">true</span>
 }
 </pre>
-  <div class="callout warn"><strong>주의</strong>스와이프 액션(delete on swipe) 등 제스처 전용 기능은 Switch Control에서 접근 불가. 반드시 Custom Action 대안을 제공해야 한다.</div>
+  <div class="callout warn" data-en="<strong>Warning</strong>Gesture-only features like swipe actions (delete on swipe) are inaccessible in Switch Control. Always provide a Custom Action alternative."><strong>주의</strong>스와이프 액션(delete on swipe) 등 제스처 전용 기능은 Switch Control에서 접근 불가. 반드시 Custom Action 대안을 제공해야 한다.</div>
 </section>
 
 <section id="head-tracking">
   <h3>Head Tracking</h3>
   <div class="avail"><span>iOS 18+</span><span>iPadOS 18+</span></div>
-  <p>전면 카메라로 머리 움직임을 감지해 포인터를 제어. Eye Tracking과 마찬가지로 별도 API 없이 기존 UIAccessibility 코드가 적용된다. 포인터 기반 탐색이 가능하도록 모든 인터랙티브 요소에 시각적 hover state를 제공한다.</p>
+  <p data-en="Detects head movement via the front camera to control the pointer. Like Eye Tracking, existing UIAccessibility code applies with no separate API. Provide visual hover states on all interactive elements to enable pointer-based navigation.">전면 카메라로 머리 움직임을 감지해 포인터를 제어. Eye Tracking과 마찬가지로 별도 API 없이 기존 UIAccessibility 코드가 적용된다. 포인터 기반 탐색이 가능하도록 모든 인터랙티브 요소에 시각적 hover state를 제공한다.</p>
 </section>
 
 <section id="quickly-toggle-mobility">
   <h3>Quickly Toggle Settings</h3>
-  <div class="xref">→ Vision 섹션 <a href="#quickly-toggle">Quickly Toggle Settings</a> 참고</div>
+  <div class="xref" data-en="→ See Vision section <a href=&quot;#quickly-toggle&quot;>Quickly Toggle Settings</a>">→ Vision 섹션 <a href="#quickly-toggle">Quickly Toggle Settings</a> 참고</div>
 </section>
 
 <section id="dictation">
   <h3>Dictation</h3>
   <div class="avail"><span>iOS 5+</span><span>macOS</span></div>
-  <p>키보드 마이크 버튼으로 음성 입력. <code>UITextView</code>·<code>UITextField</code>·SwiftUI <code>TextField</code>는 자동 지원. 별도 구현 불필요.</p>
+  <p data-en="Voice input via the keyboard microphone button. <code>UITextView</code>, <code>UITextField</code>, and SwiftUI <code>TextField</code> support it automatically. No separate implementation required.">키보드 마이크 버튼으로 음성 입력. <code>UITextView</code>·<code>UITextField</code>·SwiftUI <code>TextField</code>는 자동 지원. 별도 구현 불필요.</p>
 <pre><span class="c">// 키보드 타입에 따라 받아쓰기 동작 변경</span>
 textField.keyboardType = .default          <span class="c">// 받아쓰기 활성</span>
 textField.keyboardType = .numberPad        <span class="c">// 받아쓰기 비활성</span>
@@ -1137,13 +1147,13 @@ TextField(<span class="s">"검색"</span>, text: $query).keyboardType(.default)
 <div class="cat-section">
 <section id="speech-intro">
   <h2><span class="cat-h2 speech">Speech</span></h2>
-  <p class="section-lede">발화 관련 4가지 기능. Live Speech · Personal Voice는 AVFoundation, Vocal Shortcuts는 App Intents가 핵심이다.</p>
+  <p class="section-lede" data-en="4 speech-related features. AVFoundation is central for Live Speech and Personal Voice; App Intents is central for Vocal Shortcuts.">발화 관련 4가지 기능. Live Speech · Personal Voice는 AVFoundation, Vocal Shortcuts는 App Intents가 핵심이다.</p>
 </section>
 
 <section id="live-speech">
   <h3>Live Speech</h3>
   <div class="avail"><span>iOS 17+</span><span>macOS 14+</span><span>watchOS 10+</span></div>
-  <p>미리 입력한 텍스트나 즐겨찾기 문구를 스피커로 출력하는 AAC(보조 대체 의사소통) 도구. 앱이 유사한 TTS 기능을 구현할 때 <code>AVSpeechSynthesizer</code>를 사용한다.</p>
+  <p data-en="AAC (Augmentative and Alternative Communication) tool that speaks pre-typed text or saved phrases through the speaker. Use <code>AVSpeechSynthesizer</code> when implementing similar TTS functionality in your app.">미리 입력한 텍스트나 즐겨찾기 문구를 스피커로 출력하는 AAC(보조 대체 의사소통) 도구. 앱이 유사한 TTS 기능을 구현할 때 <code>AVSpeechSynthesizer</code>를 사용한다.</p>
 <pre><span class="k">import</span> AVFoundation
 
 <span class="k">let</span> synth = AVSpeechSynthesizer()
@@ -1162,7 +1172,7 @@ synth.stopSpeaking(at: .immediate)
 <section id="personal-voice">
   <h3>Personal Voice</h3>
   <div class="avail"><span>iOS 17+</span><span>macOS 14+</span></div>
-  <p>사용자가 자신의 목소리를 15분 녹음해 만든 합성 음성. Live Speech와 연동되며, 앱도 명시적 허가를 받아 사용할 수 있다.</p>
+  <p data-en="A synthesized voice created from 15 minutes of the user recording their own voice. Integrated with Live Speech; apps can also use it with explicit authorization.">사용자가 자신의 목소리를 15분 녹음해 만든 합성 음성. Live Speech와 연동되며, 앱도 명시적 허가를 받아 사용할 수 있다.</p>
 <pre>AVSpeechSynthesizer.requestPersonalVoiceAuthorization { status <span class="k">in</span>
     <span class="k">guard</span> status == .authorized <span class="k">else</span> { <span class="k">return</span> }
 
@@ -1175,13 +1185,13 @@ synth.stopSpeaking(at: .immediate)
     synth.speak(u)
 }
 </pre>
-  <div class="callout warn"><strong>주의</strong>Personal Voice는 보조 통신(AAC) 용도에서만 사용해야 한다. <code>NSPersonalVoiceUsageDescription</code> Info.plist 키와 명확한 사용 목적 설명이 필수다.</div>
+  <div class="callout warn" data-en="<strong>Warning</strong>Personal Voice must be used only for augmentative communication (AAC) purposes. The <code>NSPersonalVoiceUsageDescription</code> Info.plist key and a clear usage description are required."><strong>주의</strong>Personal Voice는 보조 통신(AAC) 용도에서만 사용해야 한다. <code>NSPersonalVoiceUsageDescription</code> Info.plist 키와 명확한 사용 목적 설명이 필수다.</div>
 </section>
 
 <section id="vocal-shortcuts">
   <h3>Vocal Shortcuts</h3>
   <div class="avail"><span>iOS 13+</span><span>macOS 12+</span></div>
-  <p>사용자가 Siri 또는 Shortcuts 앱으로 앱 기능을 음성 명령으로 실행. App Intents 프레임워크로 등록한다.</p>
+  <p data-en="Lets users run app features by voice command via Siri or the Shortcuts app. Register with the App Intents framework.">사용자가 Siri 또는 Shortcuts 앱으로 앱 기능을 음성 명령으로 실행. App Intents 프레임워크로 등록한다.</p>
 <pre><span class="k">import</span> AppIntents
 
 <span class="k">struct</span> StartWorkout: AppIntent {
@@ -1212,7 +1222,7 @@ synth.stopSpeaking(at: .immediate)
 
 <section id="switch-control-speech">
   <h3>Switch Control</h3>
-  <div class="xref">→ Mobility 섹션 <a href="#switch-control">Switch Control</a> 참고</div>
+  <div class="xref" data-en="→ See Mobility section <a href=&quot;#switch-control&quot;>Switch Control</a>">→ Mobility 섹션 <a href="#switch-control">Switch Control</a> 참고</div>
 </section>
 </div>
 
@@ -1223,13 +1233,13 @@ synth.stopSpeaking(at: .immediate)
 <div class="cat-section">
 <section id="cognitive-intro">
   <h2><span class="cat-h2 cog">Cognitive</span></h2>
-  <p class="section-lede">인지 관련 10가지 기능. Assistive Access API와 Guided Access 쿼리가 주요 인터페이스이고, Apple Intelligence는 App Intents로 연동한다.</p>
+  <p class="section-lede" data-en="10 cognitive-related features. The Assistive Access API and Guided Access query are the main interfaces; Apple Intelligence integrates via App Intents.">인지 관련 10가지 기능. Assistive Access API와 Guided Access 쿼리가 주요 인터페이스이고, Apple Intelligence는 App Intents로 연동한다.</p>
 </section>
 
 <section id="assistive-access">
   <h3>Assistive Access</h3>
   <div class="avail"><span>iOS 17+</span><span>tvOS 18+</span></div>
-  <p>인지 장애 사용자를 위한 단순화 모드. iOS 18부터 SwiftUI 기반 <code>AssistiveAccessScene</code>으로 별도 단순화 UI를 제공할 수 있다.</p>
+  <p data-en="Simplified mode for users with cognitive disabilities. From iOS 18, you can provide a separate simplified UI with the SwiftUI-based <code>AssistiveAccessScene</code>.">인지 장애 사용자를 위한 단순화 모드. iOS 18부터 SwiftUI 기반 <code>AssistiveAccessScene</code>으로 별도 단순화 UI를 제공할 수 있다.</p>
 <pre><span class="k">import</span> SwiftUI
 
 <span class="k">@main</span>
@@ -1244,13 +1254,13 @@ synth.stopSpeaking(at: .immediate)
     }
 }
 </pre>
-  <div class="callout note"><strong>설계 원칙</strong>Assistive Access UI는 한 화면에 주된 작업 하나, 큰 컨트롤(최소 화면 폭의 1/3), 단순한 동사 레이블, 항상 보이는 되돌리기/종료. 모달·깊은 네비게이션·미세 제스처 금지.</div>
+  <div class="callout note" data-en="<strong>Design Principles</strong>Assistive Access UI: one primary task per screen, large controls (minimum 1/3 of screen width), simple verb labels, always-visible back/exit. No modals, deep navigation, or fine gestures."><strong>설계 원칙</strong>Assistive Access UI는 한 화면에 주된 작업 하나, 큰 컨트롤(최소 화면 폭의 1/3), 단순한 동사 레이블, 항상 보이는 되돌리기/종료. 모달·깊은 네비게이션·미세 제스처 금지.</div>
 </section>
 
 <section id="apple-intelligence">
   <h3>Apple Intelligence</h3>
   <div class="avail"><span>iOS 18.1+</span><span>macOS 15.1+</span></div>
-  <p>온디바이스 AI 기반 Writing Tools, 향상된 Siri, Smart Replies 등. 앱은 App Intents로 Siri와 연동하고, Writing Tools는 <code>UITextView</code>에서 자동 지원된다.</p>
+  <p data-en="On-device AI-powered Writing Tools, enhanced Siri, Smart Replies, and more. Apps integrate with Siri via App Intents; Writing Tools are automatically supported in <code>UITextView</code>.">온디바이스 AI 기반 Writing Tools, 향상된 Siri, Smart Replies 등. 앱은 App Intents로 Siri와 연동하고, Writing Tools는 <code>UITextView</code>에서 자동 지원된다.</p>
 <pre><span class="c">// Writing Tools — UITextView에서 자동 활성 (별도 코드 불필요)</span>
 <span class="c">// 비활성화하려면:</span>
 textView.writingToolsBehavior = .none   <span class="c">// iOS 18+</span>
@@ -1268,18 +1278,18 @@ print(response.content)
 
 <section id="live-captions-cog">
   <h3>Live Captions</h3>
-  <div class="xref">→ Hearing 섹션 <a href="#live-captions">Live Captions</a> 참고</div>
+  <div class="xref" data-en="→ See Hearing section <a href=&quot;#live-captions&quot;>Live Captions</a>">→ Hearing 섹션 <a href="#live-captions">Live Captions</a> 참고</div>
 </section>
 
 <section id="background-sounds-cog">
   <h3>Background Sounds</h3>
-  <div class="xref">→ Hearing 섹션 <a href="#background-sounds">Background Sounds</a> 참고</div>
+  <div class="xref" data-en="→ See Hearing section <a href=&quot;#background-sounds&quot;>Background Sounds</a>">→ Hearing 섹션 <a href="#background-sounds">Background Sounds</a> 참고</div>
 </section>
 
 <section id="safari-reader">
   <h3>Safari Reader</h3>
   <div class="avail"><span>iOS 5+</span><span>macOS</span></div>
-  <p>Safari가 웹 페이지의 본문만 추출해 읽기 쉽게 표시. 웹 콘텐츠를 제공하는 앱이라면 시맨틱 구조가 Reader 추출 품질을 결정한다. <code>WKWebView</code> 기반 앱에서 Reader Mode를 강제 활성화하는 공개 API는 없다.</p>
+  <p data-en="Safari extracts the main body text of a web page and presents it in a readable format. For apps that provide web content, semantic structure determines Reader extraction quality. There is no public API to force-activate Reader Mode in a <code>WKWebView</code>-based app.">Safari가 웹 페이지의 본문만 추출해 읽기 쉽게 표시. 웹 콘텐츠를 제공하는 앱이라면 시맨틱 구조가 Reader 추출 품질을 결정한다. <code>WKWebView</code> 기반 앱에서 Reader Mode를 강제 활성화하는 공개 API는 없다.</p>
 <pre><span class="c">// WKWebView — Reader 친화적 콘텐츠 로드</span>
 <span class="k">let</span> config = WKWebViewConfiguration()
 config.allowsInlineMediaPlayback = <span class="k">true</span>
@@ -1295,7 +1305,7 @@ config.allowsInlineMediaPlayback = <span class="k">true</span>
 <section id="guided-access">
   <h3>Guided Access</h3>
   <div class="avail"><span>iOS 6+</span></div>
-  <p>앱을 단일 앱 모드로 잠그는 키오스크/교육용 기능. 앱이 커스텀 제한을 등록할 수 있다.</p>
+  <p data-en="Kiosk/education feature that locks the device into a single-app mode. Apps can register custom restrictions.">앱을 단일 앱 모드로 잠그는 키오스크/교육용 기능. 앱이 커스텀 제한을 등록할 수 있다.</p>
 <pre><span class="c">// 상태 확인</span>
 UIAccessibility.isGuidedAccessEnabled
 
@@ -1318,13 +1328,13 @@ UIAccessibility.guidedAccessRestrictionDelegate = MyRestrictions()
 
 <section id="dictation-cog">
   <h3>Dictation</h3>
-  <div class="xref">→ Mobility 섹션 <a href="#dictation">Dictation</a> 참고</div>
+  <div class="xref" data-en="→ See Mobility section <a href=&quot;#dictation&quot;>Dictation</a>">→ Mobility 섹션 <a href="#dictation">Dictation</a> 참고</div>
 </section>
 
 <section id="focus-feature">
   <h3>Focus</h3>
   <div class="avail"><span>iOS 15+</span></div>
-  <p>인지 부하를 줄이기 위한 집중 모드 지원. 앱은 SwiftUI <code>@FocusState</code>로 포커스를 프로그래매틱으로 이동시켜 불필요한 화면 요소를 줄인다. 시스템 집중 모드(방해 금지 등)와 연동은 <code>FocusFilterIntent</code>로 구현한다.</p>
+  <p data-en="Support for Focus modes to reduce cognitive load. Apps use SwiftUI <code>@FocusState</code> to programmatically move focus and reduce unnecessary screen elements. Integrate with system Focus modes (Do Not Disturb, etc.) using <code>FocusFilterIntent</code>.">인지 부하를 줄이기 위한 집중 모드 지원. 앱은 SwiftUI <code>@FocusState</code>로 포커스를 프로그래매틱으로 이동시켜 불필요한 화면 요소를 줄인다. 시스템 집중 모드(방해 금지 등)와 연동은 <code>FocusFilterIntent</code>로 구현한다.</p>
 <pre><span class="c">// SwiftUI 프로그래매틱 포커스</span>
 <span class="k">enum</span> FormField { <span class="k">case</span> name, email }
 <span class="k">@FocusState</span> <span class="k">private</span> <span class="k">var</span> focused: FormField?
@@ -1347,12 +1357,12 @@ Form {
 
 <section id="shortcuts-app-cog">
   <h3>Shortcuts app</h3>
-  <div class="xref">→ Vision 섹션 <a href="#shortcuts-app">Shortcuts app</a> 참고</div>
+  <div class="xref" data-en="→ See Vision section <a href=&quot;#shortcuts-app&quot;>Shortcuts app</a>">→ Vision 섹션 <a href="#shortcuts-app">Shortcuts app</a> 참고</div>
 </section>
 
 <section id="accessibility-reader-cog">
   <h3>Accessibility Reader</h3>
-  <div class="xref">→ Vision 섹션 <a href="#accessibility-reader">Accessibility Reader</a> 참고</div>
+  <div class="xref" data-en="→ See Vision section <a href=&quot;#accessibility-reader&quot;>Accessibility Reader</a>">→ Vision 섹션 <a href="#accessibility-reader">Accessibility Reader</a> 참고</div>
 </section>
 </div>
 
@@ -1362,21 +1372,21 @@ Form {
 
 <div class="cat-section">
 <section id="appkit">
-  <h2><span class="num">05</span> AppKit · NSAccessibility</h2>
-  <p class="section-lede">macOS는 UIKit과 다른 NSAccessibility 프로토콜 계열을 사용한다. Mac Catalyst 앱은 UIKit 속성이 자동으로 NSAccessibility로 매핑된다.</p>
+  <h2 data-en="<span class=&quot;num&quot;>05</span> AppKit · NSAccessibility"><span class="num">05</span> AppKit · NSAccessibility</h2>
+  <p class="section-lede" data-en="macOS uses the NSAccessibility protocol family, which differs from UIKit. Mac Catalyst apps have UIKit attributes automatically mapped to NSAccessibility.">macOS는 UIKit과 다른 NSAccessibility 프로토콜 계열을 사용한다. Mac Catalyst 앱은 UIKit 속성이 자동으로 NSAccessibility로 매핑된다.</p>
   <table>
-    <thead><tr><th>속성/메서드</th><th>설명</th></tr></thead>
+    <thead><tr><th data-en="Attribute / Method">속성/메서드</th><th data-en="Description">설명</th></tr></thead>
     <tbody>
-      <tr><td><code>setAccessibilityLabel(_:)</code></td><td>UIAccessibilityLabel과 동일</td></tr>
+      <tr><td><code>setAccessibilityLabel(_:)</code></td><td data-en="Same as UIAccessibilityLabel">UIAccessibilityLabel과 동일</td></tr>
       <tr><td><code>setAccessibilityRole(_:)</code></td><td><code>.button .checkBox .group .image .link .list .menuItem .radioButton .staticText .textField</code></td></tr>
-      <tr><td><code>setAccessibilityRoleDescription(_:)</code></td><td>역할의 사용자용 설명</td></tr>
-      <tr><td><code>setAccessibilityValue(_:)</code></td><td>현재 값</td></tr>
-      <tr><td><code>setAccessibilityHelp(_:)</code></td><td>UIKit의 hint</td></tr>
-      <tr><td><code>setAccessibilityChildren(_:)</code></td><td>접근성 자식 명시</td></tr>
-      <tr><td><code>NSAccessibilityElement</code></td><td>뷰가 아닌 가상의 요소</td></tr>
+      <tr><td><code>setAccessibilityRoleDescription(_:)</code></td><td data-en="User-facing description of the role">역할의 사용자용 설명</td></tr>
+      <tr><td><code>setAccessibilityValue(_:)</code></td><td data-en="Current value">현재 값</td></tr>
+      <tr><td><code>setAccessibilityHelp(_:)</code></td><td data-en="UIKit's hint equivalent">UIKit의 hint</td></tr>
+      <tr><td><code>setAccessibilityChildren(_:)</code></td><td data-en="Explicitly declare accessibility children">접근성 자식 명시</td></tr>
+      <tr><td><code>NSAccessibilityElement</code></td><td data-en="Virtual element that is not a view">뷰가 아닌 가상의 요소</td></tr>
       <tr><td>Role-specific protocols</td><td><code>NSAccessibilityButton ...Slider ...Outline ...Table</code></td></tr>
-      <tr><td><code>NSWorkspace.shared.isVoiceOverEnabled</code></td><td>VoiceOver 실행 여부</td></tr>
-      <tr><td><code>NSWorkspace.accessibilityDisplayOptionsDidChangeNotification</code></td><td>표시 옵션 변경</td></tr>
+      <tr><td><code>NSWorkspace.shared.isVoiceOverEnabled</code></td><td data-en="Whether VoiceOver is running">VoiceOver 실행 여부</td></tr>
+      <tr><td><code>NSWorkspace.accessibilityDisplayOptionsDidChangeNotification</code></td><td data-en="Display options changed">표시 옵션 변경</td></tr>
     </tbody>
   </table>
 <pre><span class="k">class</span> StarButton: NSButton {
@@ -1388,31 +1398,31 @@ Form {
 </section>
 
 <section id="nutrition">
-  <h2><span class="num">06</span> App Store · Accessibility Nutrition Labels</h2>
-  <p class="section-lede">2025년 도입. App Store 앱 상세 페이지에 지원하는 접근성 기능을 사전 표시하는 자가 선언 라벨.</p>
-  <p>App Store Connect에서 카테고리별로 선언:</p>
+  <h2 data-en="<span class=&quot;num&quot;>06</span> App Store · Accessibility Nutrition Labels"><span class="num">06</span> App Store · Accessibility Nutrition Labels</h2>
+  <p class="section-lede" data-en="Introduced in 2025. Self-declaration labels that pre-display supported accessibility features on an app's App Store product page.">2025년 도입. App Store 앱 상세 페이지에 지원하는 접근성 기능을 사전 표시하는 자가 선언 라벨.</p>
+  <p data-en="Declare by category in App Store Connect:">App Store Connect에서 카테고리별로 선언:</p>
   <ul>
     <li>VoiceOver</li>
     <li>Voice Control</li>
-    <li>Larger Text (Dynamic Type 11단계 전부 지원)</li>
+    <li data-en="Larger Text (full support for all 11 Dynamic Type sizes)">Larger Text (Dynamic Type 11단계 전부 지원)</li>
     <li>Sufficient Contrast (WCAG 2.x)</li>
     <li>Reduced Motion</li>
-    <li>Captions (영상에 자막 제공)</li>
+    <li data-en="Captions (captions provided in video)">Captions (영상에 자막 제공)</li>
     <li>Differentiate Without Color</li>
     <li>Switch Control / Full Keyboard Access</li>
   </ul>
-  <div class="callout warn"><strong>주의</strong>"지원"으로 선언했는데 실제로 지원하지 않으면 거절·하향 노출 사유가 된다. 선언 전에 <a class="inline" href="#testing">XCTest 접근성 감사</a>로 반드시 검증.</div>
+  <div class="callout warn" data-en="<strong>Warning</strong>Declaring &quot;Supported&quot; for a feature you don't actually support can result in rejection or reduced visibility. Verify with an <a class=&quot;inline&quot; href=&quot;#testing&quot;>XCTest accessibility audit</a> before declaring."><strong>주의</strong>"지원"으로 선언했는데 실제로 지원하지 않으면 거절·하향 노출 사유가 된다. 선언 전에 <a class="inline" href="#testing">XCTest 접근성 감사</a>로 반드시 검증.</div>
 </section>
 
 <section id="testing">
-  <h2><span class="num">07</span> Testing · Inspector · Audits</h2>
-  <p class="section-lede">접근성은 "고쳤다고 믿었지만 안 고쳐진" 경우가 가장 흔한 분야. 도구로 자동 검증하고, 실제 VoiceOver로 직접 써 본다.</p>
+  <h2 data-en="<span class=&quot;num&quot;>07</span> Testing · Inspector · Audits"><span class="num">07</span> Testing · Inspector · Audits</h2>
+  <p class="section-lede" data-en="Accessibility is the area most prone to &quot;believed it was fixed but it wasn't.&quot; Automate verification with tools, then test hands-on with real VoiceOver.">접근성은 "고쳤다고 믿었지만 안 고쳐진" 경우가 가장 흔한 분야. 도구로 자동 검증하고, 실제 VoiceOver로 직접 써 본다.</p>
 
   <h3 id="test-inspector">Accessibility Inspector</h3>
-  <p>Xcode → Open Developer Tool → Accessibility Inspector. 시뮬레이터·실기기·Mac 앱 모두 검사 가능. <strong>Audit 탭</strong>에서 contrast, hit region, label, dynamic type, traits 누락 등을 자동 점검.</p>
+  <p data-en="Xcode → Open Developer Tool → Accessibility Inspector. Inspects simulators, real devices, and Mac apps. The <strong>Audit tab</strong> automatically checks for missing contrast, hit regions, labels, dynamic type, traits, and more.">Xcode → Open Developer Tool → Accessibility Inspector. 시뮬레이터·실기기·Mac 앱 모두 검사 가능. <strong>Audit 탭</strong>에서 contrast, hit region, label, dynamic type, traits 누락 등을 자동 점검.</p>
 
   <h3 id="test-audit">Xcode Accessibility Audit (XCTest)</h3>
-  <p>iOS 17 / macOS 14부터 XCTest에 자동 감사가 내장됐다.</p>
+  <p data-en="Automated audits are built into XCTest from iOS 17 / macOS 14.">iOS 17 / macOS 14부터 XCTest에 자동 감사가 내장됐다.</p>
 <pre><span class="k">func</span> testAccessibility() <span class="k">throws</span> {
     <span class="k">let</span> app = XCUIApplication()
     app.launch()
@@ -1424,23 +1434,46 @@ Form {
 </pre>
 
   <h3 id="test-overrides">Environment Overrides</h3>
-  <p>Xcode → Environment Overrides에서 Bold Text · Increase Contrast · Reduce Motion · Reduce Transparency · Differentiate Without Color · Smart Invert · Larger Text를 라이브로 켜고 끌 수 있다.</p>
+  <p data-en="Xcode → Environment Overrides lets you live-toggle Bold Text, Increase Contrast, Reduce Motion, Reduce Transparency, Differentiate Without Color, Smart Invert, and Larger Text.">Xcode → Environment Overrides에서 Bold Text · Increase Contrast · Reduce Motion · Reduce Transparency · Differentiate Without Color · Smart Invert · Larger Text를 라이브로 켜고 끌 수 있다.</p>
 
-  <h3 id="test-shortcuts">VoiceOver 테스트 단축키</h3>
+  <h3 id="test-shortcuts" data-en="VoiceOver Testing Shortcuts">VoiceOver 테스트 단축키</h3>
   <ul>
-    <li>실기기 VoiceOver 토글: Accessibility Shortcut(측면 버튼 3회) 또는 Settings → Accessibility → VoiceOver</li>
+    <li data-en="Toggle VoiceOver on device: Accessibility Shortcut (side button 3×) or Settings → Accessibility → VoiceOver">실기기 VoiceOver 토글: Accessibility Shortcut(측면 버튼 3회) 또는 Settings → Accessibility → VoiceOver</li>
     <li>macOS VoiceOver: <code>⌘ + F5</code></li>
-    <li>VoiceOver 수정키: <code>VO = Control + Option</code></li>
-    <li>항목 탐색: <code>VO + →/←</code>, 활성화: <code>VO + Space</code></li>
-    <li>로터: 두 손가락 회전 (실기기) / <code>VO + U</code> (macOS)</li>
+    <li data-en="VoiceOver modifier: <code>VO = Control + Option</code>">VoiceOver 수정키: <code>VO = Control + Option</code></li>
+    <li data-en="Navigate items: <code>VO + →/←</code>, Activate: <code>VO + Space</code>">항목 탐색: <code>VO + →/←</code>, 활성화: <code>VO + Space</code></li>
+    <li data-en="Rotor: two-finger rotation (real device) / <code>VO + U</code> (macOS)">로터: 두 손가락 회전 (실기기) / <code>VO + U</code> (macOS)</li>
   </ul>
 
-  <h3 id="test-visionpro">Vision Pro 접근성</h3>
-  <p>응시 + 핀치가 기본 입력. 모든 인터랙티브 요소에 시각적 hover state와 충분한 hit target(권장 60pt 이상)이 필수. VoiceOver는 카메라 기반 공간 디스크립션과 Live Recognition을 함께 제공한다.</p>
+  <h3 id="test-visionpro" data-en="Vision Pro Accessibility">Vision Pro 접근성</h3>
+  <p data-en="Gaze + pinch is the primary input. Visual hover states and sufficient hit targets (recommended 60pt or more) are mandatory for all interactive elements. VoiceOver also provides camera-based spatial description and Live Recognition.">응시 + 핀치가 기본 입력. 모든 인터랙티브 요소에 시각적 hover state와 충분한 hit target(권장 60pt 이상)이 필수. VoiceOver는 카메라 기반 공간 디스크립션과 Live Recognition을 함께 제공한다.</p>
 </section>
 </div>
 
 </main>
 </div>
+<script>
+(function(){
+  var KEY='a11y-lang';
+  function apply(lang){
+    localStorage.setItem(KEY,lang);
+    document.documentElement.lang=lang;
+    document.querySelectorAll('[data-en]').forEach(function(el){
+      if(!el.dataset.ko)el.dataset.ko=el.innerHTML;
+      el.innerHTML=lang==='en'?el.dataset.en:el.dataset.ko;
+    });
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.classList.toggle('active',b.dataset.lang===lang);
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){
+    var s=localStorage.getItem(KEY)||'en';
+    apply(s);
+    document.querySelectorAll('.lang-btn').forEach(function(b){
+      b.addEventListener('click',function(){apply(b.dataset.lang);});
+    });
+  });
+})();
+</script>
 </body>
 </html>

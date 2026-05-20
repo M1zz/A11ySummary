@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accessibility Needs Assessment</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  :root {
+    --bg: #fbfbfa;
+    --surface: #ffffff;
+    --surface-2: #f3f2ee;
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.18);
+    --text: #1a1a18;
+    --text-2: #5f5e5a;
+    --text-3: #8a8984;
+    --info-bg: #e6f1fb;
+    --info-text: #0c447c;
+    --warn-bg: #faeeda;
+    --warn-text: #633806;
+    --accent: #1a1a18;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 14px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Segoe UI", Roboto, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #131312;
+      --surface: #1c1c1b;
+      --surface-2: #252523;
+      --border: rgba(255,255,255,0.09);
+      --border-strong: rgba(255,255,255,0.22);
+      --text: #f0efeb;
+      --text-2: #a8a7a2;
+      --text-3: #6c6b67;
+      --info-bg: #042c53;
+      --info-text: #85b7eb;
+      --warn-bg: #412402;
+      --warn-text: #fac775;
+      --accent: #f0efeb;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px 20px 60px;
+    background: var(--bg); color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  .header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 22px; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0 0 6px; letter-spacing: -0.01em; }
+  .subtitle { color: var(--text-2); font-size: 13.5px; margin: 0; }
+  .lang-toggle {
+    display: inline-flex; background: var(--surface-2);
+    padding: 3px; border-radius: var(--radius-md);
+    gap: 2px; flex-shrink: 0;
+  }
+  .lang-btn {
+    padding: 5px 11px; border: 0; border-radius: 7px;
+    background: transparent; cursor: pointer;
+    font-size: 12px; font-family: inherit; color: var(--text-2);
+    font-weight: 500;
+  }
+  .lang-btn:hover { color: var(--text); }
+  .lang-btn.active {
+    background: var(--surface); color: var(--text);
+    border: 0.5px solid var(--border);
+  }
+  .mode-tabs {
+    display: inline-flex; background: var(--surface-2);
+    padding: 3px; border-radius: var(--radius-md);
+    margin-bottom: 20px; gap: 2px;
+  }
+  .mode-tab {
+    padding: 7px 16px; background: transparent; border: 0;
+    border-radius: 8px; cursor: pointer; font-size: 13px;
+    font-family: inherit; color: var(--text-2); font-weight: 500;
+  }
+  .mode-tab:hover { color: var(--text); }
+  .mode-tab.active {
+    background: var(--surface); color: var(--text);
+    border: 0.5px solid var(--border);
+  }
+  .p-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .p-tab {
+    padding: 7px 12px; border: 0.5px solid var(--border);
+    border-radius: var(--radius-md); background: var(--surface);
+    cursor: pointer; font-size: 13px; font-family: inherit;
+    color: var(--text-2); transition: all 0.15s;
+  }
+  .p-tab:hover { background: var(--surface-2); color: var(--text); }
+  .p-tab.active {
+    background: var(--surface-2); border-color: var(--border-strong);
+    color: var(--text); font-weight: 500;
+  }
+  .notice {
+    margin: 4px 0 20px; padding: 12px 14px;
+    background: var(--surface-2); border-radius: var(--radius-md);
+    font-size: 12.5px; color: var(--text-2); line-height: 1.6;
+  }
+  .progress-bar-wrap {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px; position: sticky; top: 0;
+    background: var(--bg); padding: 8px 0; z-index: 10;
+  }
+  .progress-text {
+    font-size: 12px; color: var(--text-2);
+    font-variant-numeric: tabular-nums; min-width: 90px;
+  }
+  .progress-bar {
+    flex: 1; height: 4px; background: var(--surface-2);
+    border-radius: 2px; overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    transition: width 0.3s; border-radius: 2px;
+  }
+  .section { margin-bottom: 22px; }
+  .section-head {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 12px; padding-bottom: 8px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .section-num {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--surface-2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 500; color: var(--text-2);
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 16px; font-weight: 500; }
+  .section-sub {
+    font-size: 12px; color: var(--text-3);
+    margin-top: 2px;
+  }
+  .cond-list { display: flex; flex-direction: column; gap: 6px; }
+  .cond {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 14px; background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer; transition: all 0.12s;
+    font-size: 14px;
+  }
+  .cond:hover {
+    background: var(--surface-2);
+    border-color: var(--border-strong);
+  }
+  .cond.selected {
+    background: var(--info-bg);
+    border-color: var(--info-text);
+    color: var(--info-text);
+  }
+  .cond-check {
+    width: 18px; height: 18px; border-radius: 4px;
+    border: 1.5px solid var(--border-strong);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; transition: all 0.12s;
+    background: var(--surface);
+  }
+  .cond.selected .cond-check {
+    background: var(--info-text);
+    border-color: var(--info-text);
+  }
+  .cond.selected .cond-check::after {
+    content: "✓"; color: white; font-size: 12px; font-weight: 600;
+  }
+  .cond-label { flex: 1; }
+  .cond-none {
+    margin-top: 4px;
+    font-size: 13px;
+    color: var(--text-3);
+  }
+  .cond-none.selected {
+    color: var(--text-2);
+    background: var(--surface-2);
+  }
+  .time-q {
+    margin-top: 4px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .time-q-text {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  .time-opts {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  }
+  .time-opt {
+    padding: 10px 8px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    cursor: pointer;
+    font-size: 12.5px;
+    color: var(--text-2);
+    text-align: center;
+    font-family: inherit;
+    transition: all 0.12s;
+  }
+  .time-opt:hover {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .time-opt.selected {
+    background: var(--info-bg);
+    color: var(--info-text);
+    border-color: var(--info-text);
+    font-weight: 500;
+  }
+  .submit-row {
+    margin-top: 20px;
+    display: flex; gap: 14px;
+    align-items: center; justify-content: space-between;
+    flex-wrap: wrap;
+  }
+  .submit-btn {
+    padding: 11px 22px;
+    background: var(--accent); color: var(--bg);
+    border: 0; border-radius: var(--radius-md);
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    cursor: pointer;
+  }
+  .submit-btn:hover { opacity: 0.85; }
+  .skip-link {
+    font-size: 12.5px; color: var(--text-3);
+    text-decoration: underline; text-underline-offset: 3px;
+    cursor: pointer; background: transparent;
+    border: 0; font-family: inherit; padding: 4px 0;
+  }
+  .skip-link:hover { color: var(--text-2); }
+
+  /* Results */
+  .r-head {
+    display: flex; gap: 14px; align-items: center;
+    margin-bottom: 14px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+  .av {
+    width: 44px; height: 44px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 500; font-size: 16px; flex-shrink: 0;
+    transition: background 0.25s, color 0.25s;
+  }
+  .top-grid {
+    display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 12px; margin-bottom: 20px;
+  }
+  @media (max-width: 600px) { .top-grid { grid-template-columns: 1fr; } }
+  .chart-wrap {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 10px; height: 300px; position: relative;
+  }
+  .stats-col { display: flex; flex-direction: column; gap: 8px; }
+  .m-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 12px 16px; flex: 1;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .m-label { font-size: 11.5px; color: var(--text-2); margin-bottom: 4px; }
+  .m-val { font-size: 17px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .sec-title {
+    font-size: 12px; color: var(--text-2);
+    margin: 24px 0 8px; font-weight: 500;
+    letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .path-intro {
+    font-size: 12.5px; color: var(--text-2);
+    line-height: 1.6; margin-bottom: 12px;
+  }
+  .path-intro .pill {
+    background: var(--surface-2); padding: 1px 6px;
+    border-radius: 3px; color: var(--text-2);
+  }
+  .legend {
+    display: flex; gap: 14px; margin: 4px 0 12px;
+    font-size: 11.5px; color: var(--text-2); flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 14px; height: 6px; border-radius: 2px; display: inline-block; }
+  .d-card {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 14px 18px; margin-bottom: 10px;
+  }
+  .d-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px;
+  }
+  .d-title { font-size: 14.5px; font-weight: 500; }
+  .d-en {
+    color: var(--text-3); font-weight: 400;
+    font-size: 12px; margin-left: 2px;
+  }
+  .d-badge {
+    font-size: 11.5px; padding: 3px 10px;
+    border-radius: var(--radius-sm);
+    background: var(--surface-2); color: var(--text-2);
+    font-weight: 500; font-variant-numeric: tabular-nums;
+  }
+  .sub-bars { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+  .sub-row {
+    display: grid; grid-template-columns: 150px minmax(0, 1fr) 24px;
+    gap: 10px; align-items: center; font-size: 12.5px;
+  }
+  @media (max-width: 480px) {
+    .sub-row { grid-template-columns: 110px minmax(0, 1fr) 22px; gap: 8px; }
+  }
+  .sub-name { color: var(--text-2); }
+  .sub-track { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+  .sub-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+  .sub-val {
+    text-align: right; font-size: 11.5px;
+    color: var(--text-2); font-variant-numeric: tabular-nums;
+  }
+  .feats {
+    display: flex; flex-direction: column; gap: 12px;
+    padding-top: 11px; border-top: 0.5px solid var(--border);
+  }
+  .feats-empty {
+    font-size: 12px; color: var(--text-3);
+    padding-top: 11px; border-top: 0.5px solid var(--border);
+  }
+  .f-row {
+    display: flex; gap: 9px;
+    align-items: flex-start; font-size: 13px;
+  }
+  .f-text {
+    display: flex; flex-direction: column; gap: 6px;
+    flex: 1; min-width: 0;
+  }
+  .f-path {
+    font-size: 11px; color: var(--text-2);
+    line-height: 1.5; padding: 3px 8px;
+    background: var(--surface-2); border-radius: 4px;
+    align-self: flex-start; max-width: 100%; word-break: break-word;
+  }
+  .f-path::before { content: "⚙ "; color: var(--text-3); }
+  .f-pri {
+    margin-top: 6px; font-size: 10.5px;
+    padding: 2px 7px; border-radius: 4px;
+    font-weight: 500; flex-shrink: 0;
+    min-width: 60px; text-align: center;
+    letter-spacing: 0.02em;
+  }
+  .f-pri.high { background: var(--info-bg); color: var(--info-text); }
+  .f-pri.mid { background: var(--warn-bg); color: var(--warn-text); }
+  .f-pri.low { background: var(--surface-2); color: var(--text-2); }
+  .f-name { font-weight: 500; }
+  .f-head { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; }
+  .f-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 7px 13px;
+    background: var(--info-bg);
+    color: var(--info-text);
+    border: 0.5px solid transparent;
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    font-weight: 500; font-size: 13px;
+    transition: background 0.12s, color 0.12s, border-color 0.12s;
+    cursor: pointer;
+  }
+  .f-link:hover {
+    background: var(--info-text);
+    color: var(--bg);
+    border-color: var(--info-text);
+  }
+  .f-link .ext { font-size: 12px; opacity: 0.85; }
+  .f-why { color: var(--text-2); font-size: 12px; }
+  .retake-row {
+    margin-top: 24px;
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .retake-btn {
+    padding: 9px 16px; background: transparent;
+    color: var(--text-2);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    font-family: inherit; font-size: 12.5px; cursor: pointer;
+  }
+  .retake-btn:hover { background: var(--surface-2); color: var(--text); }
+  .demo-hint {
+    font-size: 12.5px; color: var(--text-2);
+    background: var(--surface-2);
+    border-radius: var(--radius-md);
+    padding: 10px 14px; margin-bottom: 16px;
+    line-height: 1.55;
+  }
+  .cta-card {
+    margin-top: 22px; padding: 18px 20px;
+    background: var(--info-bg);
+    border-radius: var(--radius-lg);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .cta-text-title { font-size: 15px; font-weight: 500; color: var(--info-text); }
+  .cta-text-sub { font-size: 13px; color: var(--info-text); opacity: 0.82; margin-top: 3px; }
+  .cta-btn {
+    padding: 11px 20px;
+    background: var(--info-text); color: var(--bg);
+    border: 0; border-radius: var(--radius-md);
+    font-family: inherit; font-size: 14px; font-weight: 500;
+    cursor: pointer; white-space: nowrap;
+  }
+  .cta-btn:hover { opacity: 0.88; }
+  footer {
+    margin-top: 32px; padding-top: 16px;
+    border-top: 0.5px solid var(--border);
+    font-size: 11.5px; color: var(--text-3); line-height: 1.7;
+  }
+  .hidden { display: none !important; }
+
+  /* ===== Site Top Navigation ===== */
+  .site-nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(251,251,250,0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 0.5px solid var(--border);
+    padding: 13px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: -28px -20px 24px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .site-nav { background: rgba(19,19,18,0.94); }
+  }
+  .site-nav .site-home {
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--text);
+    letter-spacing: -.01em;
+    flex-shrink: 0;
+  }
+  .site-nav .site-home em { color: #c83a1a; font-style: italic; font-weight: 400; }
+  .site-nav .site-links {
+    display: flex; gap: 16px; flex-wrap: wrap; align-items: center;
+  }
+  .site-nav .site-links a {
+    font-size: 11.5px;
+    text-decoration: none;
+    color: var(--text-2);
+    font-weight: 500;
+    letter-spacing: .02em;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  .site-nav .site-links a:hover { color: #c83a1a; }
+  .site-nav .site-links a.active { color: #c83a1a; border-bottom-color: #c83a1a; font-weight: 700; }
+</style>
+</head>
+<body>
+<nav class="site-nav">
+  <a href="index.html" class="site-home">Apple <em>Accessibility</em></a>
+  <div class="site-links">
+    <a href="index.html">Overview</a>
+    <a href="part-i.html">I · User Features</a>
+    <a href="part-ii.html">II · Developer APIs</a>
+    <a href="part-iii.html">III · Features × SwiftUI</a>
+    <a href="part-iv.html">IV · Per-Feature Recipes</a>
+    <a href="part-v.html">V · Appendix</a>
+    <a href="apple-accessibility-graph-bilingual.html">Graph</a>
+    <a href="accessibility_needs_v2.html" class="active">Assessment</a>
+  </div>
+</nav>
+<div class="wrap">
+  <header>
+    <div class="header-row">
+      <div>
+        <h1 data-i18n="app_title">Accessibility Needs Assessment</h1>
+        <p class="subtitle" data-i18n="app_subtitle">Symptom-based · 5 domains · Mapped to Apple accessibility features</p>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" data-lang="en">EN</button>
+        <button class="lang-btn" data-lang="ko">한국어</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="demo" data-i18n="mode_demo">Demo Personas</button>
+    <button class="mode-tab" data-mode="survey" data-i18n="mode_survey">Self Assessment</button>
+  </div>
+
+  <div class="p-tabs" id="p-tabs"></div>
+  <div class="demo-hint" id="demo-hint" data-i18n="demo_hint">These are example personas showing how the tool works. Tap a name to compare — then assess yourself below.</div>
+
+  <div id="survey-form" class="hidden">
+    <div class="notice" data-i18n="survey_notice">Select all conditions that apply. This is a functional assessment, not a medical diagnosis. If you wear glasses or use a hearing aid, answer based on your aided state.</div>
+    <div class="progress-bar-wrap">
+      <span class="progress-text" id="prog-text">0 <span data-i18n="survey_selected">selected</span></span>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width: 0%;"></div></div>
+    </div>
+    <div id="survey-sections"></div>
+    <div class="submit-row">
+      <button class="skip-link" id="skip-btn" data-i18n="skip_btn">Skip and see empty result</button>
+      <button class="submit-btn" id="submit-btn" data-i18n="submit_btn">See Results →</button>
+    </div>
+  </div>
+
+  <div id="results-panel">
+    <div class="r-head">
+      <div class="av" id="av" style="background:#eeedfe; color:#3c3489;">P</div>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:500; font-size:15.5px;" id="p-name">—</div>
+        <div style="font-size:13px; color:var(--text-2);" id="p-type">—</div>
+      </div>
+      <div style="text-align:right; flex-shrink:0;">
+        <div style="font-size:11px; color:var(--text-3);" data-i18n="hdr_pattern">Pattern</div>
+        <div style="font-size:12.5px; color:var(--text-2);" id="p-pattern">—</div>
+      </div>
+    </div>
+    <div class="top-grid">
+      <div class="chart-wrap">
+        <canvas id="radar" role="img" aria-label="Radar chart of 5 accessibility domains">Vision · Hearing · Speech · Mobility · Cognitive</canvas>
+      </div>
+      <div class="stats-col">
+        <div class="m-card">
+          <div class="m-label" data-i18n="metric_top">Top need area</div>
+          <div class="m-val" id="top-d">—</div>
+        </div>
+        <div class="m-card">
+          <div class="m-label" data-i18n="metric_features">Recommended features</div>
+          <div class="m-val"><span id="f-count">0</span><span id="f-count-unit" style="font-size:13px; color:var(--text-2); margin-left:3px; font-weight:400;"></span></div>
+        </div>
+        <div class="m-card">
+          <div class="m-label" data-i18n="metric_approach">Approach</div>
+          <div class="m-val" id="p-approach" style="font-size:14px;">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="sec-title" data-i18n="sec_domains">Domain scores and recommended features</div>
+    <div class="path-intro">
+      <span data-i18n="path_intro_a">Find each feature in</span> <span class="pill"><span data-i18n="path_intro_b">⚙ Settings path</span></span> <span data-i18n="path_intro_c">below. iPad uses the same paths.</span>
+    </div>
+    <div class="legend">
+      <span class="legend-item"><span class="legend-swatch" style="background:#fac775;"></span><span data-i18n="legend_1">1 mild</span></span>
+      <span class="legend-item"><span class="legend-swatch" style="background:#ef9f27;"></span><span data-i18n="legend_2">2 moderate</span></span>
+      <span class="legend-item"><span class="legend-swatch" style="background:#f0997b;"></span><span data-i18n="legend_3">3 significant</span></span>
+      <span class="legend-item"><span class="legend-swatch" style="background:#d85a30;"></span><span data-i18n="legend_4">4 severe</span></span>
+    </div>
+    <div id="domains"></div>
+  </div>
+
+  <div class="cta-card hidden" id="cta-card">
+    <div>
+      <div class="cta-text-title" data-i18n="cta_title">These are example results</div>
+      <div class="cta-text-sub" data-i18n="cta_sub">Now check your own accessibility needs</div>
+    </div>
+    <button class="cta-btn" id="cta-btn" data-i18n="cta_btn">Start my assessment →</button>
+  </div>
+
+  <div class="retake-row hidden" id="retake-row">
+    <button class="retake-btn" id="retake-btn" data-i18n="retake_btn">← Retake</button>
+    <span style="font-size:11.5px; color:var(--text-3);" data-i18n="retake_note">Results are stored only in your browser</span>
+  </div>
+
+  <footer>
+    <span data-i18n="footer_1">Priority: Essential (max severity 3+), Suggested (2), Optional (1)</span><br>
+    <span data-i18n="footer_2">Settings paths use iPhone (iOS). On Mac, use System Settings → Accessibility. Labels may vary slightly by iOS version.</span>
+  </footer>
+</div>
+
+<script>
+/* ==================== i18n ==================== */
+const i18n = {
+  app_title: { en: 'Accessibility Needs Assessment', ko: '접근성 필요도 진단' },
+  app_subtitle: { en: 'Symptom-based · 5 domains · Mapped to Apple accessibility features', ko: '증상 기반 · 5개 도메인 · Apple 접근성 기능 매핑' },
+  mode_demo: { en: 'Demo Personas', ko: '페르소나 데모' },
+  mode_survey: { en: 'Self Assessment', ko: '직접 평가' },
+  demo_hint: { en: 'These are example personas showing how the tool works. Tap a name to compare — then assess yourself with the button below.', ko: '도구가 어떻게 작동하는지 보여주는 예시 페르소나예요. 이름을 눌러 비교해보고, 아래 버튼으로 내 검사를 시작하세요.' },
+  cta_title: { en: 'These are example results', ko: '위 결과는 예시예요' },
+  cta_sub: { en: 'Now check your own accessibility needs', ko: '이제 내 접근성 필요도를 직접 알아보세요' },
+  cta_btn: { en: 'Start my assessment →', ko: '내 검사 시작하기 →' },
+  survey_notice: { en: 'Select all conditions that apply. This is a functional assessment, not a medical diagnosis. If you wear glasses or use a hearing aid, answer based on your aided state.', ko: '해당하는 모든 상태를 선택하세요. 의료적 진단이 아니라 기능 기반 평가입니다. 안경·보청기 등을 착용하는 경우 착용 상태를 기준으로 답해주세요.' },
+  survey_selected: { en: 'selected', ko: '개 선택됨' },
+  survey_none: { en: 'None of these', ko: '해당 없음' },
+  submit_btn: { en: 'See Results →', ko: '결과 보기 →' },
+  skip_btn: { en: 'Skip and see empty result', ko: '건너뛰고 빈 결과 보기' },
+  retake_btn: { en: '← Retake', ko: '← 다시 응답하기' },
+  retake_note: { en: 'Results are stored only in your browser', ko: '결과는 브라우저에만 저장됩니다' },
+  hdr_type: { en: 'Type', ko: '유형' },
+  hdr_pattern: { en: 'Pattern', ko: '유형' },
+  metric_top: { en: 'Top need area', ko: '최고 필요 영역' },
+  metric_features: { en: 'Recommended features', ko: '추천 기능 수' },
+  metric_features_unit: { en: '', ko: '개' },
+  metric_approach: { en: 'Approach', ko: '접근 방식' },
+  sec_domains: { en: 'Domain scores and recommended features', ko: '도메인별 세부 점수 및 추천 기능' },
+  path_intro_a: { en: 'Follow the', ko: '각 추천 기능 아래의' },
+  path_intro_b: { en: '⚙ Settings path', ko: '⚙ 설정 경로' },
+  path_intro_c: { en: 'below, or tap a feature name to open Apple\u2019s setup guide.', ko: '를 따라가거나, 기능 이름을 누르면 Apple 설정 가이드가 열립니다.' },
+  legend_1: { en: '1 mild', ko: '1점 약함' },
+  legend_2: { en: '2 moderate', ko: '2점 보통' },
+  legend_3: { en: '3 significant', ko: '3점 강함' },
+  legend_4: { en: '4 severe', ko: '4점 매우 강함' },
+  footer_1: { en: 'Priority: Essential (max severity 3+), Suggested (2), Optional (1)', ko: '추천 우선순위: 필수 = 3점 이상 · 권장 = 2점 · 선택 = 1점' },
+  footer_2: { en: 'Settings paths use iPhone (iOS). On Mac, use System Settings → Accessibility. Labels may vary by iOS version.', ko: '설정 경로는 iPhone(iOS) 기준 · Mac은 시스템 설정 → 손쉬운 사용 · 정확한 라벨은 iOS 버전에 따라 다를 수 있음' },
+  // Domains
+  d_vision: { en: 'Vision', ko: '시각' },
+  d_hearing: { en: 'Hearing', ko: '청각' },
+  d_speech: { en: 'Speech', ko: '발화' },
+  d_mobility: { en: 'Mobility', ko: '운동' },
+  d_cognitive: { en: 'Cognitive', ko: '인지' },
+  // Sub-dims
+  sd_blindness: { en: 'Blindness', ko: '시력 (blindness)' },
+  sd_low_vision: { en: 'Low vision', ko: '저시력 (low-vision)' },
+  sd_motion: { en: 'Motion sensitivity', ko: '모션 민감도' },
+  sd_hoh: { en: 'Hard of hearing', ko: '난청 (hard-of-hearing)' },
+  sd_deafness: { en: 'Deafness', ko: '농 (deafness)' },
+  sd_atypical: { en: 'Atypical speech', ko: '발화 명료성' },
+  sd_nonspeaking: { en: 'Nonspeaking', ko: '발화 가능성' },
+  sd_dexterity: { en: 'Dexterity', ko: '손가락 정교성' },
+  sd_alt_input: { en: 'Alternative input', ko: '대체 입력' },
+  sd_limb: { en: 'Limb difference', ko: '사지 차이' },
+  sd_comprehension: { en: 'Comprehension', ko: '이해/독해' },
+  sd_attention: { en: 'Attention', ko: '주의 집중' },
+  sd_communication: { en: 'Communication', ko: '의사소통' },
+  // Priorities
+  pri_high: { en: 'Essential', ko: '필수' },
+  pri_mid: { en: 'Suggested', ko: '권장' },
+  pri_low: { en: 'Optional', ko: '선택' },
+  // Patterns
+  pat_average: { en: 'No specific needs', ko: '평균형' },
+  pat_single: { en: 'Single-domain focus', ko: '단일 도메인 집중' },
+  pat_multi: { en: 'Stable (multi-domain)', ko: '안정형 (다영역)' },
+  pat_temp: { en: 'Temporary · situational', ko: '일시적 · 상황형' },
+  pat_prog: { en: 'Progressive · proactive', ko: '진행성 · 사전 대비형' },
+  // Approaches
+  ap_none: { en: 'No special support needed', ko: '특별한 보조 불필요' },
+  ap_gradual: { en: 'Gradual enhancements', ko: '점진적 보강' },
+  ap_voice_alt: { en: 'Voice & alternative input', ko: '음성·대체 입력' },
+  ap_personal_voice: { en: 'Proactive (Personal Voice)', ko: '사전 대비 (Personal Voice)' },
+  ap_alt_learning: { en: 'Learn alternative input', ko: '대체 입력 사전 학습' },
+  ap_progressive: { en: 'Build for progression', ko: '진행 대비 보강' },
+  ap_vision: { en: 'Vision reinforcement', ko: '시각 보강' },
+  ap_hearing: { en: 'Hearing reinforcement', ko: '청각 보강' },
+  ap_speech: { en: 'Speech assistance', ko: '발화 보조' },
+  ap_mobility: { en: 'Mobility assistance', ko: '운동 보조' },
+  ap_readability: { en: 'Content readability', ko: '콘텐츠 가독성' },
+  // Empty
+  empty_feats: { en: 'No score · no recommendations', ko: '필요 점수 0 · 추천 기능 없음' },
+  // Time
+  time_q: { en: 'How long has this been the case?', ko: '이 상태는 얼마나 지속되었습니까?' },
+  time_stable: { en: 'Long-term · stable', ko: '장기간 안정' },
+  time_temporary: { en: 'Temporary · recovering', ko: '일시적 · 회복 중' },
+  time_progressive: { en: 'Progressive · worsening', ko: '진행성 · 악화' }
+};
+
+/* ==================== Conditions (symptom-based, Apple-style) ==================== */
+/* Each condition carries: s = severity scores (for radar/sub-bars),
+   f = curated features [priority, name, why, optionalDomainOverride] */
+const conditions = {
+  vision: [
+    { id: 'v-glasses', en: 'Wears reading glasses', ko: '돋보기 안경 착용', s: { 'vision:low-vision': 1 },
+      f: [['high','Larger Text','Bigger type'],['mid','Bold Text','Heavier weight'],['low','Increase Contrast','Sharper edges']] },
+    { id: 'v-light', en: 'Sensitivity to light', ko: '빛에 민감함', s: { 'vision:low-vision': 1, 'vision:motion-sensitivity': 1 },
+      f: [['high','Reduce White Point','Tones down brightness'],['mid','Dim Flashing Lights','Softens flashes']] },
+    { id: 'v-color', en: 'Cannot distinguish certain colors', ko: '특정 색을 구분하기 어려움', s: { 'vision:low-vision': 2 },
+      f: [['high','Color Filters','Color-blind modes'],['mid','Differentiate Without Color','Shapes not just color'],['low','Hover Color','Identifies colors']] },
+    { id: 'v-depth', en: 'Depth perception issues', ko: '거리·깊이 인식 어려움', s: { 'vision:low-vision': 2 },
+      f: [['high','Increase Contrast','Sharper edges'],['mid','Reduce Transparency','Solid backgrounds'],['low','Bold Text','Heavier weight']] },
+    { id: 'v-blurry', en: 'Blurry vision / dizziness', ko: '시야 흐림 / 어지러움', s: { 'vision:low-vision': 2, 'vision:motion-sensitivity': 2 },
+      f: [['high','Larger Text','Bigger type'],['high','Zoom','Screen magnifier'],['mid','Increase Contrast','Sharper edges'],['low','Reduce Motion','Less animation']] },
+    { id: 'v-blind', en: 'Blind', ko: '시각장애 (전맹)', s: { 'vision:blindness': 4 },
+      f: [['high','VoiceOver','Replaces visual UI'],['high','Spoken Content','Reads text aloud'],['mid','Audio Descriptions','Narrates video']] },
+    { id: 'v-braille', en: 'Blind + braille user', ko: '시각장애 + 점자 사용자', s: { 'vision:blindness': 4 },
+      f: [['high','VoiceOver','Replaces visual UI'],['high','Braille Display','Braille I/O'],['mid','Braille Access','Braille notetaker']] },
+    { id: 'v-deafblind', en: 'Deafblind', ko: '시청각 중복장애', s: { 'vision:blindness': 4, 'hearing:deafness': 4 },
+      f: [['high','VoiceOver','Replaces visual UI'],['high','Braille Display','Braille I/O'],['high','Braille Access','Captions in braille'],['mid','Sound Recognition','Alerts for sounds','hearing']] }
+  ],
+  hearing: [
+    { id: 'h-loud', en: 'Issues hearing in loud environments', ko: '시끄러운 환경에서 듣기 어려움', s: { 'hearing:hard-of-hearing': 1 },
+      f: [['high','Headphone Accommodations','Custom frequency'],['mid','Live Listen','Mic-to-headphone']] },
+    { id: 'h-phone', en: 'Issues hearing phone calls', ko: '통화 시 듣기 어려움', s: { 'hearing:hard-of-hearing': 2 },
+      f: [['high','Live Captions','Call captions'],['mid','Headphone Accommodations','Custom frequency']] },
+    { id: 'h-alarms', en: 'Missing alarms / alerts', ko: '알람·경보음을 놓침', s: { 'hearing:hard-of-hearing': 3 },
+      f: [['high','Sound Recognition','Alerts for sounds'],['high','Sensory Alerts','LED flash + vibration']] },
+    { id: 'h-tv', en: 'Missing TV dialog, trouble hearing dialog', ko: 'TV·영상 대사를 놓침', s: { 'hearing:hard-of-hearing': 2 },
+      f: [['high','Closed Captions','Subtitle dialog'],['mid','Live Captions','Real-time captions']] },
+    { id: 'h-tinnitus', en: 'Ringing in ears', ko: '이명 (귀울림)', s: { 'hearing:hard-of-hearing': 1 },
+      f: [['high','Background Sounds','Masks ringing'],['low','Headphone Accommodations','Custom frequency']] },
+    { id: 'h-one-ear', en: 'Hard of hearing, one ear', ko: '한쪽 귀 난청', s: { 'hearing:hard-of-hearing': 2 },
+      f: [['high','Mono Audio','Both channels merged'],['mid','Headphone Accommodations','Custom frequency']] },
+    { id: 'h-deaf', en: 'Hard of hearing / deaf', ko: '난청 / 농', s: { 'hearing:hard-of-hearing': 3, 'hearing:deafness': 3 },
+      f: [['high','Made for iPhone Hearing','Hearing aid support'],['high','Live Captions','Real-time captions'],['mid','Sound Recognition','Alerts for sounds'],['mid','RTT','Real-time text calls']] },
+    { id: 'h-sign', en: 'Deaf + Sign Language', ko: '농인 + 수어 사용', s: { 'hearing:deafness': 4 },
+      f: [['high','Sound Recognition','Alerts for sounds'],['high','Name Recognition','Alerts when called'],['high','RTT','Real-time text calls'],['mid','FaceTime','Sign language detection'],['mid','Live Captions','Captions everywhere']] }
+  ],
+  speech: [
+    { id: 's-difficulty', en: 'Difficulty speaking', ko: '발화에 어려움이 있음', s: { 'speech:atypical-speech': 3 },
+      f: [['high','Vocal Shortcuts','Custom voice triggers'],['high','Listen for Atypical Speech','Siri adaptation'],['mid','Live Speech','Type to speak']] },
+    { id: 's-little', en: 'Little or no speech', ko: '거의 또는 전혀 발화하지 못함', s: { 'speech:nonspeaking': 4, 'speech:atypical-speech': 4 },
+      f: [['high','Live Speech','Type to speak'],['mid','Personal Voice','Save your voice (now)']] },
+    { id: 's-choose-not', en: 'Choose not to speak verbally', ko: '음성으로 말하지 않기를 선택함', s: { 'speech:nonspeaking': 3 },
+      f: [['high','Live Speech','Type to speak'],['low','Personal Voice','Save your voice (now)']] },
+    { id: 's-at-risk', en: 'At risk of losing ability to speak', ko: '발화 능력을 잃을 위험에 있음', s: { 'speech:nonspeaking': 2, 'speech:atypical-speech': 1 }, progressive: true,
+      f: [['high','Personal Voice','Save your voice (now)'],['mid','Live Speech','Type to speak']] }
+  ],
+  mobility: [
+    { id: 'm-typing', en: 'Difficulty typing', ko: '타이핑에 어려움', s: { 'mobility:dexterity': 2 },
+      f: [['high','Dictation','Voice typing'],['mid','Touch Accommodations','Touch assistance']] },
+    { id: 'm-fine-motor', en: 'Lack of fine motor skills', ko: '미세 운동 기능 부족', s: { 'mobility:dexterity': 3 },
+      f: [['high','Touch Accommodations','Touch assistance'],['high','AssistiveTouch','Simplified touch'],['mid','Dictation','Voice typing']] },
+    { id: 'm-limb-fn', en: 'Reduced limb function', ko: '사지 기능 저하', s: { 'mobility:limb-difference': 2, 'mobility:alternative-input': 2 },
+      f: [['high','AssistiveTouch','One-handed support'],['mid','Voice Control','Voice navigation'],['mid','Dictation','Voice typing']] },
+    { id: 'm-involuntary', en: 'Involuntary movements', ko: '불수의 운동', s: { 'mobility:dexterity': 3, 'mobility:alternative-input': 2 },
+      f: [['high','Touch Accommodations','Mistouch protection'],['mid','AssistiveTouch','Simplified touch'],['low','Switch Control','External switches']] },
+    { id: 'm-low-mob-speech', en: 'Low mobility + speech limited', ko: '운동·발화 모두 제한', s: { 'mobility:alternative-input': 3, 'mobility:limb-difference': 2, 'speech:atypical-speech': 2 },
+      f: [['high','Voice Control','Voice navigation'],['high','Switch Control','External switches'],['mid','Live Speech','Type to speak','speech']] },
+    { id: 'm-manual-w', en: 'Manual wheelchair user', ko: '수동 휠체어 사용자', s: { 'mobility:limb-difference': 1 },
+      f: [['low','AssistiveTouch','Easier reach']] },
+    { id: 'm-motor-w', en: 'Motorized wheelchair user', ko: '전동 휠체어 사용자', s: { 'mobility:alternative-input': 3, 'mobility:limb-difference': 2 },
+      f: [['high','Voice Control','Voice navigation'],['mid','Switch Control','External switches'],['mid','AssistiveTouch','Simplified touch']] },
+    { id: 'm-head', en: 'Head movement only', ko: '머리 움직임만 가능', s: { 'mobility:alternative-input': 4, 'mobility:limb-difference': 4 },
+      f: [['high','Switch Control','External switches'],['high','Head Tracking','Head-based pointer'],['high','Eye Tracking','Eye-based input'],['mid','Voice Control','Voice navigation']] }
+  ],
+  cognitive: [
+    { id: 'c-tired', en: 'Tired when reading', ko: '글을 읽으면 쉽게 피곤해짐', s: { 'cognitive:comprehension': 2, 'cognitive:attention': 1 },
+      f: [['high','Accessibility Reader','Comfortable reading'],['mid','Speak Selection','Read selection aloud'],['mid','Safari Reader','Stripped-down articles']] },
+    { id: 'c-concentration', en: 'Concentration issues', ko: '집중력에 문제가 있음', s: { 'cognitive:attention': 3 },
+      f: [['high','Focus','Block distractions'],['mid','Background Sounds','Calming ambient sound'],['mid','Reduce Motion','Less visual noise']] },
+    { id: 'c-forgetful', en: 'Forgetfulness / disorientation', ko: '건망증 / 방향 감각 상실', s: { 'cognitive:comprehension': 2, 'cognitive:attention': 2 },
+      f: [['high','Assistive Access','Simplified iPhone'],['low','Accessibility Reader','Comfortable reading']] },
+    { id: 'c-misplace', en: 'Misplaces devices', ko: '기기를 자주 분실함', s: { 'cognitive:attention': 1 },
+      f: [['low','Action Button','One-button shortcut']] },
+    { id: 'c-reading', en: 'Reading difficulties', ko: '독해에 어려움', s: { 'cognitive:comprehension': 3 },
+      f: [['high','Accessibility Reader','Dyslexia-friendly reading'],['high','Safari Reader','Stripped-down articles'],['mid','Speak Selection','Read selection aloud']] },
+    { id: 'c-spelling', en: 'Spelling issues', ko: '맞춤법에 어려움', s: { 'cognitive:comprehension': 2, 'cognitive:communication': 2 },
+      f: [['high','Apple Intelligence Writing','Sentence tools'],['mid','Dictation','Voice typing']] },
+    { id: 'c-words-run', en: 'Words running together', ko: '글자가 겹쳐 보이거나 혼동됨', s: { 'cognitive:comprehension': 3 },
+      f: [['high','Accessibility Reader','Dyslexia-friendly reading'],['mid','Larger Text','Bigger type'],['mid','Speak Selection','Read selection aloud']] },
+    { id: 'c-motion-sick', en: 'Motion sickness', ko: '움직임으로 인한 멀미', s: { 'vision:motion-sensitivity': 3 },
+      f: [['high','Vehicle Motion Cues','Reduces motion sickness','vision'],['mid','Reduce Motion','Less animation','vision']] },
+    { id: 'c-list', en: 'Difficulty with list writing', ko: '목록·계획 작성 어려움', s: { 'cognitive:communication': 2 },
+      f: [['mid','Apple Intelligence Writing','Sentence tools'],['low','Dictation','Voice typing']] },
+    { id: 'c-instructions', en: 'Difficulty following instructions', ko: '지시 따르기 어려움', s: { 'cognitive:comprehension': 2, 'cognitive:attention': 2 },
+      f: [['high','Assistive Access','Simplified iPhone'],['mid','Guided Access','Single-task mode'],['low','Accessibility Reader','Comfortable reading']] },
+    { id: 'c-mood', en: 'Mood changes', ko: '기분 변화', s: { 'cognitive:attention': 1, 'cognitive:communication': 1 },
+      f: [['low','Focus','Quiet notifications'],['low','Background Sounds','Calming ambient sound']] },
+    { id: 'c-safety', en: 'Safety issues / wandering', ko: '안전 문제 / 길 잃음', s: { 'cognitive:attention': 2 },
+      f: [['high','Assistive Access','Simplified iPhone']] },
+    { id: 'c-language', en: 'Language issues', ko: '언어 처리 어려움 (실어증 등)', s: { 'cognitive:communication': 3 },
+      f: [['high','Speak Selection','Read selection aloud'],['mid','Live Speech','Type to speak'],['mid','Apple Intelligence Writing','Sentence tools']] }
+  ]
+};
+
+const domainOrder = ['vision', 'hearing', 'speech', 'mobility', 'cognitive'];
+
+/* ==================== Feature names (bilingual) ==================== */
+const featureI18n = {
+  'VoiceOver': { en: 'VoiceOver', ko: 'VoiceOver' },
+  'Braille Display': { en: 'Braille Display', ko: '점자 디스플레이' },
+  'Spoken Content': { en: 'Spoken Content', ko: '말하기 콘텐츠' },
+  'Audio Descriptions': { en: 'Audio Descriptions', ko: '오디오 설명' },
+  'Larger Text': { en: 'Larger Text', ko: '더 큰 텍스트' },
+  'Zoom': { en: 'Zoom', ko: '확대/축소' },
+  'Increase Contrast': { en: 'Increase Contrast', ko: '대비 증가' },
+  'Bold Text': { en: 'Bold Text', ko: '텍스트 굵게' },
+  'Hover Color': { en: 'Hover Color', ko: '호버 색상' },
+  'Hover Text': { en: 'Hover Text', ko: '호버 텍스트' },
+  'Magnifier': { en: 'Magnifier', ko: '확대기' },
+  'Reduce Motion': { en: 'Reduce Motion', ko: '동작 줄이기' },
+  'Vehicle Motion Cues': { en: 'Vehicle Motion Cues', ko: '차량 모션 큐' },
+  'Dim Flashing Lights': { en: 'Dim Flashing Lights', ko: '깜박이는 조명 어둡게 하기' },
+  'Auto-Play Video Previews': { en: 'Auto-Play Video Previews', ko: '비디오 미리보기 자동 재생' },
+  'Made for iPhone Hearing': { en: 'Made for iPhone Hearing', ko: 'Made for iPhone 청각 기기' },
+  'Live Captions': { en: 'Live Captions', ko: '실시간 자막' },
+  'Live Listen': { en: 'Live Listen', ko: '실시간 듣기' },
+  'Headphone Accommodations': { en: 'Headphone Accommodations', ko: '헤드폰 조절' },
+  'Music Haptics': { en: 'Music Haptics', ko: '음악 햅틱' },
+  'Mono Audio': { en: 'Mono Audio', ko: '모노 오디오' },
+  'Sound Recognition': { en: 'Sound Recognition', ko: '소리 인식' },
+  'Name Recognition': { en: 'Name Recognition', ko: '이름 인식' },
+  'RTT': { en: 'RTT', ko: 'RTT/TTY' },
+  'Vocal Shortcuts': { en: 'Vocal Shortcuts', ko: '음성 단축어' },
+  'Listen for Atypical Speech': { en: 'Listen for Atypical Speech', ko: '비정형 발화 인식' },
+  'Live Speech': { en: 'Live Speech', ko: '실시간 음성' },
+  'Personal Voice': { en: 'Personal Voice', ko: '개인 음성' },
+  'Touch Accommodations': { en: 'Touch Accommodations', ko: '터치 조정' },
+  'AssistiveTouch': { en: 'AssistiveTouch', ko: 'AssistiveTouch' },
+  'Switch Control': { en: 'Switch Control', ko: '스위치 제어' },
+  'Eye Tracking': { en: 'Eye Tracking', ko: '시선 추적' },
+  'Voice Control': { en: 'Voice Control', ko: '음성 제어' },
+  'Dictation': { en: 'Dictation', ko: '받아쓰기' },
+  'Back Tap': { en: 'Back Tap', ko: '뒤로 탭' },
+  'Action Button': { en: 'Action Button', ko: '동작 버튼' },
+  'Accessibility Reader': { en: 'Accessibility Reader', ko: '손쉬운 사용 리더' },
+  'Safari Reader': { en: 'Safari Reader', ko: 'Safari 리더' },
+  'Apple Intelligence Writing': { en: 'Apple Intelligence Writing Tools', ko: 'Apple Intelligence 쓰기 도구' },
+  'Focus': { en: 'Focus', ko: '집중 모드' },
+  'Assistive Access': { en: 'Assistive Access', ko: '지원 접근' },
+  'Speak Selection': { en: 'Speak Selection', ko: '선택 항목 말하기' },
+  'Reduce White Point': { en: 'Reduce White Point', ko: '흰색 포인트 줄이기' },
+  'Color Filters': { en: 'Color Filters', ko: '색상 필터' },
+  'Differentiate Without Color': { en: 'Differentiate Without Color', ko: '색상 없이 구분' },
+  'Reduce Transparency': { en: 'Reduce Transparency', ko: '투명도 줄이기' },
+  'Braille Access': { en: 'Braille Access', ko: '점자 접근' },
+  'Sensory Alerts': { en: 'Sensory Alerts (LED Flash)', ko: '감각 알림 (LED 플래시)' },
+  'Closed Captions': { en: 'Closed Captions', ko: '자막 및 청각 장애인용 자막' },
+  'Background Sounds': { en: 'Background Sounds', ko: '배경음' },
+  'FaceTime': { en: 'FaceTime Sign Language', ko: 'FaceTime 수어 감지' },
+  'Guided Access': { en: 'Guided Access', ko: '안내 접근' },
+  'Head Tracking': { en: 'Head Tracking', ko: '머리 추적' }
+};
+
+/* ==================== Feature reasons (bilingual) ==================== */
+const whyI18n = {
+  'Replaces visual UI': { en: 'Replaces visual UI', ko: '시각 대체' },
+  'Braille I/O': { en: 'Braille I/O', ko: '점자 입출력' },
+  'Reads text aloud': { en: 'Reads text aloud', ko: '텍스트 읽기' },
+  'Narrates video': { en: 'Narrates video', ko: '영상 음성 해설' },
+  'Bigger type': { en: 'Bigger type', ko: '글자 크게' },
+  'Screen magnifier': { en: 'Screen magnifier', ko: '화면 확대' },
+  'Sharper edges': { en: 'Sharper edges', ko: '대비 강화' },
+  'Heavier weight': { en: 'Heavier weight', ko: '굵게' },
+  'Identifies colors': { en: 'Identifies colors', ko: '색 식별 보조' },
+  'Real-world zoom': { en: 'Real-world zoom', ko: '실세계 확대' },
+  'Pointer-zoom text': { en: 'Pointer-zoom text', ko: '포인터 확대' },
+  'Less animation': { en: 'Less animation', ko: '동작 줄이기' },
+  'Reduces motion sickness': { en: 'Reduces motion sickness', ko: '멀미 완화' },
+  'Softens flashes': { en: 'Softens flashes', ko: '번쩍임 완화' },
+  'Stops auto-play': { en: 'Stops auto-play', ko: '자동 재생 끔' },
+  'Hearing aid support': { en: 'Hearing aid support', ko: '보청기 호환' },
+  'Real-time captions': { en: 'Real-time captions', ko: '실시간 자막' },
+  'Call captions': { en: 'Call captions', ko: '통화 자막' },
+  'Custom frequency': { en: 'Custom frequency', ko: '주파수 맞춤' },
+  'Mic-to-headphone': { en: 'Mic-to-headphone', ko: '마이크→이어폰' },
+  'Music as vibration': { en: 'Music as vibration', ko: '진동으로 음악' },
+  'Both channels merged': { en: 'Both channels merged', ko: '양쪽 채널 합침' },
+  'Alerts for sounds': { en: 'Alerts for sounds', ko: '소리 알림' },
+  'Alerts when called': { en: 'Alerts when called', ko: '이름 부를 때 알림' },
+  'Real-time text calls': { en: 'Real-time text calls', ko: '실시간 텍스트 통화' },
+  'Captions everywhere': { en: 'Captions everywhere', ko: '시스템 자막' },
+  'Custom voice triggers': { en: 'Custom voice triggers', ko: '비정형 발화 인식' },
+  'Siri adaptation': { en: 'Siri adaptation', ko: 'Siri 적응 학습' },
+  'Voice shortcuts': { en: 'Voice shortcuts', ko: '음성 단축 명령' },
+  'Type to speak': { en: 'Type to speak', ko: '타이핑→음성' },
+  'Save your voice (now)': { en: 'Record while you can (~1 min, 10 phrases)', ko: '지금 녹음하기 (10문구·약 1분)' },
+  'Touch assistance': { en: 'Touch assistance', ko: '터치 보조' },
+  'Simplified touch': { en: 'Simplified touch', ko: '터치 단순화' },
+  'Mistouch protection': { en: 'Mistouch protection', ko: '오터치 방지' },
+  'External switches': { en: 'External switches', ko: '외부 스위치' },
+  'Eye-based input': { en: 'Eye-based input', ko: '시선 입력' },
+  'Voice navigation': { en: 'Voice navigation', ko: '음성 조작' },
+  'Voice typing': { en: 'Voice typing', ko: '음성 입력' },
+  'Tap back of phone': { en: 'Tap back of phone', ko: '뒷면 두드림' },
+  'One-button shortcut': { en: 'One-button shortcut', ko: '단축 버튼' },
+  'One-handed support': { en: 'One-handed support', ko: '한 손 보조' },
+  'One-handed shortcut': { en: 'One-handed shortcut', ko: '한 손 단축' },
+  'Dyslexia-friendly reading': { en: 'Dyslexia-friendly reading', ko: '난독증·저인지 보조' },
+  'Stripped-down articles': { en: 'Stripped-down articles', ko: '본문 정리' },
+  'Read selection aloud': { en: 'Read selection aloud', ko: '읽어주기' },
+  'Sentence tools': { en: 'Sentence tools', ko: '문장 정리' },
+  'Block distractions': { en: 'Block distractions', ko: '집중 모드' },
+  'Quiet notifications': { en: 'Quiet notifications', ko: '알림 차단' },
+  'Less visual noise': { en: 'Less visual noise', ko: '시각 자극 완화' },
+  'Less flashing': { en: 'Less flashing', ko: '번쩍임 완화' },
+  'Simplified iPhone': { en: 'Simplified iPhone', ko: '단순화된 iPhone UI' },
+  'Tones down brightness': { en: 'Tones down brightness', ko: '밝기 낮춤' },
+  'Color-blind modes': { en: 'Color-blind modes', ko: '색맹 보정 모드' },
+  'Shapes not just color': { en: 'Shapes, not just color', ko: '색 대신 모양으로 구분' },
+  'Solid backgrounds': { en: 'Solid backgrounds', ko: '배경 불투명하게' },
+  'Braille notetaker': { en: 'Braille notetaker', ko: '점자 메모 작성' },
+  'Captions in braille': { en: 'Captions in braille', ko: '점자로 실시간 자막' },
+  'LED flash + vibration': { en: 'LED flash + vibration', ko: 'LED 플래시 + 진동' },
+  'Subtitle dialog': { en: 'Subtitles for dialog', ko: '대사 자막' },
+  'Masks ringing': { en: 'Masks the ringing', ko: '이명 가림' },
+  'Calming ambient sound': { en: 'Calming ambient sound', ko: '편안한 배경음' },
+  'Sign language detection': { en: 'Sign language detection', ko: '수어 감지' },
+  'Easier reach': { en: 'Easier reach', ko: '닿기 쉽게' },
+  'Head-based pointer': { en: 'Head-based pointer', ko: '머리로 포인터 조작' },
+  'Comfortable reading': { en: 'Comfortable reading', ko: '편안한 읽기' },
+  'Single-task mode': { en: 'Single-task mode', ko: '단일 작업 모드' }
+};
+
+/* ==================== Feature paths (bilingual) ==================== */
+const featurePaths = {
+  'VoiceOver': { en: 'Settings → Accessibility → VoiceOver', ko: '설정 → 손쉬운 사용 → VoiceOver' },
+  'Braille Display': { en: 'Settings → Accessibility → VoiceOver → Braille', ko: '설정 → 손쉬운 사용 → VoiceOver → 점자' },
+  'Spoken Content': { en: 'Settings → Accessibility → Spoken Content', ko: '설정 → 손쉬운 사용 → 말하기 콘텐츠' },
+  'Speak Selection': { en: 'Settings → Accessibility → Spoken Content → Speak Selection', ko: '설정 → 손쉬운 사용 → 말하기 콘텐츠 → 선택 항목 말하기' },
+  'Audio Descriptions': { en: 'Settings → Accessibility → Audio Descriptions', ko: '설정 → 손쉬운 사용 → 오디오 설명' },
+  'Larger Text': { en: 'Settings → Accessibility → Display & Text Size → Larger Text', ko: '설정 → 손쉬운 사용 → 화면 디스플레이 및 텍스트 크기 → 더 큰 텍스트' },
+  'Bold Text': { en: 'Settings → Accessibility → Display & Text Size → Bold Text', ko: '설정 → 손쉬운 사용 → 화면 디스플레이 및 텍스트 크기 → 텍스트 굵게' },
+  'Increase Contrast': { en: 'Settings → Accessibility → Display & Text Size → Increase Contrast', ko: '설정 → 손쉬운 사용 → 화면 디스플레이 및 텍스트 크기 → 대비 증가' },
+  'Zoom': { en: 'Settings → Accessibility → Zoom', ko: '설정 → 손쉬운 사용 → 확대/축소' },
+  'Hover Text': { en: 'Settings → Accessibility → Hover Text', ko: '설정 → 손쉬운 사용 → 호버 텍스트' },
+  'Hover Color': { en: 'Settings → Accessibility → Hover Text → Hover Color', ko: '설정 → 손쉬운 사용 → 호버 텍스트 → 호버 색상' },
+  'Magnifier': { en: 'Magnifier app (add to Control Center)', ko: '확대기 앱 (제어 센터에 추가)' },
+  'Reduce Motion': { en: 'Settings → Accessibility → Motion → Reduce Motion', ko: '설정 → 손쉬운 사용 → 동작 → 동작 줄이기' },
+  'Vehicle Motion Cues': { en: 'Settings → Accessibility → Motion → Show Vehicle Motion Cues', ko: '설정 → 손쉬운 사용 → 동작 → 차량 모션 큐 표시' },
+  'Dim Flashing Lights': { en: 'Settings → Accessibility → Motion → Dim Flashing Lights', ko: '설정 → 손쉬운 사용 → 동작 → 깜박이는 조명 어둡게 하기' },
+  'Auto-Play Video Previews': { en: 'Settings → Accessibility → Motion → Auto-Play Video Previews', ko: '설정 → 손쉬운 사용 → 동작 → 비디오 미리보기 자동 재생' },
+  'Made for iPhone Hearing': { en: 'Settings → Accessibility → Hearing Devices', ko: '설정 → 손쉬운 사용 → 청각 기기' },
+  'Live Captions': { en: 'Settings → Accessibility → Live Captions', ko: '설정 → 손쉬운 사용 → 실시간 자막' },
+  'Live Listen': { en: 'Control Center → Hearing → Live Listen', ko: '제어 센터 → 청각 → 실시간 듣기' },
+  'Headphone Accommodations': { en: 'Settings → Accessibility → Audio & Visual → Headphone Accommodations', ko: '설정 → 손쉬운 사용 → 오디오 및 시각 → 헤드폰 조절' },
+  'Music Haptics': { en: 'Settings → Accessibility → Music Haptics', ko: '설정 → 손쉬운 사용 → 음악 햅틱' },
+  'Mono Audio': { en: 'Settings → Accessibility → Audio & Visual → Mono Audio', ko: '설정 → 손쉬운 사용 → 오디오 및 시각 → 모노 오디오' },
+  'Sound Recognition': { en: 'Settings → Accessibility → Sound Recognition', ko: '설정 → 손쉬운 사용 → 소리 인식' },
+  'Name Recognition': { en: 'Settings → Accessibility → Sound Recognition → Name Recognition', ko: '설정 → 손쉬운 사용 → 소리 인식 → 이름 인식' },
+  'RTT': { en: 'Settings → Accessibility → RTT/TTY', ko: '설정 → 손쉬운 사용 → RTT/TTY' },
+  'Vocal Shortcuts': { en: 'Settings → Accessibility → Vocal Shortcuts', ko: '설정 → 손쉬운 사용 → 음성 단축어' },
+  'Listen for Atypical Speech': { en: 'Settings → Siri → Listen for Atypical Speech', ko: '설정 → Siri → 비정형 발화 인식' },
+  'Live Speech': { en: 'Settings → Accessibility → Live Speech', ko: '설정 → 손쉬운 사용 → 실시간 음성' },
+  'Personal Voice': { en: 'Settings → Accessibility → Personal Voice (~1 min · 10 phrases)', ko: '설정 → 손쉬운 사용 → 개인 음성 (약 1분 · 10문구)' },
+  'Touch Accommodations': { en: 'Settings → Accessibility → Touch → Touch Accommodations', ko: '설정 → 손쉬운 사용 → 터치 → 터치 조정' },
+  'AssistiveTouch': { en: 'Settings → Accessibility → Touch → AssistiveTouch', ko: '설정 → 손쉬운 사용 → 터치 → AssistiveTouch' },
+  'Switch Control': { en: 'Settings → Accessibility → Switch Control', ko: '설정 → 손쉬운 사용 → 스위치 제어' },
+  'Eye Tracking': { en: 'Settings → Accessibility → Eye Tracking', ko: '설정 → 손쉬운 사용 → 시선 추적' },
+  'Voice Control': { en: 'Settings → Accessibility → Voice Control', ko: '설정 → 손쉬운 사용 → 음성 제어' },
+  'Dictation': { en: 'Settings → General → Keyboard → Enable Dictation', ko: '설정 → 일반 → 키보드 → 받아쓰기 활성화' },
+  'Back Tap': { en: 'Settings → Accessibility → Touch → Back Tap', ko: '설정 → 손쉬운 사용 → 터치 → 뒤로 탭' },
+  'Action Button': { en: 'Settings → Action Button (iPhone 15 Pro+)', ko: '설정 → 동작 버튼 (iPhone 15 Pro 이상)' },
+  'Accessibility Reader': { en: 'Settings → Accessibility → Accessibility Reader', ko: '설정 → 손쉬운 사용 → 손쉬운 사용 리더' },
+  'Safari Reader': { en: 'Safari address bar → Page menu (aA) → Show Reader', ko: 'Safari 주소창 → 페이지 메뉴(aA) → 리더 표시' },
+  'Apple Intelligence Writing': { en: 'Select text → Writing Tools (Apple Intelligence devices)', ko: '텍스트 선택 → 쓰기 도구 (Apple Intelligence 지원 기기)' },
+  'Focus': { en: 'Settings → Focus (or Control Center long-press)', ko: '설정 → 집중 모드 (또는 제어 센터 길게 누르기)' },
+  'Assistive Access': { en: 'Settings → Accessibility → Assistive Access', ko: '설정 → 손쉬운 사용 → 지원 접근' },
+  'Reduce White Point': { en: 'Settings → Accessibility → Display & Text Size → Reduce White Point', ko: '설정 → 손쉬운 사용 → 화면 디스플레이 및 텍스트 크기 → 흰색 포인트 줄이기' },
+  'Color Filters': { en: 'Settings → Accessibility → Display & Text Size → Color Filters', ko: '설정 → 손쉬운 사용 → 화면 디스플레이 및 텍스트 크기 → 색상 필터' },
+  'Differentiate Without Color': { en: 'Settings → Accessibility → Display & Text Size → Differentiate Without Color', ko: '설정 → 손쉬운 사용 → 화면 디스플레이 및 텍스트 크기 → 색상 없이 구분' },
+  'Reduce Transparency': { en: 'Settings → Accessibility → Display & Text Size → Reduce Transparency', ko: '설정 → 손쉬운 사용 → 화면 디스플레이 및 텍스트 크기 → 투명도 줄이기' },
+  'Braille Access': { en: 'Settings → Accessibility → VoiceOver → Braille → Braille Access', ko: '설정 → 손쉬운 사용 → VoiceOver → 점자 → 점자 접근' },
+  'Sensory Alerts': { en: 'Settings → Accessibility → Audio & Visual → LED Flash for Alerts', ko: '설정 → 손쉬운 사용 → 오디오 및 시각 → 알림 시 LED 플래시' },
+  'Closed Captions': { en: 'Settings → Accessibility → Subtitles & Captioning', ko: '설정 → 손쉬운 사용 → 자막 및 청각 장애인용 자막' },
+  'Background Sounds': { en: 'Settings → Accessibility → Audio & Visual → Background Sounds', ko: '설정 → 손쉬운 사용 → 오디오 및 시각 → 배경음' },
+  'FaceTime': { en: 'FaceTime → automatic in Group calls (Sign Language Prominence)', ko: 'FaceTime → 그룹 통화에서 자동 (수어 우선 표시)' },
+  'Guided Access': { en: 'Settings → Accessibility → Guided Access', ko: '설정 → 손쉬운 사용 → 안내 접근' },
+  'Head Tracking': { en: 'Settings → Accessibility → Touch → AssistiveTouch → Head Tracking', ko: '설정 → 손쉬운 사용 → 터치 → AssistiveTouch → 머리 추적' }
+};
+
+/* ==================== Apple help links ==================== */
+const FEATURES_PAGE = { en: 'https://www.apple.com/accessibility/features/', ko: 'https://www.apple.com/kr/accessibility/features/' };
+const featureLinks = {
+  'VoiceOver': 'https://support.apple.com/guide/iphone/iph3e2e415f/ios',
+  'Braille Display': 'https://support.apple.com/guide/iphone/use-a-braille-display-iph73b8c43/ios',
+  'Spoken Content': 'https://support.apple.com/guide/iphone/spoken-content-iph96b214f0/ios',
+  'Speak Selection': 'https://support.apple.com/guide/iphone/spoken-content-iph96b214f0/ios',
+  'Audio Descriptions': 'https://support.apple.com/guide/iphone/audio-descriptions-iph4768b3f5c/ios',
+  'Larger Text': 'https://support.apple.com/guide/iphone/customize-the-text-size-and-zoom-setting-iphd6804774e/ios',
+  'Bold Text': 'https://support.apple.com/guide/iphone/customize-the-text-size-and-zoom-setting-iphd6804774e/ios',
+  'Increase Contrast': 'https://support.apple.com/guide/iphone/iph3e2e1fb0',
+  'Zoom': 'https://support.apple.com/guide/iphone/zoom-iph3e2e367e/ios',
+  'Hover Color': 'https://support.apple.com/guide/iphone/iphe2449dec8',
+  'Hover Text': 'https://support.apple.com/guide/iphone/iphe2449dec8',
+  'Magnifier': 'https://support.apple.com/guide/iphone/iphe867dc99c',
+  'Reduce Motion': 'https://support.apple.com/guide/iphone/motion-iph0b691d3ed/ios',
+  'Vehicle Motion Cues': 'https://support.apple.com/guide/iphone/iph55564cb22',
+  'Dim Flashing Lights': 'https://support.apple.com/guide/iphone/iph0b691d3ed',
+  'Auto-Play Video Previews': 'https://support.apple.com/guide/iphone/iph0b691d3ed',
+  'Made for iPhone Hearing': 'https://support.apple.com/guide/iphone/hearing-devices-iph470b1833/ios',
+  'Live Captions': 'https://support.apple.com/guide/iphone/get-live-captions-of-spoken-audio-iphe0990f7bb/ios',
+  'Live Listen': 'https://support.apple.com/guide/iphone/live-listen-iph8bf9386f5/ios',
+  'Headphone Accommodations': 'https://support.apple.com/en-us/102663',
+  'Music Haptics': 'https://support.apple.com/guide/iphone/iphff2ceeb16',
+  'Mono Audio': 'https://support.apple.com/guide/iphone/adjust-audio-settings-iphb80ab7516/ios',
+  'Sound Recognition': 'https://support.apple.com/guide/iphone/sound-recognition-iphf2dc33312/ios',
+  'Name Recognition': 'https://support.apple.com/guide/iphone/use-name-recognition-iphb865d79be/ios',
+  'RTT': 'https://support.apple.com/en-us/HT207033',
+  'Vocal Shortcuts': 'https://support.apple.com/guide/iphone/iph7f242ea2c',
+  'Listen for Atypical Speech': 'https://support.apple.com/guide/iphone/use-siri-iph83aad8922/ios',
+  'Live Speech': 'https://support.apple.com/guide/iphone/type-to-speak-iphcf92d2d9b/ios',
+  'Personal Voice': 'https://support.apple.com/guide/iphone/record-your-personal-voice-iph51936468d/ios',
+  'Switch Control': 'https://support.apple.com/guide/iphone/set-up-and-turn-on-switch-control-iph400b2f114/ios',
+  'Back Tap': 'https://support.apple.com/guide/iphone/back-tap-iphaa57e7885/ios',
+  'Action Button': 'https://support.apple.com/guide/iphone/use-and-customize-the-action-button-iphe89d61d66/ios',
+  'Accessibility Reader': 'https://support.apple.com/guide/iphone/read-listen-text-apps-accessibility-reader-iph406a46ab8/ios',
+  'Color Filters': 'https://support.apple.com/guide/iphone/iph3e2e1fb0',
+  'Reduce White Point': 'https://support.apple.com/guide/iphone/iph3e2e1fb0',
+  'Differentiate Without Color': 'https://support.apple.com/guide/iphone/iph3e2e1fb0',
+  'Reduce Transparency': 'https://support.apple.com/guide/iphone/iph3e2e1fb0',
+  'Braille Access': 'https://support.apple.com/guide/iphone/use-braille-access-with-a-braille-display-iph5953d3c7a/ios',
+  'Sensory Alerts': 'https://support.apple.com/en-us/111774',
+  'Closed Captions': 'https://support.apple.com/guide/iphone/subtitles-and-captions-iph3e2e23d1/ios',
+  'FaceTime': 'https://support.apple.com/guide/iphone/iph7801d5771'
+};
+function featureLink(name) {
+  return featureLinks[name] || FEATURES_PAGE[currentLang] || FEATURES_PAGE.en;
+}
+
+/* ==================== Demo personas ==================== */
+const personas = {
+  p1: {
+    name: { en: 'Park, 68', ko: '박지영, 68세' },
+    type: { en: 'Low-vision · mild hearing loss', ko: '저시력·경도 난청' },
+    patternKey: 'pat_multi',
+    approachKey: 'ap_gradual',
+    topDomain: 'vision', topScore: 3,
+    avatar: { initial: '박', colors: ['#eeedfe','#3c3489','#7f77dd'] },
+    scores: [3,2,0,1,1],
+    domains: {
+      vision: { subs: [['sd_blindness',2],['sd_low_vision',3],['sd_motion',1]],
+        features: [['high','Larger Text','Bigger type'],['high','Increase Contrast','Sharper edges'],['high','Zoom','Screen magnifier'],['mid','Hover Color','Identifies colors'],['mid','Magnifier','Real-world zoom']] },
+      hearing: { subs: [['sd_hoh',2],['sd_deafness',0]],
+        features: [['mid','Live Captions','Call captions'],['mid','Made for iPhone Hearing','Hearing aid support'],['mid','Headphone Accommodations','Custom frequency']] },
+      speech: { subs: [['sd_atypical',0],['sd_nonspeaking',0]], features: [] },
+      mobility: { subs: [['sd_dexterity',1],['sd_alt_input',0],['sd_limb',0]],
+        features: [['low','Touch Accommodations','Mistouch protection']] },
+      cognitive: { subs: [['sd_comprehension',1],['sd_attention',1],['sd_communication',0]], features: [] }
+    }
+  },
+  p2: {
+    name: { en: 'Kim, 32', ko: '김민호, 32세' },
+    type: { en: 'Dyslexic developer', ko: '난독증 개발자' },
+    patternKey: 'pat_single',
+    approachKey: 'ap_readability',
+    topDomain: 'cognitive', topScore: 3,
+    avatar: { initial: '김', colors: ['#e1f5ee','#085041','#1d9e75'] },
+    scores: [1,0,0,0,3],
+    domains: {
+      vision: { subs: [['sd_blindness',0],['sd_low_vision',1],['sd_motion',0]], features: [] },
+      hearing: { subs: [['sd_hoh',0],['sd_deafness',0]], features: [] },
+      speech: { subs: [['sd_atypical',0],['sd_nonspeaking',0]], features: [] },
+      mobility: { subs: [['sd_dexterity',0],['sd_alt_input',0],['sd_limb',0]], features: [] },
+      cognitive: { subs: [['sd_comprehension',3],['sd_attention',2],['sd_communication',1]],
+        features: [['high','Accessibility Reader','Dyslexia-friendly reading'],['high','Safari Reader','Stripped-down articles'],['high','Speak Selection','Read selection aloud'],['mid','Focus','Quiet notifications'],['mid','Apple Intelligence Writing','Sentence tools'],['low','Dim Flashing Lights','Less flashing']] }
+    }
+  },
+  p3: {
+    name: { en: 'Choi, 41', ko: '최서연, 41세' },
+    type: { en: 'Post-surgery · one-handed', ko: '수술 후 회복 · 한 손 사용' },
+    patternKey: 'pat_temp',
+    approachKey: 'ap_voice_alt',
+    topDomain: 'mobility', topScore: 3,
+    avatar: { initial: '최', colors: ['#faece7','#712b13','#d85a30'] },
+    scores: [0,0,0,3,0],
+    domains: {
+      vision: { subs: [['sd_blindness',0],['sd_low_vision',0],['sd_motion',0]], features: [] },
+      hearing: { subs: [['sd_hoh',0],['sd_deafness',0]], features: [] },
+      speech: { subs: [['sd_atypical',0],['sd_nonspeaking',0]], features: [] },
+      mobility: { subs: [['sd_dexterity',2],['sd_alt_input',3],['sd_limb',3]],
+        features: [['high','AssistiveTouch','One-handed support'],['high','Voice Control','Voice navigation'],['high','Dictation','Voice typing'],['mid','Back Tap','Tap back of phone'],['mid','Action Button','One-handed shortcut']] },
+      cognitive: { subs: [['sd_comprehension',0],['sd_attention',0],['sd_communication',0]], features: [] }
+    }
+  },
+  p4: {
+    name: { en: 'Lee, 47', ko: '이도윤, 47세' },
+    type: { en: 'Early ALS (progressive)', ko: 'ALS 초기 (진행성)' },
+    patternKey: 'pat_prog',
+    approachKey: 'ap_personal_voice',
+    topDomain: 'speech', topScore: 2,
+    avatar: { initial: '이', colors: ['#e6f1fb','#0c447c','#378add'] },
+    scores: [0,0,2,2,0],
+    domains: {
+      vision: { subs: [['sd_blindness',0],['sd_low_vision',0],['sd_motion',0]], features: [] },
+      hearing: { subs: [['sd_hoh',0],['sd_deafness',0]], features: [] },
+      speech: { subs: [['sd_atypical',2],['sd_nonspeaking',1]],
+        features: [['high','Personal Voice','Save your voice (now)'],['high','Live Speech','Type to speak'],['mid','Vocal Shortcuts','Custom voice triggers']] },
+      mobility: { subs: [['sd_dexterity',2],['sd_alt_input',2],['sd_limb',1]],
+        features: [['high','Voice Control','Voice navigation'],['mid','Switch Control','External switches'],['mid','AssistiveTouch','Simplified touch'],['low','Eye Tracking','Eye-based input']] },
+      cognitive: { subs: [['sd_comprehension',0],['sd_attention',0],['sd_communication',0]], features: [] }
+    }
+  }
+};
+
+const colorMap = {
+  vision:    ['#eeedfe','#3c3489','#7f77dd'],
+  hearing:   ['#fbeaf0','#72243e','#d4537e'],
+  speech:    ['#e6f1fb','#0c447c','#378add'],
+  mobility:  ['#faece7','#712b13','#d85a30'],
+  cognitive: ['#e1f5ee','#085041','#1d9e75']
+};
+const neutralColors = ['#f3f2ee','#5f5e5a','#888780'];
+
+/* ==================== State ==================== */
+let currentLang = 'en';
+let currentMode = 'demo';
+let currentPersona = 'p1';
+let selectedConditions = new Set();
+let surveyTime = null;
+let surveySubmitted = false;
+
+/* ==================== Utils ==================== */
+function t(key) { return (i18n[key] && i18n[key][currentLang]) || key; }
+function tFeat(name) { return (featureI18n[name] && featureI18n[name][currentLang]) || name; }
+function tWhy(why) { return (whyI18n[why] && whyI18n[why][currentLang]) || why; }
+function tPath(name) { return (featurePaths[name] && featurePaths[name][currentLang]) || ''; }
+function hexToRgba(hex, alpha) {
+  const h = hex.replace('#','');
+  return 'rgba(' + parseInt(h.slice(0,2),16) + ',' + parseInt(h.slice(2,4),16) + ',' + parseInt(h.slice(4,6),16) + ',' + alpha + ')';
+}
+function barColor(s) {
+  return ['rgba(150,150,150,0.18)','#fac775','#ef9f27','#f0997b','#d85a30'][s] || '#888';
+}
+
+/* ==================== Chart ==================== */
+const isDark = matchMedia('(prefers-color-scheme: dark)').matches;
+const chart = new Chart(document.getElementById('radar'), {
+  type:'radar',
+  data:{
+    labels:['Vision','Hearing','Speech','Mobility','Cognitive'],
+    datasets:[{
+      label:'Score', data:[0,0,0,0,0],
+      backgroundColor:'rgba(127,119,221,0.2)',
+      borderColor:'#7f77dd', borderWidth:1.5,
+      pointBackgroundColor:'#7f77dd',
+      pointBorderColor: isDark ? '#1c1c1b' : '#fff',
+      pointRadius:3.5, pointBorderWidth:1.5
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      r:{
+        min:0, max:4, beginAtZero:true,
+        ticks:{ stepSize:1, color: isDark?'#6c6b67':'#a8a7a2', backdropColor:'transparent', font:{size:10} },
+        grid:{ color: isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.08)' },
+        angleLines:{ color: isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.08)' },
+        pointLabels:{ color: isDark?'#a8a7a2':'#5f5e5a', font:{size:12.5, weight:'500'} }
+      }
+    },
+    plugins:{ legend:{display:false} }
+  }
+});
+
+/* ==================== Demo data resolver ==================== */
+function personaToData(key) {
+  const p = personas[key];
+  const total = Object.values(p.domains).reduce((a, d) => a + d.features.length, 0);
+  return {
+    name: p.name[currentLang],
+    type: p.type[currentLang],
+    pattern: t(p.patternKey),
+    approach: t(p.approachKey),
+    topDomain: t('d_' + p.topDomain) + ' · ' + p.topScore.toFixed(1),
+    avatar: p.avatar,
+    scores: p.scores,
+    domains: p.domains,
+    totalFeatures: total
+  };
+}
+
+/* ==================== Survey ==================== */
+function renderSurveyForm() {
+  const container = document.getElementById('survey-sections');
+  let html = '';
+  domainOrder.forEach(function(d, idx) {
+    html += '<div class="section">';
+    html += '<div class="section-head"><div class="section-num">' + (idx+1) + '</div>';
+    html += '<div><div class="section-title">' + t('d_' + d) + '</div></div></div>';
+    html += '<div class="cond-list">';
+    conditions[d].forEach(function(c) {
+      const isSelected = selectedConditions.has(c.id);
+      html += '<button type="button" class="cond' + (isSelected?' selected':'') + '" data-cid="' + c.id + '">';
+      html += '<span class="cond-check"></span>';
+      html += '<span class="cond-label">' + c[currentLang] + '</span>';
+      html += '</button>';
+    });
+    html += '</div></div>';
+  });
+
+  // Time dimension
+  html += '<div class="section">';
+  html += '<div class="section-head"><div class="section-num">6</div>';
+  html += '<div><div class="section-title">' + t('time_q') + '</div></div></div>';
+  html += '<div class="time-q"><div class="time-opts">';
+  ['time_stable','time_temporary','time_progressive'].forEach(function(k) {
+    const val = k.split('_')[1];
+    html += '<button type="button" class="time-opt' + (surveyTime===val?' selected':'') + '" data-time="' + val + '">' + t(k) + '</button>';
+  });
+  html += '</div></div></div>';
+
+  container.innerHTML = html;
+
+  container.querySelectorAll('.cond').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const cid = btn.dataset.cid;
+      if (selectedConditions.has(cid)) {
+        selectedConditions.delete(cid);
+        btn.classList.remove('selected');
+      } else {
+        selectedConditions.add(cid);
+        btn.classList.add('selected');
+      }
+      updateProgress();
+    });
+  });
+  container.querySelectorAll('.time-opt').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      surveyTime = btn.dataset.time;
+      container.querySelectorAll('.time-opt').forEach(function(b) { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      updateProgress();
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  let count = selectedConditions.size;
+  if (surveyTime) count += 1;
+  document.getElementById('prog-text').innerHTML = count + ' <span>' + t('survey_selected') + '</span>';
+  // Total possible = all conditions + 1 time
+  const total = Object.values(conditions).reduce((a, arr) => a + arr.length, 0) + 1;
+  document.getElementById('prog-fill').style.width = Math.min(100, (count/total)*100) + '%';
+}
+
+function computeSurveyData() {
+  // Aggregate scores + gather curated features directly from selected conditions
+  const allScores = {};
+  let progressiveFlag = false;
+  const priRank = { high:3, mid:2, low:1 };
+  const featBuckets = { vision:{}, hearing:{}, speech:{}, mobility:{}, cognitive:{} };
+
+  selectedConditions.forEach(function(cid) {
+    for (const dom of domainOrder) {
+      const cond = conditions[dom].find(c => c.id === cid);
+      if (cond) {
+        // severity scores (for radar / sub-bars)
+        Object.entries(cond.s || {}).forEach(function(pair) {
+          const k = pair[0], v = pair[1];
+          if (!allScores[k] || v > allScores[k]) allScores[k] = v;
+        });
+        if (cond.progressive) progressiveFlag = true;
+        // curated features — gathered directly, no lossy threshold step
+        (cond.f || []).forEach(function(ft) {
+          const pri = ft[0], name = ft[1], why = ft[2];
+          const targetDom = ft[3] || dom; // optional cross-domain override
+          const bucket = featBuckets[targetDom];
+          if (!bucket[name] || priRank[pri] > priRank[bucket[name].pri]) {
+            bucket[name] = { pri: pri, why: why };
+          }
+        });
+        break;
+      }
+    }
+  });
+
+  // Build domain scores and sub-scores
+  const subDimMap = {
+    vision: [['sd_blindness','blindness'],['sd_low_vision','low-vision'],['sd_motion','motion-sensitivity']],
+    hearing: [['sd_hoh','hard-of-hearing'],['sd_deafness','deafness']],
+    speech: [['sd_atypical','atypical-speech'],['sd_nonspeaking','nonspeaking']],
+    mobility: [['sd_dexterity','dexterity'],['sd_alt_input','alternative-input'],['sd_limb','limb-difference']],
+    cognitive: [['sd_comprehension','comprehension'],['sd_attention','attention'],['sd_communication','communication']]
+  };
+  const domainScores = {};
+  const domainSubs = {};
+  domainOrder.forEach(function(d) {
+    let maxS = 0;
+    const subs = [];
+    subDimMap[d].forEach(function(pair) {
+      const score = allScores[d + ':' + pair[1]] || 0;
+      subs.push([pair[0], score]);
+      if (score > maxS) maxS = score;
+    });
+    domainScores[d] = maxS;
+    domainSubs[d] = subs;
+  });
+
+  // Build recommendation list per domain from gathered buckets (sorted by priority)
+  const domainFeatures = {};
+  domainOrder.forEach(function(d) {
+    domainFeatures[d] = Object.keys(featBuckets[d]).map(function(name) {
+      return [featBuckets[d][name].pri, name, featBuckets[d][name].why];
+    }).sort(function(a, b) { return priRank[b[0]] - priRank[a[0]]; });
+  });
+
+  // Compute pattern + approach
+  let topDomain = 'vision', topScore = 0;
+  domainOrder.forEach(function(k) {
+    if (domainScores[k] > topScore) { topScore = domainScores[k]; topDomain = k; }
+  });
+  const nonzero = domainOrder.filter(function(k) { return domainScores[k] > 0; }).length;
+
+  let patternKey = 'pat_average';
+  let approachKey = 'ap_none';
+
+  if (topScore === 0) {
+    patternKey = 'pat_average';
+    approachKey = 'ap_none';
+  } else if (progressiveFlag || surveyTime === 'progressive') {
+    patternKey = 'pat_prog';
+    if (domainScores.speech >= 1) approachKey = 'ap_personal_voice';
+    else if (domainScores.mobility >= 2) approachKey = 'ap_alt_learning';
+    else approachKey = 'ap_progressive';
+  } else if (surveyTime === 'temporary') {
+    patternKey = 'pat_temp';
+    approachKey = 'ap_voice_alt';
+  } else {
+    if (nonzero === 1) {
+      patternKey = 'pat_single';
+      const m = { vision:'ap_vision', hearing:'ap_hearing', speech:'ap_speech', mobility:'ap_mobility', cognitive:'ap_readability' };
+      approachKey = m[topDomain];
+    } else {
+      patternKey = 'pat_multi';
+      approachKey = 'ap_gradual';
+    }
+  }
+
+  // Total features
+  let totalFeatures = 0;
+  Object.values(domainFeatures).forEach(function(arr) { totalFeatures += arr.length; });
+
+  const colors = (topScore > 0) ? (colorMap[topDomain] || neutralColors) : neutralColors;
+
+  // Build unified domain data
+  const unifiedDomains = {};
+  domainOrder.forEach(function(d) {
+    unifiedDomains[d] = { subs: domainSubs[d], features: domainFeatures[d] };
+  });
+
+  return {
+    name: currentLang === 'en' ? 'My result' : '내 결과',
+    type: (function() {
+      const timeLabel = surveyTime ? t('time_' + surveyTime) : '';
+      return timeLabel ? (currentLang === 'en' ? 'Duration: ' : '지속: ') + timeLabel : (currentLang === 'en' ? 'Self assessment' : '자가 평가');
+    })(),
+    pattern: t(patternKey),
+    approach: t(approachKey),
+    topDomain: topScore > 0 ? t('d_' + topDomain) + ' · ' + topScore.toFixed(1) : (currentLang === 'en' ? 'None' : '없음'),
+    avatar: { initial: currentLang === 'en' ? 'Me' : '나', colors: colors },
+    scores: [domainScores.vision, domainScores.hearing, domainScores.speech, domainScores.mobility, domainScores.cognitive],
+    domains: unifiedDomains,
+    totalFeatures: totalFeatures
+  };
+}
+
+/* ==================== Render shared ==================== */
+function renderResults(data) {
+  const colors = data.avatar.colors;
+  const av = document.getElementById('av');
+  av.textContent = data.avatar.initial;
+  av.style.background = colors[0];
+  av.style.color = colors[1];
+
+  document.getElementById('p-name').textContent = data.name;
+  document.getElementById('p-type').textContent = data.type;
+  document.getElementById('p-pattern').textContent = data.pattern;
+  document.getElementById('p-approach').textContent = data.approach;
+  document.getElementById('top-d').textContent = data.topDomain;
+  document.getElementById('f-count').textContent = data.totalFeatures;
+  document.getElementById('f-count-unit').textContent = t('metric_features_unit');
+
+  // Chart
+  chart.data.labels = [t('d_vision'), t('d_hearing'), t('d_speech'), t('d_mobility'), t('d_cognitive')];
+  chart.data.datasets[0].data = data.scores;
+  chart.data.datasets[0].backgroundColor = hexToRgba(colors[2], 0.2);
+  chart.data.datasets[0].borderColor = colors[2];
+  chart.data.datasets[0].pointBackgroundColor = colors[2];
+  chart.update();
+
+  // Domain cards
+  document.getElementById('domains').innerHTML = domainOrder.map(function(k, i) {
+    const d = data.domains[k];
+    const s = data.scores[i];
+    const subs = d.subs.map(function(sub) {
+      const subLabel = i18n[sub[0]] ? t(sub[0]) : sub[0];
+      return '<div class="sub-row"><div class="sub-name">' + subLabel + '</div><div class="sub-track"><div class="sub-fill" style="width:' + (sub[1]/4)*100 + '%;background:' + barColor(sub[1]) + ';"></div></div><div class="sub-val">' + sub[1] + '</div></div>';
+    }).join('');
+    const feats = d.features.length > 0
+      ? '<div class="feats">' + d.features.map(function(f) {
+          const path = tPath(f[1]);
+          const pathHtml = path ? '<div class="f-path">' + path + '</div>' : '';
+          const link = featureLink(f[1]);
+          return '<div class="f-row"><span class="f-pri ' + f[0] + '">' + t('pri_' + f[0]) + '</span><div class="f-text"><div class="f-head"><a class="f-link" href="' + link + '" target="_blank" rel="noopener">' + tFeat(f[1]) + '<span class="ext">↗</span></a><span class="f-why">' + tWhy(f[2]) + '</span></div>' + pathHtml + '</div></div>';
+        }).join('') + '</div>'
+      : '<div class="feats-empty">' + t('empty_feats') + '</div>';
+    return '<div class="d-card"><div class="d-head"><div class="d-title">' + t('d_' + k) + '</div><div class="d-badge">' + s + ' / 4</div></div><div class="sub-bars">' + subs + '</div>' + feats + '</div>';
+  }).join('');
+}
+
+function renderPersonaTabs() {
+  document.getElementById('p-tabs').innerHTML = Object.keys(personas).map(function(k) {
+    const isActive = k === currentPersona;
+    return '<button class="p-tab' + (isActive?' active':'') + '" data-p="' + k + '">' + personas[k].name[currentLang] + '</button>';
+  }).join('');
+}
+
+/* ==================== Mode switching ==================== */
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(function(t) {
+    t.classList.toggle('active', t.dataset.mode === mode);
+  });
+  applyView();
+}
+
+function applyView() {
+  const pTabs = document.getElementById('p-tabs');
+  const demoHint = document.getElementById('demo-hint');
+  const survey = document.getElementById('survey-form');
+  const results = document.getElementById('results-panel');
+  const cta = document.getElementById('cta-card');
+  const retake = document.getElementById('retake-row');
+
+  if (currentMode === 'demo') {
+    pTabs.classList.remove('hidden');
+    demoHint.classList.remove('hidden');
+    survey.classList.add('hidden');
+    results.classList.remove('hidden');
+    cta.classList.remove('hidden');
+    retake.classList.add('hidden');
+    renderPersonaTabs();
+    renderResults(personaToData(currentPersona));
+  } else {
+    pTabs.classList.add('hidden');
+    demoHint.classList.add('hidden');
+    cta.classList.add('hidden');
+    if (surveySubmitted) {
+      survey.classList.add('hidden');
+      results.classList.remove('hidden');
+      retake.classList.remove('hidden');
+      renderResults(computeSurveyData());
+    } else {
+      survey.classList.remove('hidden');
+      results.classList.add('hidden');
+      retake.classList.add('hidden');
+      renderSurveyForm();
+    }
+  }
+}
+
+/* ==================== Language switching ==================== */
+function applyLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('a11y-lang', lang);
+  document.documentElement.lang = lang;
+  document.querySelectorAll('.lang-btn').forEach(function(b) {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+  // Update all static i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    const key = el.getAttribute('data-i18n');
+    if (i18n[key]) el.textContent = i18n[key][lang];
+  });
+  // Re-render dynamic content
+  applyView();
+}
+
+/* ==================== Event handlers ==================== */
+document.querySelectorAll('.lang-btn').forEach(function(b) {
+  b.addEventListener('click', function() { applyLanguage(b.dataset.lang); });
+});
+document.querySelectorAll('.mode-tab').forEach(function(t) {
+  t.addEventListener('click', function() { setMode(t.dataset.mode); });
+});
+document.getElementById('p-tabs').addEventListener('click', function(e) {
+  if (!e.target.matches('.p-tab')) return;
+  currentPersona = e.target.dataset.p;
+  renderPersonaTabs();
+  renderResults(personaToData(currentPersona));
+});
+document.getElementById('submit-btn').addEventListener('click', function() {
+  surveySubmitted = true;
+  applyView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('skip-btn').addEventListener('click', function() {
+  surveySubmitted = true;
+  applyView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('retake-btn').addEventListener('click', function() {
+  selectedConditions.clear();
+  surveyTime = null;
+  surveySubmitted = false;
+  applyView();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+document.getElementById('cta-btn').addEventListener('click', function() {
+  setMode('survey');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* ==================== Init ==================== */
+applyLanguage(localStorage.getItem('a11y-lang') || 'en');
+</script>
+</body>
+</html>
