@@ -189,42 +189,6 @@
     color: var(--text-2);
     background: var(--surface-2);
   }
-  .time-q {
-    margin-top: 4px;
-    padding: 14px 16px;
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-  }
-  .time-q-text {
-    font-size: 14px;
-    margin-bottom: 12px;
-  }
-  .time-opts {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
-  }
-  .time-opt {
-    padding: 10px 8px;
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    cursor: pointer;
-    font-size: 12.5px;
-    color: var(--text-2);
-    text-align: center;
-    font-family: inherit;
-    transition: all 0.12s;
-  }
-  .time-opt:hover {
-    background: var(--surface-2);
-    color: var(--text);
-  }
-  .time-opt.selected {
-    background: var(--info-bg);
-    color: var(--info-text);
-    border-color: var(--info-text);
-    font-weight: 500;
-  }
   .submit-row {
     margin-top: 20px;
     display: flex; gap: 14px;
@@ -748,10 +712,7 @@ const i18n = {
   // Empty
   empty_feats: { en: 'No score · no recommendations', ko: '필요 점수 0 · 추천 기능 없음' },
   // Time
-  time_q: { en: 'How long has this been the case?', ko: '이 상태는 얼마나 지속되었습니까?' },
-  time_stable: { en: 'Long-term · stable', ko: '장기간 안정' },
-  time_temporary: { en: 'Temporary · recovering', ko: '일시적 · 회복 중' },
-  time_progressive: { en: 'Progressive · worsening', ko: '진행성 · 악화' }
+
 };
 
 /* ==================== Conditions (symptom-based, Apple-style) ==================== */
@@ -1186,7 +1147,6 @@ let currentLang = 'en';
 let currentMode = 'demo';
 let currentPersona = 'p1';
 let selectedConditions = new Set();
-let surveyTime = null;
 let surveySubmitted = false;
 
 /* ==================== Utils ==================== */
@@ -1297,17 +1257,6 @@ function renderSurveyForm() {
     html += '</div></div>';
   });
 
-  // Time dimension
-  html += '<div class="section">';
-  html += '<div class="section-head"><div class="section-num">6</div>';
-  html += '<div><div class="section-title">' + t('time_q') + '</div></div></div>';
-  html += '<div class="time-q"><div class="time-opts">';
-  ['time_stable','time_temporary','time_progressive'].forEach(function(k) {
-    const val = k.split('_')[1];
-    html += '<button type="button" class="time-opt' + (surveyTime===val?' selected':'') + '" data-time="' + val + '">' + t(k) + '</button>';
-  });
-  html += '</div></div></div>';
-
   container.innerHTML = html;
 
   container.querySelectorAll('.cond').forEach(function(btn) {
@@ -1323,23 +1272,13 @@ function renderSurveyForm() {
       updateProgress();
     });
   });
-  container.querySelectorAll('.time-opt').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      surveyTime = btn.dataset.time;
-      container.querySelectorAll('.time-opt').forEach(function(b) { b.classList.remove('selected'); });
-      btn.classList.add('selected');
-      updateProgress();
-    });
-  });
   updateProgress();
 }
 
 function updateProgress() {
-  let count = selectedConditions.size;
-  if (surveyTime) count += 1;
+  const count = selectedConditions.size;
   document.getElementById('prog-text').innerHTML = count + ' <span>' + t('survey_selected') + '</span>';
-  // Total possible = all conditions + 1 time
-  const total = Object.values(conditions).reduce((a, arr) => a + arr.length, 0) + 1;
+  const total = Object.values(conditions).reduce((a, arr) => a + arr.length, 0);
   document.getElementById('prog-fill').style.width = Math.min(100, (count/total)*100) + '%';
 }
 
@@ -1417,14 +1356,11 @@ function computeSurveyData() {
   if (topScore === 0) {
     patternKey = 'pat_average';
     approachKey = 'ap_none';
-  } else if (progressiveFlag || surveyTime === 'progressive') {
+  } else if (progressiveFlag) {
     patternKey = 'pat_prog';
     if (domainScores.speech >= 1) approachKey = 'ap_personal_voice';
     else if (domainScores.mobility >= 2) approachKey = 'ap_alt_learning';
     else approachKey = 'ap_progressive';
-  } else if (surveyTime === 'temporary') {
-    patternKey = 'pat_temp';
-    approachKey = 'ap_voice_alt';
   } else {
     if (nonzero === 1) {
       patternKey = 'pat_single';
@@ -1450,10 +1386,7 @@ function computeSurveyData() {
 
   return {
     name: currentLang === 'en' ? 'My result' : '내 결과',
-    type: (function() {
-      const timeLabel = surveyTime ? t('time_' + surveyTime) : '';
-      return timeLabel ? (currentLang === 'en' ? 'Duration: ' : '지속: ') + timeLabel : (currentLang === 'en' ? 'Self assessment' : '자가 평가');
-    })(),
+    type: currentLang === 'en' ? 'Self assessment' : '자가 평가',
     pattern: t(patternKey),
     approach: t(approachKey),
     topDomain: topScore > 0 ? t('d_' + topDomain) + ' · ' + topScore.toFixed(1) : (currentLang === 'en' ? 'None' : '없음'),
@@ -1598,7 +1531,6 @@ document.getElementById('skip-btn').addEventListener('click', function() {
 });
 document.getElementById('retake-btn').addEventListener('click', function() {
   selectedConditions.clear();
-  surveyTime = null;
   surveySubmitted = false;
   applyView();
   window.scrollTo({ top: 0, behavior: 'smooth' });
