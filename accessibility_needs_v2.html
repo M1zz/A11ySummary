@@ -116,22 +116,25 @@
     border-radius: 2px; overflow: hidden;
   }
   .progress-fill {
-    height: 100%; background: var(--accent);
+    height: 100%; background: #378add;
     transition: width 0.3s; border-radius: 2px;
   }
   .section { margin-bottom: 22px; }
   .section-head {
-    display: flex; align-items: center; gap: 12px;
-    margin-bottom: 12px; padding-bottom: 8px;
-    border-bottom: 0.5px solid var(--border);
+    display: flex; align-items: center; gap: 9px;
+    margin-bottom: 10px;
   }
   .section-num {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: var(--surface-2);
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--surface-2); color: var(--text-2);
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 500; color: var(--text-2);
-    flex-shrink: 0;
+    font-size: 12px; font-weight: 600; flex-shrink: 0;
   }
+  .section-num.vision   { background: #eeedfe; color: #3c3489; }
+  .section-num.hearing  { background: #fbeaf0; color: #72243e; }
+  .section-num.speech   { background: #e6f1fb; color: #0c447c; }
+  .section-num.mobility { background: #faece7; color: #712b13; }
+  .section-num.cognitive { background: #e1f5ee; color: #085041; }
   .section-title { font-size: 16px; font-weight: 500; }
   .section-sub {
     font-size: 12px; color: var(--text-3);
@@ -230,7 +233,7 @@
   }
   .submit-btn {
     padding: 11px 22px;
-    background: var(--accent); color: var(--bg);
+    background: #378add; color: #fff;
     border: 0; border-radius: var(--radius-md);
     font-family: inherit; font-size: 14px; font-weight: 500;
     cursor: pointer;
@@ -431,6 +434,42 @@
     border-top: 0.5px solid var(--border);
     font-size: 11.5px; color: var(--text-3); line-height: 1.7;
   }
+  .examples-btn {
+    padding: 6px 0; border: 0; background: transparent;
+    color: #378add; font-family: inherit;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+  }
+  .examples-btn:hover { opacity: 0.75; }
+  .sheet-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.35);
+    z-index: 200;
+  }
+  .sheet-panel {
+    position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+    width: 100%; max-width: 760px;
+    background: var(--bg); border-radius: 16px 16px 0 0;
+    z-index: 201; max-height: 88vh; display: flex; flex-direction: column;
+  }
+  .sheet-hd {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px 12px;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 15px; font-weight: 600; flex-shrink: 0;
+  }
+  .done-btn {
+    background: transparent; border: 0;
+    color: #378add; font-family: inherit;
+    font-size: 15px; font-weight: 500; cursor: pointer;
+  }
+  .sheet-body { overflow-y: auto; padding: 16px 20px 40px; flex: 1; }
+  .persona-pills { display: flex; gap: 8px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 4px; }
+  .persona-pill {
+    padding: 7px 14px; border: 0; border-radius: 20px;
+    background: var(--surface-2); color: var(--text-2);
+    font-family: inherit; font-size: 13px; cursor: pointer;
+    white-space: nowrap; font-weight: 400;
+  }
+  .persona-pill.active { background: #7f77dd; color: #fff; font-weight: 600; }
   .hidden { display: none !important; }
 
   /* ===== Site Top Navigation ===== */
@@ -496,26 +535,22 @@
         <h1 data-i18n="app_title">Accessibility Needs Assessment</h1>
         <p class="subtitle" data-i18n="app_subtitle">Symptom-based · 5 domains · Mapped to Apple accessibility features</p>
       </div>
-      <div class="lang-toggle">
-        <button class="lang-btn active" data-lang="en">EN</button>
-        <button class="lang-btn" data-lang="ko">한국어</button>
+      <div style="display:flex;align-items:center;gap:12px;flex-shrink:0;">
+        <button id="examples-btn" class="examples-btn" data-i18n="mode_demo">Demo Personas</button>
+        <div class="lang-toggle">
+          <button class="lang-btn active" data-lang="en">EN</button>
+          <button class="lang-btn" data-lang="ko">한국어</button>
+        </div>
       </div>
     </div>
   </header>
 
-  <div class="mode-tabs">
-    <button class="mode-tab active" data-mode="demo" data-i18n="mode_demo">Demo Personas</button>
-    <button class="mode-tab" data-mode="survey" data-i18n="mode_survey">Self Assessment</button>
-  </div>
-
-  <div class="p-tabs" id="p-tabs"></div>
-  <div class="demo-hint" id="demo-hint" data-i18n="demo_hint">These are example personas showing how the tool works. Tap a name to compare — then assess yourself below.</div>
-
-  <div id="survey-form" class="hidden">
+  <!-- ── Survey form (primary view) ── -->
+  <div id="survey-form">
     <div class="notice" data-i18n="survey_notice">Select all conditions that apply. This is a functional assessment, not a medical diagnosis. If you wear glasses or use a hearing aid, answer based on your aided state.</div>
     <div class="progress-bar-wrap">
       <span class="progress-text" id="prog-text">0 <span data-i18n="survey_selected">selected</span></span>
-      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width: 0%;"></div></div>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
     </div>
     <div id="survey-sections"></div>
     <div class="submit-row">
@@ -524,21 +559,26 @@
     </div>
   </div>
 
-  <div id="results-panel">
+  <!-- ── Results (shown after survey submit) ── -->
+  <div id="results-panel" class="hidden">
+    <div class="retake-row" id="retake-row" style="margin-bottom:16px;">
+      <button class="retake-btn" id="retake-btn" data-i18n="retake_btn">← Retake</button>
+      <span style="font-size:11.5px;color:var(--text-3);" data-i18n="retake_note">Results are stored only in your browser</span>
+    </div>
     <div class="r-head">
-      <div class="av" id="av" style="background:#eeedfe; color:#3c3489;">P</div>
-      <div style="flex:1; min-width:0;">
-        <div style="font-weight:500; font-size:15.5px;" id="p-name">—</div>
-        <div style="font-size:13px; color:var(--text-2);" id="p-type">—</div>
+      <div class="av" id="av" style="background:#eeedfe;color:#3c3489;">P</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:500;font-size:15.5px;" id="p-name">—</div>
+        <div style="font-size:13px;color:var(--text-2);" id="p-type">—</div>
       </div>
-      <div style="text-align:right; flex-shrink:0;">
-        <div style="font-size:11px; color:var(--text-3);" data-i18n="hdr_pattern">Pattern</div>
-        <div style="font-size:12.5px; color:var(--text-2);" id="p-pattern">—</div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-size:11px;color:var(--text-3);" data-i18n="hdr_pattern">Pattern</div>
+        <div style="font-size:12.5px;color:var(--text-2);" id="p-pattern">—</div>
       </div>
     </div>
     <div class="top-grid">
       <div class="chart-wrap">
-        <canvas id="radar" role="img" aria-label="Radar chart of 5 accessibility domains">Vision · Hearing · Speech · Mobility · Cognitive</canvas>
+        <canvas id="radar" role="img" aria-label="Radar chart">Vision · Hearing · Speech · Mobility · Cognitive</canvas>
       </div>
       <div class="stats-col">
         <div class="m-card">
@@ -547,7 +587,7 @@
         </div>
         <div class="m-card">
           <div class="m-label" data-i18n="metric_features">Recommended features</div>
-          <div class="m-val"><span id="f-count">0</span><span id="f-count-unit" style="font-size:13px; color:var(--text-2); margin-left:3px; font-weight:400;"></span></div>
+          <div class="m-val"><span id="f-count">0</span><span id="f-count-unit" style="font-size:13px;color:var(--text-2);margin-left:3px;font-weight:400;"></span></div>
         </div>
         <div class="m-card">
           <div class="m-label" data-i18n="metric_approach">Approach</div>
@@ -568,17 +608,59 @@
     <div id="domains"></div>
   </div>
 
-  <div class="cta-card hidden" id="cta-card">
-    <div>
-      <div class="cta-text-title" data-i18n="cta_title">These are example results</div>
-      <div class="cta-text-sub" data-i18n="cta_sub">Now check your own accessibility needs</div>
+  <!-- ── Examples sheet ── -->
+  <div id="examples-sheet" class="hidden">
+    <div class="sheet-overlay" id="sheet-overlay"></div>
+    <div class="sheet-panel">
+      <div class="sheet-hd">
+        <span data-i18n="mode_demo">Demo Personas</span>
+        <button class="done-btn" id="close-examples">Done</button>
+      </div>
+      <div class="sheet-body">
+        <div class="persona-pills" id="p-tabs"></div>
+        <div class="r-head" style="margin-bottom:12px;">
+          <div class="av" id="se-av" style="background:#eeedfe;color:#3c3489;">P</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:500;font-size:15.5px;" id="se-p-name">—</div>
+            <div style="font-size:13px;color:var(--text-2);" id="se-p-type">—</div>
+          </div>
+          <div style="text-align:right;flex-shrink:0;">
+            <div style="font-size:11px;color:var(--text-3);" data-i18n="hdr_pattern">Pattern</div>
+            <div style="font-size:12.5px;color:var(--text-2);" id="se-p-pattern">—</div>
+          </div>
+        </div>
+        <div class="top-grid">
+          <div class="chart-wrap">
+            <canvas id="se-radar" role="img" aria-label="Radar chart examples"></canvas>
+          </div>
+          <div class="stats-col">
+            <div class="m-card">
+              <div class="m-label" data-i18n="metric_top">Top need area</div>
+              <div class="m-val" id="se-top-d">—</div>
+            </div>
+            <div class="m-card">
+              <div class="m-label" data-i18n="metric_features">Recommended features</div>
+              <div class="m-val"><span id="se-f-count">0</span></div>
+            </div>
+            <div class="m-card">
+              <div class="m-label" data-i18n="metric_approach">Approach</div>
+              <div class="m-val" id="se-p-approach" style="font-size:14px;">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="sec-title" data-i18n="sec_domains" style="margin-top:20px;">Domain scores and recommended features</div>
+        <div class="legend" style="margin:6px 0 12px;">
+          <span class="legend-item"><span class="legend-swatch" style="background:#fac775;"></span><span data-i18n="legend_1">1 mild</span></span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#ef9f27;"></span><span data-i18n="legend_2">2 moderate</span></span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#f0997b;"></span><span data-i18n="legend_3">3 significant</span></span>
+          <span class="legend-item"><span class="legend-swatch" style="background:#d85a30;"></span><span data-i18n="legend_4">4 severe</span></span>
+        </div>
+        <div id="se-domains"></div>
+        <div style="margin-top:20px;padding-top:14px;border-top:0.5px solid var(--border);font-size:11.5px;color:var(--text-3);line-height:1.7;">
+          <span data-i18n="footer_1">Priority: Essential (max severity 3+), Suggested (2), Optional (1)</span>
+        </div>
+      </div>
     </div>
-    <button class="cta-btn" id="cta-btn" data-i18n="cta_btn">Start my assessment →</button>
-  </div>
-
-  <div class="retake-row hidden" id="retake-row">
-    <button class="retake-btn" id="retake-btn" data-i18n="retake_btn">← Retake</button>
-    <span style="font-size:11.5px; color:var(--text-3);" data-i18n="retake_note">Results are stored only in your browser</span>
   </div>
 
   <footer>
@@ -1149,6 +1231,33 @@ const chart = new Chart(document.getElementById('radar'), {
     plugins:{ legend:{display:false} }
   }
 });
+const sheetChart = new Chart(document.getElementById('se-radar'), {
+  type:'radar',
+  data:{
+    labels:['Vision','Hearing','Speech','Mobility','Cognitive'],
+    datasets:[{
+      label:'Score', data:[0,0,0,0,0],
+      backgroundColor:'rgba(127,119,221,0.2)',
+      borderColor:'#7f77dd', borderWidth:1.5,
+      pointBackgroundColor:'#7f77dd',
+      pointBorderColor: isDark ? '#1c1c1b' : '#fff',
+      pointRadius:3.5, pointBorderWidth:1.5
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    scales:{
+      r:{
+        min:0, max:4, beginAtZero:true,
+        ticks:{ stepSize:1, color: isDark?'#6c6b67':'#a8a7a2', backdropColor:'transparent', font:{size:10} },
+        grid:{ color: isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.08)' },
+        angleLines:{ color: isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.08)' },
+        pointLabels:{ color: isDark?'#a8a7a2':'#5f5e5a', font:{size:12.5, weight:'500'} }
+      }
+    },
+    plugins:{ legend:{display:false} }
+  }
+});
 
 /* ==================== Demo data resolver ==================== */
 function personaToData(key) {
@@ -1173,7 +1282,7 @@ function renderSurveyForm() {
   let html = '';
   domainOrder.forEach(function(d, idx) {
     html += '<div class="section">';
-    html += '<div class="section-head"><div class="section-num">' + (idx+1) + '</div>';
+    html += '<div class="section-head"><div class="section-num ' + d + '">' + (idx+1) + '</div>';
     html += '<div><div class="section-title">' + t('d_' + d) + '</div></div></div>';
     html += '<div class="cond-list">';
     conditions[d].forEach(function(c) {
@@ -1356,33 +1465,10 @@ function computeSurveyData() {
 }
 
 /* ==================== Render shared ==================== */
-function renderResults(data) {
-  const colors = data.avatar.colors;
-  const av = document.getElementById('av');
-  av.textContent = data.avatar.initial;
-  av.style.background = colors[0];
-  av.style.color = colors[1];
-
-  document.getElementById('p-name').textContent = data.name;
-  document.getElementById('p-type').textContent = data.type;
-  document.getElementById('p-pattern').textContent = data.pattern;
-  document.getElementById('p-approach').textContent = data.approach;
-  document.getElementById('top-d').textContent = data.topDomain;
-  document.getElementById('f-count').textContent = data.totalFeatures;
-  document.getElementById('f-count-unit').textContent = t('metric_features_unit');
-
-  // Chart
-  chart.data.labels = [t('d_vision'), t('d_hearing'), t('d_speech'), t('d_mobility'), t('d_cognitive')];
-  chart.data.datasets[0].data = data.scores;
-  chart.data.datasets[0].backgroundColor = hexToRgba(colors[2], 0.2);
-  chart.data.datasets[0].borderColor = colors[2];
-  chart.data.datasets[0].pointBackgroundColor = colors[2];
-  chart.update();
-
-  // Domain cards
-  document.getElementById('domains').innerHTML = domainOrder.map(function(k, i) {
-    const d = data.domains[k];
-    const s = data.scores[i];
+function renderDomainCards(domains, scores, containerId) {
+  document.getElementById(containerId).innerHTML = domainOrder.map(function(k, i) {
+    const d = domains[k];
+    const s = scores[i];
     const subs = d.subs.map(function(sub) {
       const subLabel = i18n[sub[0]] ? t(sub[0]) : sub[0];
       return '<div class="sub-row"><div class="sub-name">' + subLabel + '</div><div class="sub-track"><div class="sub-fill" style="width:' + (sub[1]/4)*100 + '%;background:' + barColor(sub[1]) + ';"></div></div><div class="sub-val">' + sub[1] + '</div></div>';
@@ -1399,54 +1485,83 @@ function renderResults(data) {
   }).join('');
 }
 
+function renderResults(data) {
+  const colors = data.avatar.colors;
+  const av = document.getElementById('av');
+  av.textContent = data.avatar.initial;
+  av.style.background = colors[0];
+  av.style.color = colors[1];
+
+  document.getElementById('p-name').textContent = data.name;
+  document.getElementById('p-type').textContent = data.type;
+  document.getElementById('p-pattern').textContent = data.pattern;
+  document.getElementById('p-approach').textContent = data.approach;
+  document.getElementById('top-d').textContent = data.topDomain;
+  document.getElementById('f-count').textContent = data.totalFeatures;
+  document.getElementById('f-count-unit').textContent = t('metric_features_unit');
+
+  chart.data.labels = [t('d_vision'), t('d_hearing'), t('d_speech'), t('d_mobility'), t('d_cognitive')];
+  chart.data.datasets[0].data = data.scores;
+  chart.data.datasets[0].backgroundColor = hexToRgba(colors[2], 0.2);
+  chart.data.datasets[0].borderColor = colors[2];
+  chart.data.datasets[0].pointBackgroundColor = colors[2];
+  chart.update();
+
+  renderDomainCards(data.domains, data.scores, 'domains');
+}
+
+function renderSheetResults(data) {
+  const colors = data.avatar.colors;
+  const av = document.getElementById('se-av');
+  av.textContent = data.avatar.initial;
+  av.style.background = colors[0];
+  av.style.color = colors[1];
+
+  document.getElementById('se-p-name').textContent = data.name;
+  document.getElementById('se-p-type').textContent = data.type;
+  document.getElementById('se-p-pattern').textContent = data.pattern;
+  document.getElementById('se-p-approach').textContent = data.approach;
+  document.getElementById('se-top-d').textContent = data.topDomain;
+  document.getElementById('se-f-count').textContent = data.totalFeatures;
+
+  sheetChart.data.labels = [t('d_vision'), t('d_hearing'), t('d_speech'), t('d_mobility'), t('d_cognitive')];
+  sheetChart.data.datasets[0].data = data.scores;
+  sheetChart.data.datasets[0].backgroundColor = hexToRgba(colors[2], 0.2);
+  sheetChart.data.datasets[0].borderColor = colors[2];
+  sheetChart.data.datasets[0].pointBackgroundColor = colors[2];
+  sheetChart.update();
+
+  renderDomainCards(data.domains, data.scores, 'se-domains');
+}
+
 function renderPersonaTabs() {
+  const domainAccents = {
+    vision: '#7f77dd', hearing: '#d4537e', speech: '#378add',
+    mobility: '#d85a30', cognitive: '#1d9e75'
+  };
   document.getElementById('p-tabs').innerHTML = Object.keys(personas).map(function(k) {
     const isActive = k === currentPersona;
-    return '<button class="p-tab' + (isActive?' active':'') + '" data-p="' + k + '">' + personas[k].name[currentLang] + '</button>';
+    const p = personas[k];
+    const accent = domainAccents[p.topDomain] || '#7f77dd';
+    const style = isActive ? 'background:' + accent + ';color:#fff;font-weight:600;' : '';
+    return '<button class="persona-pill' + (isActive?' active':'') + '" data-p="' + k + '" style="' + style + '">' + p.name[currentLang] + '</button>';
   }).join('');
 }
 
-/* ==================== Mode switching ==================== */
-function setMode(mode) {
-  currentMode = mode;
-  document.querySelectorAll('.mode-tab').forEach(function(t) {
-    t.classList.toggle('active', t.dataset.mode === mode);
-  });
-  applyView();
-}
-
+/* ==================== View switching ==================== */
 function applyView() {
-  const pTabs = document.getElementById('p-tabs');
-  const demoHint = document.getElementById('demo-hint');
   const survey = document.getElementById('survey-form');
   const results = document.getElementById('results-panel');
-  const cta = document.getElementById('cta-card');
   const retake = document.getElementById('retake-row');
 
-  if (currentMode === 'demo') {
-    pTabs.classList.remove('hidden');
-    demoHint.classList.remove('hidden');
+  if (surveySubmitted) {
     survey.classList.add('hidden');
     results.classList.remove('hidden');
-    cta.classList.remove('hidden');
-    retake.classList.add('hidden');
-    renderPersonaTabs();
-    renderResults(personaToData(currentPersona));
+    renderResults(computeSurveyData());
   } else {
-    pTabs.classList.add('hidden');
-    demoHint.classList.add('hidden');
-    cta.classList.add('hidden');
-    if (surveySubmitted) {
-      survey.classList.add('hidden');
-      results.classList.remove('hidden');
-      retake.classList.remove('hidden');
-      renderResults(computeSurveyData());
-    } else {
-      survey.classList.remove('hidden');
-      results.classList.add('hidden');
-      retake.classList.add('hidden');
-      renderSurveyForm();
-    }
+    survey.classList.remove('hidden');
+    results.classList.add('hidden');
+    renderSurveyForm();
   }
 }
 
@@ -1471,15 +1586,6 @@ function applyLanguage(lang) {
 document.querySelectorAll('.lang-btn').forEach(function(b) {
   b.addEventListener('click', function() { applyLanguage(b.dataset.lang); });
 });
-document.querySelectorAll('.mode-tab').forEach(function(t) {
-  t.addEventListener('click', function() { setMode(t.dataset.mode); });
-});
-document.getElementById('p-tabs').addEventListener('click', function(e) {
-  if (!e.target.matches('.p-tab')) return;
-  currentPersona = e.target.dataset.p;
-  renderPersonaTabs();
-  renderResults(personaToData(currentPersona));
-});
 document.getElementById('submit-btn').addEventListener('click', function() {
   surveySubmitted = true;
   applyView();
@@ -1497,9 +1603,23 @@ document.getElementById('retake-btn').addEventListener('click', function() {
   applyView();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
-document.getElementById('cta-btn').addEventListener('click', function() {
-  setMode('survey');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function openExamples() {
+  document.getElementById('examples-sheet').classList.remove('hidden');
+  renderPersonaTabs();
+  renderSheetResults(personaToData(currentPersona));
+}
+function closeExamples() {
+  document.getElementById('examples-sheet').classList.add('hidden');
+}
+document.getElementById('examples-btn').addEventListener('click', openExamples);
+document.getElementById('close-examples').addEventListener('click', closeExamples);
+document.getElementById('sheet-overlay').addEventListener('click', closeExamples);
+document.getElementById('p-tabs').addEventListener('click', function(e) {
+  const pill = e.target.closest('.persona-pill');
+  if (!pill) return;
+  currentPersona = pill.dataset.p;
+  renderPersonaTabs();
+  renderSheetResults(personaToData(currentPersona));
 });
 
 /* ==================== Init ==================== */
