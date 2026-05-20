@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+KR:wght@400;500;700&family=Pretendard:wght@400;500;700&display=swap" rel="stylesheet">
+<title>구현 가이드 — Apple Accessibility</title>
+<style>
+  :root {
+    --bg: #f6f3ee;
+    --bg-deep: #ece7dd;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a48;
+    --ink-faint: #807d77;
+    --rule: #d8d2c4;
+    --paper: #fbfaf6;
+    --accent: #c83a1a;
+    --vision:  #245a8a;
+    --hearing: #1f4d39;
+    --motor:   #c83a1a;
+    --speech:  #8a5e1c;
+    --cog:     #5a2a6a;
+    --before-bg:   rgba(200,58,26,0.06);
+    --before-rule: rgba(200,58,26,0.22);
+    --after-bg:    rgba(31,77,57,0.06);
+    --after-rule:  rgba(31,77,57,0.25);
+    --code-bg: #181612;
+    --code-ink: #eee7d4;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); }
+  body {
+    font-family: "Manrope", "Pretendard", -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #fff; }
+
+  /* ===== Site top nav ===== */
+  .top-nav {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(246,243,238,0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--rule);
+    padding: 0 36px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .top-nav .home {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    color: var(--ink);
+    letter-spacing: -.01em;
+    flex-shrink: 0;
+    margin-right: 28px;
+  }
+  .top-nav .home em { color: var(--accent); font-style: italic; font-weight: 400; }
+  .top-nav nav {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .top-nav nav::-webkit-scrollbar { display: none; }
+  .top-nav nav a {
+    flex-shrink: 0;
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--ink-soft);
+    font-family: "Manrope", sans-serif;
+    font-weight: 500;
+    letter-spacing: .01em;
+    padding: 0 14px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid transparent;
+    transition: color .15s, border-color .15s;
+  }
+  .top-nav nav a:hover { color: var(--accent); }
+  .top-nav nav a.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 700; }
+
+  /* ===== Language toggle ===== */
+  .lang-toggle {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    padding: 2px;
+    margin-left: 16px;
+    flex-shrink: 0;
+  }
+  .lang-btn {
+    padding: 3px 10px;
+    background: transparent;
+    border: none;
+    color: var(--ink-soft);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .lang-btn:hover { color: var(--ink); }
+  .lang-btn.active { background: var(--ink); color: var(--paper); }
+
+  /* ===== Page layout ===== */
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 56px 40px 120px;
+  }
+  @media (max-width: 720px) {
+    .page { padding: 36px 20px 80px; }
+    .top-nav { padding: 0 20px; }
+  }
+
+  /* ===== Hero ===== */
+  .hero {
+    margin-bottom: 56px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .eyebrow {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10.5px;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 900;
+    font-size: clamp(38px, 6vw, 64px);
+    line-height: 1.02;
+    letter-spacing: -.03em;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; font-weight: 400; color: var(--accent); }
+  .hero-lede {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    max-width: 640px;
+  }
+
+  /* ===== Feature card ===== */
+  .feat {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+
+  /* --- Header --- */
+  .feat-head {
+    padding: 28px 32px 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .feat-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .cat-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    padding: 3px 9px;
+    border-radius: 3px;
+    color: #fff;
+  }
+  .cat-vision  { background: var(--vision); }
+  .cat-hearing { background: var(--hearing); }
+  .cat-motor   { background: var(--motor); }
+  .cat-speech  { background: var(--speech); }
+  .cat-cog     { background: var(--cog); }
+  .feat-platforms {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: .04em;
+  }
+  .feat-name {
+    font-family: "Fraunces", "Noto Serif KR", serif;
+    font-weight: 900;
+    font-size: clamp(30px, 4vw, 42px);
+    letter-spacing: -.03em;
+    line-height: 1.05;
+    color: var(--ink);
+  }
+
+  /* --- Problem / Solution grid --- */
+  .ps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid var(--rule);
+  }
+  @media (max-width: 600px) {
+    .ps-grid { grid-template-columns: 1fr; }
+    .ps-cell + .ps-cell { border-left: none; border-top: 1px solid var(--rule); }
+  }
+  .ps-cell {
+    padding: 24px 28px;
+  }
+  .ps-cell + .ps-cell { border-left: 1px solid var(--rule); }
+  .section-label {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .18em;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+  .ps-cell p {
+    font-size: 15.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+
+  /* --- Implementation block --- */
+  .impl-block {
+    padding: 28px 32px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .impl-block:last-child { border-bottom: none; }
+  .impl-block + .impl-block {
+    border-top: 1px dashed rgba(216,210,196,0.8);
+  }
+
+  .impl-meta {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .purpose-chip {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    background: var(--bg-deep);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 4px 10px;
+    letter-spacing: .01em;
+    flex-shrink: 0;
+  }
+  .impl-sig {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--accent);
+    background: transparent;
+    letter-spacing: -.01em;
+  }
+
+  .impl-when {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+    margin-bottom: 20px;
+  }
+  .impl-when code {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.88em;
+    background: var(--bg-deep);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent);
+  }
+
+  /* --- Before / After --- */
+  .ba-row {
+    display: grid;
+    grid-template-columns: 1fr 28px 1fr;
+    align-items: start;
+    gap: 0;
+  }
+  @media (max-width: 600px) {
+    .ba-row { grid-template-columns: 1fr; }
+    .ba-divider { display: none; }
+  }
+  .ba-cell {
+    padding: 16px 18px;
+    border-radius: 6px;
+    font-size: 14.5px;
+    line-height: 1.6;
+  }
+  .ba-before {
+    background: var(--before-bg);
+    border: 1px solid var(--before-rule);
+    color: var(--ink-soft);
+  }
+  .ba-after {
+    background: var(--after-bg);
+    border: 1px solid var(--after-rule);
+    color: var(--ink);
+  }
+  .ba-divider {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 20px;
+    color: var(--ink-faint);
+    font-size: 15px;
+  }
+  .ba-tag {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .16em;
+    margin-bottom: 8px;
+  }
+  .ba-before .ba-tag { color: var(--accent); }
+  .ba-after  .ba-tag { color: var(--hearing); }
+
+  /* ===== Code block (full snippet) ===== */
+  pre.code-block {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 18px 22px;
+    border-radius: 6px;
+    overflow-x: auto;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 16px 0;
+  }
+  pre.code-block .c { color: #7a8a78; font-style: italic; }
+  pre.code-block .k { color: #ff9d6b; }
+  pre.code-block .s { color: #b8d99a; }
+  pre.code-block .t { color: #88c4ff; }
+  pre.code-block .n { color: #f0c674; }
+
+  /* ===== Divider between features ===== */
+  .feat-divider {
+    text-align: center;
+    color: var(--ink-faint);
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    margin: 12px 0 40px;
+    font-size: 13px;
+    opacity: .6;
+  }
+
+  /* ===== Category filter bar ===== */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .filter-btn {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-btn:hover { border-color: var(--ink-soft); color: var(--ink); }
+  .filter-btn.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .filter-btn[data-cat="vision"].active  { background: var(--vision);  border-color: var(--vision); }
+  .filter-btn[data-cat="hearing"].active { background: var(--hearing); border-color: var(--hearing); }
+  .filter-btn[data-cat="motor"].active   { background: var(--motor);   border-color: var(--motor); }
+  .filter-btn[data-cat="speech"].active  { background: var(--speech);  border-color: var(--speech); }
+  .filter-btn[data-cat="cog"].active     { background: var(--cog);     border-color: var(--cog); }
+</style>
+</head>
+<body>
+
+<!-- ===== SITE NAV ===== -->
+<header class="top-nav">
+  <a href="index.html" class="home">Apple <em>Accessibility</em></a>
+  <nav>
+    <a href="index.html" data-en="Overview">개요</a>
+    <a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a>
+    <a href="guide.html" class="active" data-en="Guide">구현 가이드</a>
+    <a href="part-iv.html" data-en="Recipes">레시피</a>
+    <a href="part-v.html" data-en="Appendix">부록</a>
+    <a href="apple-accessibility-graph-bilingual.html" data-en="Graph">그래프</a>
+    <a href="accessibility_needs_v2.html" data-en="Assessment">평가</a>
+  </nav>
+  <div class="lang-toggle" role="group" aria-label="Language / 언어">
+    <button class="lang-btn" data-lang="en">EN</button>
+    <button class="lang-btn" data-lang="ko">한국어</button>
+  </div>
+</header>
+
+<div class="page">
+
+  <!-- ===== HERO ===== -->
+  <div class="hero">
+    <div class="eyebrow">Implementation Guide</div>
+    <h1 data-en="Feature <em>Guide</em>">피쳐 <em>가이드</em></h1>
+    <p class="hero-lede" data-en="Per-feature breakdowns — problem, solution, when to apply, and before/after comparison. One card per API.">피쳐별 문제 정의 · 솔루션 · 적용 시점 · 적용 전후 비교. API 하나당 카드 하나.</p>
+  </div>
+
+  <!-- ===== FILTER BAR ===== -->
+  <div class="filter-bar" role="group" aria-label="Filter by category">
+    <button class="filter-btn active" data-cat="all" data-en="All">전체</button>
+    <button class="filter-btn" data-cat="vision">Vision</button>
+    <button class="filter-btn" data-cat="hearing">Hearing</button>
+    <button class="filter-btn" data-cat="motor" data-en="Mobility">Mobility</button>
+    <button class="filter-btn" data-cat="speech">Speech</button>
+    <button class="filter-btn" data-cat="cog" data-en="Cognitive">Cognitive</button>
+  </div>
+
+  <!-- ============================================================
+       FEATURE: VoiceOver
+  ============================================================ -->
+  <article class="feat" id="voiceover" data-cat="vision">
+
+    <div class="feat-head">
+      <div class="feat-top">
+        <span class="cat-tag cat-vision">Vision</span>
+        <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS · visionOS</span>
+      </div>
+      <div class="feat-name">VoiceOver</div>
+    </div>
+
+    <!-- Problem / Solution -->
+    <div class="ps-grid">
+      <div class="ps-cell">
+        <div class="section-label" data-en="Problem">문제 정의</div>
+        <p data-en="A GUI that assumes vision is fundamentally closed to anyone who cannot see the screen. Where a button is, what changed, what is currently in focus — all information flows through the visual channel alone.">시각이 전제된 GUI는 화면을 볼 수 없는 사람에게는 본질적으로 닫혀 있다. 버튼이 어디 있는지, 무엇이 변했는지, 지금 무엇을 보고 있는지 — 모든 정보가 시각 채널로만 흐른다.</p>
+      </div>
+      <div class="ps-cell">
+        <div class="section-label" data-en="Solution">솔루션</div>
+        <p data-en="A screen reader that reads every element on screen aloud. Operated via finger gestures (rotor, swipe), keyboard (VO+key), Bluetooth braille display, and on visionOS via eye gaze and pinch gestures.">화면의 모든 요소를 음성으로 읽어 주는 스크린 리더. 손가락 제스처(rotor, swipe), 키보드(VO+키), Bluetooth 점자 디스플레이, visionOS에서는 응시·핀치 제스처로 조작한다.</p>
+      </div>
+    </div>
+
+    <!-- Implementation 1: accessibilityLabel -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Naming — meaning &amp; structure">의미와 구조를 만들 때</span>
+        <code class="impl-sig">.accessibilityLabel("Favorites")</code>
+      </div>
+      <p class="impl-when" data-en="Every interactive element that shows only an icon or image with no text label. Standard components like <code>Button(&quot;Save&quot;)</code> are picked up automatically.">텍스트 없이 아이콘·이미지만 보여 주는 모든 인터랙티브 요소. <code>Button("Save")</code>처럼 라벨이 들어 있는 표준 컴포넌트는 자동으로 잡힌다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en='A heart-shaped icon button is read by VoiceOver as the English system icon name — "heart fill" — or, if there is truly no label, it stays silent.'>하트 모양 아이콘만 있는 버튼은 VoiceOver가 "heart fill" 같은 시스템 아이콘 이름을 영어로 읽거나, 라벨이 없으면 그냥 침묵한다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en='The moment focus lands, VoiceOver announces "Favorites" clearly. With a trait attached, it says "Favorites. Button."'>포커스되는 순간 "좋아요"라고 또렷이 발화. Traits이 함께 있으면 "좋아요. 버튼."</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation 2: accessibilityValue -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="State — current value">상태를 전달할 때</span>
+        <code class="impl-sig">.accessibilityValue(isLiked ? "On" : "Off")</code>
+      </div>
+      <p class="impl-when" data-en="Toggle buttons, checkboxes, switches, or any element whose state changes after interaction. Without this, VoiceOver re-reads the label but never mentions the new state.">탭 후 상태가 변하는 토글 버튼·체크박스·스위치 전체. 없으면 VoiceOver는 라벨만 반복하고 상태가 바뀐 사실을 알리지 않는다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en='"Favorites. Button." — then silence. The user has no way to know whether the like was registered or not.'>"좋아요. 버튼." 이후 침묵. 좋아요가 눌린 건지 아닌지 알 수 없다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en='"Favorites. On. Button." / "Favorites. Off. Button." — state is read together every time.'>"좋아요. On. 버튼." / "좋아요. Off. 버튼." — 항상 상태를 함께 읽는다.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation 3: accessibilityAction -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Gesture alternative — custom actions">제스처 대체</span>
+        <code class="impl-sig">.accessibilityAction(named: "Delete") { delete() }</code>
+      </div>
+      <p class="impl-when" data-en="Any interaction that is swipe-only — swipe-to-delete on a list row, drag-to-reorder, etc. VoiceOver users cannot perform swipe gestures the same way as sighted users; the action must be exposed separately.">스와이프 전용 인터랙션 전체 — 리스트 행 스와이프 삭제, 드래그 재정렬 등. VoiceOver 사용자는 같은 방식으로 스와이프 제스처를 수행할 수 없다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Swipe-to-delete exists visually, but the VoiceOver user cannot reach it. The feature is silently inaccessible.">스와이프 삭제는 시각적으로 존재하지만 VoiceOver 사용자는 영원히 도달할 수 없다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en='Two-finger scrub or the Actions rotor exposes "Delete" — the same action is reachable by every input method.'>두 손가락 스크럽 또는 Actions 로터에 "Delete"가 나타나 모든 입력 수단으로 동일 동작에 접근 가능.</span>
+        </div>
+      </div>
+    </div>
+
+  </article><!-- /VoiceOver -->
+
+
+  <!-- ============================================================
+       FEATURE: Dynamic Type
+  ============================================================ -->
+  <article class="feat" id="dynamic-type" data-cat="vision">
+
+    <div class="feat-head">
+      <div class="feat-top">
+        <span class="cat-tag cat-vision">Vision</span>
+        <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS</span>
+      </div>
+      <div class="feat-name">Dynamic Type</div>
+    </div>
+
+    <div class="ps-grid">
+      <div class="ps-cell">
+        <div class="section-label" data-en="Problem">문제 정의</div>
+        <p data-en="A font size hard-coded by the developer ignores the size the user set in System Settings. Low-vision users, the elderly, and anyone fatigued by small text are effectively excluded.">개발자가 하드코딩한 폰트 크기는 사용자가 시스템에서 정한 크기를 무시한다. 저시력·고령·소글씨 피로 사용자 전체가 사실상 배제된다.</p>
+      </div>
+      <div class="ps-cell">
+        <div class="section-label" data-en="Solution">솔루션</div>
+        <p data-en="Text automatically scales to the font size selected in Settings → Accessibility → Larger Text. The system defines 12 steps; the top 5 are designated Accessibility sizes and can reach up to 310% of the default.">Settings → Accessibility → Larger Text에서 선택한 크기에 따라 텍스트가 자동으로 확대·축소된다. 시스템이 12단계를 정의하며, 상위 5단계는 접근성 크기로 최대 약 310%까지 늘어난다.</p>
+      </div>
+    </div>
+
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Text — auto-scaling font">자동 스케일 텍스트</span>
+        <code class="impl-sig">.font(.body)</code>
+      </div>
+      <p class="impl-when" data-en="Every text element in the app. Using a system semantic style (`.body`, `.headline`, `.caption`) automatically tracks Dynamic Type — no extra code needed.">앱 안의 모든 텍스트. 시스템 시맨틱 스타일(<code>.body</code>, <code>.headline</code>, <code>.caption</code>)을 쓰면 자동으로 추적한다. 추가 코드 없음.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Hard-coded size: 17. Slider at maximum (AX5) — text stays exactly 17pt. Low-vision user's setting is completely ignored.">고정 size: 17. 슬라이더를 AX5까지 올려도 텍스트는 여전히 17pt. 저시력 사용자의 설정이 완전히 무시된다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="At AX5, text automatically expands to ~53pt. Layout shifts to single-column if needed; the user can read comfortably.">AX5에서 텍스트가 약 53pt까지 자동 확장. 필요 시 레이아웃이 단일 컬럼으로 전환. 사용자가 편안하게 읽을 수 있다.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Custom font — relative scaling">커스텀 폰트 스케일</span>
+        <code class="impl-sig">.font(.custom("Fraunces", size: 17, relativeTo: .body))</code>
+      </div>
+      <p class="impl-when" data-en="Custom brand fonts. Without `relativeTo:`, the font is fixed at 17pt regardless of user settings.">커스텀 브랜드 폰트. <code>relativeTo:</code> 없이 size만 쓰면 사용자 설정과 무관하게 17pt로 고정된다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en=".font(.custom(&quot;Fraunces&quot;, size: 17)) — never scales.">.font(.custom("Fraunces", size: 17)) — 절대 스케일되지 않는다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="relativeTo: .body anchors the custom font to the body style step, so it scales in lockstep with system text.">relativeTo: .body가 커스텀 폰트를 body 단계에 고정시켜 시스템 텍스트와 동일 비율로 확대·축소된다.</span>
+        </div>
+      </div>
+    </div>
+
+  </article><!-- /Dynamic Type -->
+
+
+  <!-- ============================================================
+       FEATURE: Reduce Motion
+  ============================================================ -->
+  <article class="feat" id="reduce-motion" data-cat="cog">
+
+    <div class="feat-head">
+      <div class="feat-top">
+        <span class="cat-tag cat-cog">Cognitive</span>
+        <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS · visionOS</span>
+      </div>
+      <div class="feat-name">Reduce Motion</div>
+    </div>
+
+    <div class="ps-grid">
+      <div class="ps-cell">
+        <div class="section-label" data-en="Problem">문제 정의</div>
+        <p data-en="Animations that are decorative to most users can trigger vestibular disorder symptoms — dizziness, nausea, headache — in some users. This is not a preference issue; for affected users it can make the app physically unusable.">대부분 사용자에게 장식적인 애니메이션이 일부 사용자에게는 전정 장애 증상 — 어지러움, 구역질, 두통 — 을 유발할 수 있다. 취향 문제가 아니라 앱 자체를 물리적으로 사용할 수 없게 만든다.</p>
+      </div>
+      <div class="ps-cell">
+        <div class="section-label" data-en="Solution">솔루션</div>
+        <p data-en="An environment value that signals the user's preference to minimize motion. Check the value and gate your animations — remove sliding transitions, replace parallax with opacity, stop auto-playing carousels.">사용자의 모션 최소화 선호를 알리는 환경 변수. 이 값을 확인해 애니메이션을 게이팅 — 슬라이드 전환 제거, 패럴랙스를 불투명도로 대체, 자동 캐러셀 정지.</p>
+      </div>
+    </div>
+
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Animation — conditional gating">애니메이션 조건부 게이팅</span>
+        <code class="impl-sig">@Environment(\.accessibilityReduceMotion) var reduce</code>
+      </div>
+      <p class="impl-when" data-en="Any animation or transition you wrote yourself. System-provided animations (NavigationStack slide, sheet presentation) are automatically gated — only custom animations need branching.">직접 작성한 모든 애니메이션·전환. 시스템 제공 애니메이션(NavigationStack 슬라이드, 시트 표시)은 자동으로 게이팅된다 — 커스텀 애니메이션만 분기 필요.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en=".animation(.spring, value: scale) fires unconditionally — even when the user has Reduce Motion enabled.">.animation(.spring, value: scale)이 무조건 실행 — 사용자가 Reduce Motion을 켠 상태에서도.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en=".animation(reduce ? nil : .spring, value: scale) — the spring plays for standard users, instant snap for reduced-motion users.">.animation(reduce ? nil : .spring, value: scale) — 일반 사용자는 스프링, Reduce Motion 사용자는 즉각 전환.</span>
+        </div>
+      </div>
+    </div>
+
+  </article><!-- /Reduce Motion -->
+
+</div><!-- /page -->
+
+<script>
+/* ===== Category filter ===== */
+document.querySelectorAll('.filter-btn').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var cat = btn.dataset.cat;
+    document.querySelectorAll('.filter-btn').forEach(function(b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.feat').forEach(function(card) {
+      card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+    });
+  });
+});
+
+/* ===== Language toggle ===== */
+(function(){
+  var KEY = 'a11y-lang';
+  function apply(lang) {
+    localStorage.setItem(KEY, lang);
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-en]').forEach(function(el) {
+      if (!el.dataset.ko) el.dataset.ko = el.innerHTML;
+      el.innerHTML = lang === 'en' ? el.dataset.en : el.dataset.ko;
+    });
+    document.querySelectorAll('.lang-btn').forEach(function(b) {
+      b.classList.toggle('active', b.dataset.lang === lang);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    apply(localStorage.getItem(KEY) || 'en');
+    document.querySelectorAll('.lang-btn').forEach(function(b) {
+      b.addEventListener('click', function() { apply(b.dataset.lang); });
+    });
+  });
+})();
+</script>
+</body>
+</html>

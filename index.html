@@ -591,7 +591,7 @@
 <body>
 <header class="top-nav">
   <a href="index.html" class="home">Apple <em>Accessibility</em></a>
-  <nav><a href="index.html" class="active" data-en="Overview">개요</a><a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a><a href="part-ii.html" data-en="II · Developer APIs">II · 개발자 API</a><a href="part-iii.html" data-en="III · Features × SwiftUI">III · 기능 × SwiftUI</a><a href="part-iv.html" data-en="IV · Per-Feature Recipes">IV · 피쳐별 레시피</a><a href="part-v.html" data-en="V · Appendix">V · 부록</a><a href="apple-accessibility-graph-bilingual.html" data-en="Graph">그래프</a><a href="accessibility_needs_v2.html" data-en="Assessment">평가</a>
+  <nav><a href="index.html" class="active" data-en="Overview">개요</a><a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a><a href="guide.html" data-en="Guide">구현 가이드</a><a href="part-iv.html" data-en="Recipes">레시피</a><a href="part-v.html" data-en="V · Appendix">V · 부록</a><a href="apple-accessibility-graph-bilingual.html" data-en="Graph">그래프</a><a href="accessibility_needs_v2.html" data-en="Assessment">평가</a>
   <div class="lang-toggle" role="group" aria-label="Language / 언어">
     <button class="lang-btn" data-lang="en">EN</button>
     <button class="lang-btn" data-lang="ko">한국어</button>
@@ -602,12 +602,11 @@
     <div class="brand">Apple <em>Accessibility</em></div>
     <div class="sub" data-en="Complete Reference · v2">완전 레퍼런스 · v2</div>
 
-    <h4 data-en="5 Parts">5개 파트</h4>
+    <h4 data-en="Pages">페이지</h4>
     <ul>
       <li><a href="part-i.html" data-en="I · User Features">I · 사용자 기능</a></li>
-      <li><a href="part-ii.html" data-en="II · Developer APIs">II · 개발자 API</a></li>
-      <li><a href="part-iii.html" data-en="III · Features × SwiftUI">III · 기능 × SwiftUI</a></li>
-      <li><a href="part-iv.html" data-en="IV · Per-Feature Recipes">IV · 피쳐별 레시피</a></li>
+      <li><a href="guide.html" data-en="Implementation Guide">구현 가이드</a></li>
+      <li><a href="part-iv.html" data-en="Recipes">레시피</a></li>
       <li><a href="part-v.html" data-en="V · Appendix">V · 부록</a></li>
     </ul>
 
@@ -627,8 +626,8 @@
 
 <section>
   <div class="eyebrow" style="margin-bottom:14px" data-en="How to use this document">이 문서 사용법</div>
-  <h2 style="font-size:32px; margin-bottom:10px"><span class="num">00</span> <span data-en="Five Perspectives">다섯 가지 관점</span></h2>
-  <p class="section-lede" data-en="A structured reference that explores Apple accessibility from five distinct perspectives. Choose the lens that fits your current task.">Apple의 접근성을 다섯 가지 관점에서 풀어 정리한 노트입니다. 어떤 관점으로 들어갈지 골라 들어가세요.</p>
+  <h2 style="font-size:32px; margin-bottom:10px"><span class="num">00</span> <span data-en="Perspectives">관점</span></h2>
+  <p class="section-lede" data-en="A structured reference that explores Apple accessibility from multiple perspectives. Choose the lens that fits your current task.">Apple의 접근성을 여러 관점에서 풀어 정리한 노트입니다. 어떤 관점으로 들어갈지 골라 들어가세요.</p>
 
   <div class="part-grid">
     <a class="part-card" href="part-i.html">
@@ -636,15 +635,10 @@
       <div class="ptitle" data-en="User <em>Features</em>">사용자 <em>기능</em></div>
       <p class="pdesc" data-en="System-level features users toggle on and off — VoiceOver, Zoom, Switch Control, and more. Starts with <em>why</em> each feature exists and what problem it solves.">VoiceOver · Zoom · Switch Control 등 사용자가 켜고 끄는 시스템 기능들. 각 기능이 <em>왜</em> 만들어졌고 무엇을 해결하는지부터.</p>
     </a>
-    <a class="part-card" href="part-ii.html">
-      <div class="pnum">Part II</div>
-      <div class="ptitle" data-en="Developer <em>APIs</em>">개발자 <em>API</em></div>
-      <p class="pdesc" data-en="Accessibility API catalog for UIKit, SwiftUI, and AppKit. Covers attributes, modifiers, environment values, and testing tools.">UIKit · SwiftUI · AppKit의 접근성 API 카탈로그. 속성·모디파이어·환경값·테스트 도구.</p>
-    </a>
-    <a class="part-card" href="part-iii.html">
-      <div class="pnum">Part III</div>
-      <div class="ptitle" data-en="Features × <em>SwiftUI</em>">기능 × <em>SwiftUI</em></div>
-      <p class="pdesc" data-en='"Here are the SwiftUI APIs for the Vision category" — per-category mappings, plus a reverse index from API to feature.'>"Vision 카테고리에는 이런 SwiftUI API들이 있다" — 카테고리별 매핑. 그리고 API → 기능 역인덱스.</p>
+    <a class="part-card" href="guide.html">
+      <div class="pnum" data-en="Guide">구현 가이드</div>
+      <div class="ptitle" data-en="Implementation <em>Guide</em>">구현 <em>가이드</em></div>
+      <p class="pdesc" data-en="Feature-by-feature implementation guide — problem definition, solution, usage, code, when to apply, and before/after comparison for each accessibility API.">기능별 구현 가이드 — 각 접근성 API의 문제 정의 · 솔루션 · 용도 · 코드 · 적용 시점 · 적용 전후 비교.</p>
     </a>
     <a class="part-card" href="part-iv.html">
       <div class="pnum">Part IV</div>
