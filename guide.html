@@ -776,6 +776,106 @@
       </div>
     </div>
 
+    <!-- Implementation: accessibilityPerformEscape -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Escape — dismiss custom modals/sheets">탈출 — 커스텀 모달/시트 닫기</span>
+        <code class="impl-sig">override func accessibilityPerformEscape() -&gt; Bool</code>
+      </div>
+      <p class="impl-when" data-en="Any custom UIView that acts as a modal, popover, or overlay — bottom sheets, custom alerts, full-screen media viewers. VoiceOver users perform the Z-shape escape gesture (two-finger Z scrub) to dismiss. Without this override the gesture does nothing on custom views.">커스텀 하단 시트, 사용자 정의 알림창, 전체화면 미디어 뷰어처럼 모달·팝오버·오버레이 역할을 하는 모든 커스텀 UIView. VoiceOver 사용자가 Z자형 탈출 제스처(두 손가락 Z 긁기)로 닫는다. 이 재정의가 없으면 커스텀 뷰에서 제스처가 아무것도 하지 않는다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Custom bottom sheet with a close button. VoiceOver user performs Z scrub to dismiss — nothing happens. They must swipe to find the close button, a frustrating and non-standard experience.">닫기 버튼이 있는 커스텀 하단 시트. VoiceOver 사용자가 Z 긁기로 닫으려 한다 — 아무것도 일어나지 않는다. 닫기 버튼을 찾으려 스와이프해야 해 좌절스럽고 비표준적인 경험이다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="override func accessibilityPerformEscape() -&gt; Bool { dismiss(); return true } — Z scrub now dismisses the sheet instantly, matching system modal behavior. VoiceOver announces the previous screen returns focus.">override func accessibilityPerformEscape() -> Bool { dismiss(); return true } — Z 긁기가 이제 시트를 즉시 닫아 시스템 모달 동작과 일치한다. VoiceOver가 이전 화면이 포커스를 돌려받았음을 알린다.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation: accessibilityPerformMagicTap -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Magic tap — primary two-finger action">매직 탭 — 주요 두 손가락 동작</span>
+        <code class="impl-sig">override func accessibilityPerformMagicTap() -&gt; Bool</code>
+      </div>
+      <p class="impl-when" data-en="Media playback apps (play/pause), phone/call apps (answer/hang up), timer apps (start/stop), or any app with one dominant toggle action. The two-finger double-tap magic tap gesture is a global VoiceOver shortcut — implementing it lets users trigger the primary action from anywhere in your app without navigating.">미디어 재생 앱(재생/일시정지), 전화/통화 앱(받기/끊기), 타이머 앱(시작/정지), 또는 하나의 주요 토글 동작이 있는 모든 앱. 두 손가락 더블 탭 매직 탭 제스처는 전역 VoiceOver 단축키다 — 구현하면 앱 어디서든 탐색 없이 기본 동작을 트리거할 수 있다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Podcast app with a play/pause button. When VoiceOver is on and focus is elsewhere, two-finger double tap triggers system behavior (answer/hang up calls). The user must navigate back to the play button to toggle playback.">재생/일시정지 버튼이 있는 팟캐스트 앱. VoiceOver가 켜져 있고 포커스가 다른 곳에 있을 때 두 손가락 더블 탭이 시스템 동작을 트리거한다(통화 받기/끊기). 사용자가 재생을 토글하기 위해 재생 버튼으로 돌아가야 한다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="override func accessibilityPerformMagicTap() -&gt; Bool { player.togglePlayback(); return true } — from any screen in the app, two-finger double tap instantly plays or pauses. VoiceOver announces &quot;Playing&quot; or &quot;Paused&quot;.">override func accessibilityPerformMagicTap() -> Bool { player.togglePlayback(); return true } — 앱의 어느 화면에서든 두 손가락 더블 탭으로 즉시 재생하거나 일시정지한다. VoiceOver가 "재생 중" 또는 "일시정지됨"을 알린다.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation: UIAccessibilityCustomAction -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Custom actions — rotor-accessible secondary actions">커스텀 동작 — 로터 접근 가능한 보조 동작</span>
+        <code class="impl-sig">accessibilityCustomActions = [UIAccessibilityCustomAction(name: "Delete", target: self, selector: #selector(deleteItem))]</code>
+      </div>
+      <p class="impl-when" data-en="List rows, collection cells, or any element with multiple secondary actions (delete, share, star, reply) that would otherwise require the user to navigate to separate buttons. Custom actions appear in the VoiceOver rotor under &quot;Actions&quot; — swipe up/down to pick, double-tap to execute.">삭제·공유·별표·답장처럼 별도 버튼으로 이동해야 하는 보조 동작이 여러 개 있는 목록 행·컬렉션 셀 또는 요소 전체. 커스텀 동작이 VoiceOver 로터의 "동작" 하에 나타난다 — 위/아래 스와이프로 선택하고 더블 탭으로 실행한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Email list row with Delete, Archive, and Reply buttons that reveal on swipe. VoiceOver user must: swipe to row, swipe again to the Delete button, double-tap. Three navigation steps per action, per row.">스와이프 시 삭제·보관·답장 버튼이 나타나는 이메일 목록 행. VoiceOver 사용자가 해야 한다: 행으로 스와이프, 삭제 버튼으로 다시 스와이프, 더블 탭. 동작당, 행당 세 번의 탐색 단계.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="accessibilityCustomActions = [deleteAction, archiveAction, replyAction] — VoiceOver lands on the row, user opens Actions rotor, swipes to &quot;Delete&quot;, double-taps. One swipe replaces three navigation steps. The row never needs to visually expand.">accessibilityCustomActions = [deleteAction, archiveAction, replyAction] — VoiceOver가 행에 착지하고 사용자가 동작 로터를 열어 "삭제"로 스와이프하고 더블 탭한다. 스와이프 한 번이 세 번의 탐색 단계를 대체한다. 행이 시각적으로 펼쳐질 필요가 없다.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation: UIAccessibilityReadingContent -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Reading content — Speak Screen line-by-line reading">Speak Screen 라인별 읽기</span>
+        <code class="impl-sig">func accessibilityLineNumber(for point: CGPoint) -&gt; Int { ... }</code>
+      </div>
+      <p class="impl-when" data-en="Custom text rendering views — PDF viewers, comic book readers, custom rich-text editors, eBook renderers — that draw text in a non-standard layout engine. Adopt UIAccessibilityReadingContent to let Speak Screen read line by line and advance automatically, just like UITextView.">PDF 뷰어·만화책 리더·커스텀 서식 있는 텍스트 편집기·전자책 렌더러처럼 비표준 레이아웃 엔진으로 텍스트를 그리는 커스텀 텍스트 렌더링 뷰. UIAccessibilityReadingContent를 채택해 Speak Screen이 UITextView처럼 줄별로 읽고 자동으로 전진하게 한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Custom PDF renderer draws text using Core Text. Speak Screen reads the entire page as one giant label — no line breaks, no pausing, no way to resume mid-page. Long documents are unnavigable.">커스텀 PDF 렌더러가 Core Text로 텍스트를 그린다. Speak Screen이 전체 페이지를 하나의 거대한 라벨로 읽는다 — 줄바꿈 없음, 일시정지 없음, 페이지 중간에 재개할 방법 없음. 긴 문서를 탐색할 수 없다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="Adopting UIAccessibilityReadingContent and implementing accessibilityLineNumber(for:), accessibilityContent(forLineNumber:), and accessibilityFrame(forLineNumber:) gives Speak Screen full line-by-line control. Users can pause, back up, and resume at any line.">UIAccessibilityReadingContent를 채택하고 accessibilityLineNumber(for:), accessibilityContent(forLineNumber:), accessibilityFrame(forLineNumber:)를 구현하면 Speak Screen에 완전한 줄별 제어권이 생긴다. 사용자가 어느 줄에서든 일시정지·되감기·재개할 수 있다.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation: UIAccessibilityDragging -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Dragging — VoiceOver drag-and-drop">VoiceOver 드래그 앤 드롭</span>
+        <code class="impl-sig">var accessibilityDragSourceDescriptors: [UIAccessibilityLocationDescriptor]? { ... }</code>
+      </div>
+      <p class="impl-when" data-en="Custom drag sources and drop targets that use UIKit drag-and-drop (UIDragInteraction / UIDropInteraction). Without UIAccessibilityDragging, VoiceOver users cannot drag items at all — the gesture-based drag is inaccessible. Implement both accessibilityDragSourceDescriptors and accessibilityDropPointDescriptors.">UIDragInteraction / UIDropInteraction으로 UIKit 드래그 앤 드롭을 사용하는 커스텀 드래그 소스와 드롭 타겟. UIAccessibilityDragging 없이는 VoiceOver 사용자가 아이템을 드래그할 수 없다 — 제스처 기반 드래그가 접근 불가능하다. accessibilityDragSourceDescriptors와 accessibilityDropPointDescriptors를 모두 구현한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Kanban board with draggable task cards. VoiceOver user tries to rearrange cards — no mechanism exists. They must use a workaround like a context menu with &quot;Move to column&quot; actions.">드래그 가능한 작업 카드가 있는 칸반 보드. VoiceOver 사용자가 카드를 재정렬하려 한다 — 메커니즘이 없다. "컬럼으로 이동" 동작이 있는 컨텍스트 메뉴 같은 해결책을 사용해야 한다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="accessibilityDragSourceDescriptors returns UIAccessibilityLocationDescriptor(name: &quot;Drag task&quot;, point: cardCenter, in: boardView). VoiceOver announces available drag points — user activates drag, navigates to the drop target column, activates drop. Full drag-and-drop via VoiceOver.">accessibilityDragSourceDescriptors가 UIAccessibilityLocationDescriptor(name: "작업 드래그", point: cardCenter, in: boardView)를 반환한다. VoiceOver가 사용 가능한 드래그 포인트를 알린다 — 사용자가 드래그 활성화하고 드롭 타겟 컬럼으로 이동해 드롭 활성화한다. VoiceOver로 완전한 드래그 앤 드롭.</span>
+        </div>
+      </div>
+    </div>
+
   </article><!-- /VoiceOver -->
 
 
@@ -2559,6 +2659,44 @@
       </div>
     </div>
   </div>
+  <!-- Implementation: AT status booleans -->
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="AT detection — adapt UI when assistive tech is running">보조 기술 감지 — AT 실행 시 UI 조정</span>
+      <code class="impl-sig">UIAccessibility.isVoiceOverRunning / .isSwitchControlRunning / .isAssistiveTouchRunning</code>
+    </div>
+    <p class="impl-when" data-en="Use AT status booleans to adapt UI layout or interaction model when specific assistive technologies are active. UIAccessibility.isVoiceOverRunning, .isSwitchControlRunning, .isAssistiveTouchRunning, .isBrailleDisplayConnected, .isGuidedAccessEnabled, .isMonoAudioEnabled, .isBoldTextEnabled, .isDarkerSystemColorsEnabled, .isReduceMotionEnabled, .isReduceTransparencyEnabled, .isSpeakScreenEnabled, .isSpeakSelectionEnabled, .isShakeToUndoEnabled, .prefersCrossFadeTransitions. Subscribe to their corresponding notifications to react to changes.">특정 보조 기술이 활성화된 경우 UI 레이아웃이나 인터랙션 모델을 조정하는 데 AT 상태 불리언을 사용한다. UIAccessibility.isVoiceOverRunning, .isSwitchControlRunning, .isAssistiveTouchRunning, .isBrailleDisplayConnected, .isGuidedAccessEnabled, .isMonoAudioEnabled, .isBoldTextEnabled, .isDarkerSystemColorsEnabled, .isReduceMotionEnabled, .isReduceTransparencyEnabled, .isSpeakScreenEnabled, .isSpeakSelectionEnabled, .isShakeToUndoEnabled, .prefersCrossFadeTransitions. 변경 사항에 반응하려면 해당 알림을 구독한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom tutorial overlay uses animations and swipe-to-dismiss. When Switch Control is running, the dismiss animation plays but the overlay can't be dismissed because the gesture isn't accessible.">커스텀 튜토리얼 오버레이가 애니메이션과 스와이프 닫기를 사용한다. Switch Control이 실행 중이면 닫기 애니메이션이 재생되지만 제스처가 접근 불가능해 오버레이를 닫을 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="if UIAccessibility.isSwitchControlRunning { showDismissButton() } else { enableSwipeToDismiss() } — Switch Control users see a visible dismiss button instead of a gesture-only interface. NotificationCenter.default.addObserver(forName: UIAccessibility.switchControlStatusDidChangeNotification, ...) keeps the state current.">if UIAccessibility.isSwitchControlRunning { showDismissButton() } else { enableSwipeToDismiss() } — Switch Control 사용자가 제스처 전용 인터페이스 대신 보이는 닫기 버튼을 본다. NotificationCenter.default.addObserver(forName: UIAccessibility.switchControlStatusDidChangeNotification, ...)가 상태를 최신으로 유지한다.</span>
+      </div>
+    </div>
+  </div>
+  <!-- Implementation: UIAccessibility notifications -->
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="AT notifications — observe accessibility state changes">AT 알림 — 접근성 상태 변경 감지</span>
+      <code class="impl-sig">NotificationCenter.default.addObserver(forName: UIAccessibility.voiceOverStatusDidChangeNotification, ...)</code>
+    </div>
+    <p class="impl-when" data-en="Any feature that shows or hides UI based on accessibility state — e.g., showing larger tap targets when Switch Control is on, enabling mono audio mixing when mono audio is on. Key notifications: voiceOverStatusDidChangeNotification, switchControlStatusDidChangeNotification, boldTextStatusDidChangeNotification, darkerSystemColorsStatusDidChangeNotification, reduceMotionStatusDidChangeNotification, reduceTransparencyStatusDidChangeNotification, invertColorsStatusDidChangeNotification, guidedAccessStatusDidChangeNotification, speakScreenStatusDidChangeNotification.">접근성 상태에 따라 UI를 표시하거나 숨기는 기능 전체 — 예: Switch Control이 켜지면 더 큰 탭 타겟 표시, 모노 오디오가 켜지면 모노 오디오 믹싱 활성화. 주요 알림: voiceOverStatusDidChangeNotification, switchControlStatusDidChangeNotification, boldTextStatusDidChangeNotification, darkerSystemColorsStatusDidChangeNotification, reduceMotionStatusDidChangeNotification, reduceTransparencyStatusDidChangeNotification, invertColorsStatusDidChangeNotification, guidedAccessStatusDidChangeNotification, speakScreenStatusDidChangeNotification.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App checks isVoiceOverRunning at launch to set up its layout, but never observes changes. User enables VoiceOver mid-session — the layout doesn't adapt, and previously working accessibility features break.">앱이 시작 시 isVoiceOverRunning을 확인해 레이아웃을 설정하지만 변경 사항을 감시하지 않는다. 사용자가 세션 중에 VoiceOver를 활성화한다 — 레이아웃이 조정되지 않고 이전에 작동하던 접근성 기능이 중단된다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Observer registered in viewDidLoad triggers updateLayoutForAccessibility() on every voiceOverStatusDidChangeNotification. Layout adapts instantly when VoiceOver is toggled without requiring a relaunch.">viewDidLoad에 등록된 감시자가 모든 voiceOverStatusDidChangeNotification에서 updateLayoutForAccessibility()를 트리거한다. 재시작 없이 VoiceOver가 토글될 때 레이아웃이 즉시 조정된다.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 <div class="feat-divider">· · ·</div>
@@ -2631,6 +2769,24 @@
       <div class="ba-cell ba-after">
         <div class="ba-tag" data-en="After">적용 후</div>
         <span data-en="override func point(inside point: CGPoint, with event: UIEvent?) -&gt; Bool { return bounds.insetBy(dx: -4, dy: -4).contains(point) } — expands the hit area by 4pt on all sides for a net 44×44pt target while restricting off-circle hits.">override func point(inside point: CGPoint, with event: UIEvent?) -&gt; Bool { return bounds.insetBy(dx: -4, dy: -4).contains(point) } — 모든 면에서 히트 영역을 4pt 확장해 원 밖의 히트를 제한하면서 순 44×44pt 타겟을 만든다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Large content viewer — readable label for small toolbar icons">소형 툴바 아이콘용 읽을 수 있는 레이블</span>
+      <code class="impl-sig">showsLargeContentViewer = true; largeContentTitle = "Share"; largeContentImage = UIImage(systemName: "square.and.arrow.up")</code>
+    </div>
+    <p class="impl-when" data-en="Toolbar icons, tab bar items, or any element that must stay visually small (under 44pt) but needs to remain usable at large text sizes. UILargeContentViewerItem lets users long-press to see a full-size preview of the label and icon — the same mechanism system tab bars use. In SwiftUI, use .accessibilityShowsLargeContentViewer().">시각적으로 작게(44pt 미만) 유지해야 하지만 큰 텍스트 크기에서도 사용할 수 있어야 하는 툴바 아이콘·탭 바 항목 또는 요소. UILargeContentViewerItem으로 사용자가 길게 눌러 레이블과 아이콘의 전체 크기 미리보기를 볼 수 있다 — 시스템 탭 바가 사용하는 것과 같은 메커니즘. SwiftUI에서는 .accessibilityShowsLargeContentViewer()를 사용한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom toolbar with 5 icon-only buttons at 28pt. At Accessibility Extra-Extra-Extra Large text size, the icons don't scale — Dynamic Type has no effect on custom toolbar icons. Users who need large text can't identify the icons.">28pt 크기의 아이콘만 있는 버튼 5개가 있는 커스텀 툴바. Accessibility XXX Large 텍스트 크기에서 아이콘이 확장되지 않는다 — 커스텀 툴바 아이콘에 Dynamic Type이 효과가 없다. 큰 텍스트가 필요한 사용자가 아이콘을 식별할 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Each button adopts UILargeContentViewerItem: showsLargeContentViewer = true, largeContentTitle = &quot;Share&quot;. UILargeContentViewerInteraction added to the toolbar. Long-press on any icon shows a large centered overlay with the icon at 64pt and its label — fully readable at any text size.">각 버튼이 UILargeContentViewerItem을 채택한다: showsLargeContentViewer = true, largeContentTitle = "공유". UILargeContentViewerInteraction을 툴바에 추가한다. 아이콘을 길게 누르면 64pt 아이콘과 레이블이 있는 큰 중앙 오버레이가 표시된다 — 어떤 텍스트 크기에서든 완전히 읽을 수 있다.</span>
       </div>
     </div>
   </div>
@@ -3213,6 +3369,420 @@
       <div class="ba-cell ba-after">
         <div class="ba-tag" data-en="After">적용 후</div>
         <span data-en="Primary phrase buttons expanded to 72×72pt with 8pt gaps. The larger targets absorb natural eye tremor — selection accuracy improves from ~65% to ~95%, making the communication aid genuinely reliable.">주요 구문 버튼이 8pt 간격으로 72×72pt로 확장된다. 더 큰 타겟이 자연스러운 눈 떨림을 흡수한다 — 선택 정확도가 ~65%에서 ~95%로 향상되어 의사소통 보조기가 진정으로 신뢰할 수 있게 된다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="charts-accessibility" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · visionOS</span>
+    </div>
+    <div class="feat-name">Charts Accessibility (AXChartDescriptor)</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Data visualizations — bar charts, line graphs, pie charts, scatter plots — convey meaning entirely through spatial position and color. A blind user hearing &quot;Chart&quot; or silence gets no data whatsoever. Custom chart views built with Core Graphics or SwiftUI Canvas are especially likely to be completely inaccessible.">막대 차트·꺾은선 그래프·파이 차트·산점도 같은 데이터 시각화는 공간적 위치와 색상으로 의미를 전달한다. 시각 장애인 사용자가 "차트" 또는 침묵을 듣는다면 데이터가 전혀 전달되지 않는다. Core Graphics나 SwiftUI Canvas로 만든 커스텀 차트 뷰는 특히 완전히 접근 불가능할 가능성이 높다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="AXChartDescriptor (iOS 15+) provides a structured accessibility description of a chart's data — axes, series, data points. VoiceOver reads the chart title and summary, then lets users navigate individual data points via the rotor. Swift Charts (.accessibilityChartDescriptor) does this automatically; custom views require manual AXChartDescriptor construction.">AXChartDescriptor(iOS 15+)는 차트 데이터(축·시리즈·데이터 포인트)의 구조화된 접근성 설명을 제공한다. VoiceOver가 차트 제목과 요약을 읽은 뒤 로터로 개별 데이터 포인트를 탐색하게 한다. Swift Charts(.accessibilityChartDescriptor)는 자동으로 처리한다; 커스텀 뷰는 AXChartDescriptor를 수동으로 구성해야 한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="AXChartDescriptor — describe chart structure">차트 구조 설명</span>
+      <code class="impl-sig">accessibilityChartDescriptor = AXChartDescriptor(title: "Sales", summary: "Q4 up 12%", xAxis: xDesc, yAxis: yDesc, series: [series])</code>
+    </div>
+    <p class="impl-when" data-en="Any custom chart view that doesn't use Swift Charts. Provide a descriptive title, a summary sentence that captures the key insight, axis descriptors (AXCategoricalDataAxisDescriptor or AXNumericDataAxisDescriptor), and AXDataSeriesDescriptor with AXDataPoint values. iOS 15+.">Swift Charts를 사용하지 않는 모든 커스텀 차트 뷰. 설명적인 제목, 핵심 인사이트를 담은 요약 문장, 축 설명자(AXCategoricalDataAxisDescriptor 또는 AXNumericDataAxisDescriptor), AXDataPoint 값이 있는 AXDataSeriesDescriptor를 제공한다. iOS 15+.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Core Graphics bar chart showing monthly sales. VoiceOver reads &quot;Chart&quot; — no axis labels, no values, no trend information. The chart is purely decorative to a screen reader user.">월별 매출을 보여주는 Core Graphics 막대 차트. VoiceOver가 "차트"를 읽는다 — 축 레이블 없음, 값 없음, 추세 정보 없음. 스크린 리더 사용자에게 차트가 순전히 장식이다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="AXChartDescriptor with title &quot;Monthly Sales&quot;, summary &quot;December highest at $1.2M, up 12% from November&quot;, month axis, dollar axis, and 12 data points. VoiceOver reads the summary, rotor &quot;Data Points&quot; lets user navigate to &quot;January: $890,000&quot;, &quot;February: $920,000&quot; etc.">제목 "월별 매출", 요약 "12월이 $1.2M으로 최고, 11월 대비 12% 상승", 월 축, 달러 축, 12개 데이터 포인트가 있는 AXChartDescriptor. VoiceOver가 요약을 읽고 로터 "데이터 포인트"로 "1월: $890,000", "2월: $920,000" 등을 탐색할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Swift Charts — automatic chart descriptor">Swift Charts 자동 차트 설명자</span>
+      <code class="impl-sig">.accessibilityChartDescriptor(MyChartDescriptor())</code>
+    </div>
+    <p class="impl-when" data-en="Swift Charts (iOS 16+) views where you need to customize the auto-generated AXChartDescriptor. Swift Charts generates a basic descriptor automatically, but the default summary may not capture the key business insight. Implement the AXChartDescriptorRepresentable protocol to supply a custom descriptor.">자동 생성된 AXChartDescriptor를 커스터마이즈해야 하는 Swift Charts(iOS 16+) 뷰. Swift Charts가 기본 설명자를 자동으로 생성하지만 기본 요약이 핵심 비즈니스 인사이트를 담지 못할 수 있다. AXChartDescriptorRepresentable 프로토콜을 구현해 커스텀 설명자를 제공한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Swift Charts line graph: auto-generated descriptor says &quot;Line chart with 365 data points&quot;. VoiceOver user knows it's a line chart but gets no insight about what the data means or its trend.">Swift Charts 꺾은선 그래프: 자동 생성 설명자가 "365개 데이터 포인트가 있는 꺾은선 차트"라고 말한다. VoiceOver 사용자는 꺾은선 차트임을 알지만 데이터의 의미나 추세에 대한 인사이트를 얻지 못한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Custom AXChartDescriptorRepresentable returns a descriptor with summary &quot;Step count over the past year. Peak in June at 12,400 steps. Average 8,200. Declined in winter months.&quot; VoiceOver delivers the analytical insight a sighted user would instantly perceive.">커스텀 AXChartDescriptorRepresentable이 요약 "지난 1년간 걸음 수. 6월에 12,400보로 최고. 평균 8,200보. 겨울철에 감소."가 있는 설명자를 반환한다. VoiceOver가 시각 사용자가 즉각적으로 파악하는 분석적 인사이트를 전달한다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Audio graphs — sonification of data">오디오 그래프 — 데이터 음향화</span>
+      <code class="impl-sig">AXDataSeriesDescriptor(name: "Heart Rate", isContinuous: true, dataPoints: points)</code>
+    </div>
+    <p class="impl-when" data-en="When AXChartDescriptor is provided, VoiceOver automatically offers an Audio Graph option that plays the data as tones — pitch encodes the Y-axis value, time encodes the X-axis. Set isContinuous: true for line series, false for discrete bar/scatter series. This gives users a holistic shape impression before navigating individual points.">AXChartDescriptor가 제공되면 VoiceOver가 데이터를 음으로 재생하는 오디오 그래프 옵션을 자동으로 제공한다 — 피치가 Y축 값을, 시간이 X축을 인코딩한다. 꺾은선 시리즈에 isContinuous: true, 이산 막대/산점도 시리즈에 false를 설정한다. 사용자가 개별 포인트를 탐색하기 전에 전체적인 형태 인상을 얻는다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Health app chart showing heart rate over 24 hours. VoiceOver can read individual data points but the overall trend — calm morning, spike during exercise, recovery — requires navigating all 288 points.">24시간 심박수를 보여주는 헬스 앱 차트. VoiceOver가 개별 데이터 포인트를 읽을 수 있지만 전체적인 추세 — 조용한 아침, 운동 중 급등, 회복 — 를 파악하려면 288개 포인트를 모두 탐색해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="With isContinuous: true and 288 AXDataPoints, VoiceOver's Audio Graph plays the 24-hour heart rate as a tone sequence. Rising pitch during morning exercise is audible in 3 seconds — the same insight a chart provides visually, delivered through sound.">isContinuous: true와 288개 AXDataPoint로 VoiceOver 오디오 그래프가 24시간 심박수를 음 시퀀스로 재생한다. 아침 운동 중 상승하는 피치가 3초 안에 들린다 — 차트가 시각적으로 제공하는 것과 같은 인사이트를 소리로 전달한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="visionos-accessibility" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">visionOS</span>
+    </div>
+    <div class="feat-name">visionOS Accessibility (RealityKit AccessibilityComponent)</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="In visionOS, 3D objects placed in a RealityKit scene have no inherent accessibility metadata. A blind user on visionOS navigates via eye gaze and pinch gestures — but a custom RealityKit entity (a 3D button, a data visualization object, a game piece) is invisible to VoiceOver unless explicitly described.">visionOS에서 RealityKit 장면에 배치된 3D 객체는 본질적인 접근성 메타데이터가 없다. visionOS의 시각 장애인 사용자가 눈 응시와 핀치 제스처로 탐색한다 — 그러나 커스텀 RealityKit 엔티티(3D 버튼, 데이터 시각화 객체, 게임 말)는 명시적으로 설명하지 않으면 VoiceOver에 보이지 않는다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Add AccessibilityComponent to any RealityKit Entity that needs to be accessible. Set its label, value, traits, and customActions — this surfaces the 3D object to VoiceOver with a focus highlight cube, readable label, and activatable actions. Available in RealityKit for visionOS.">접근 가능해야 하는 모든 RealityKit Entity에 AccessibilityComponent를 추가한다. 레이블·값·특성·customActions를 설정한다 — 이렇게 하면 포커스 강조 큐브, 읽을 수 있는 레이블, 활성화 가능한 동작과 함께 3D 객체가 VoiceOver에 노출된다. visionOS용 RealityKit에서 사용 가능하다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="AccessibilityComponent — expose 3D entities to VoiceOver">3D 엔티티를 VoiceOver에 노출</span>
+      <code class="impl-sig">var a11y = AccessibilityComponent(); a11y.label = "Play button"; a11y.traits = [.isButton]; entity.components[AccessibilityComponent.self] = a11y</code>
+    </div>
+    <p class="impl-when" data-en="Every interactive RealityKit Entity in a visionOS app — buttons, sliders, selectable objects, navigable waypoints. Without AccessibilityComponent, VoiceOver skips the entity entirely in its focus traversal. The component also supports .isToggle, .isSelected, .allowsDirectInteraction, and custom accessibility actions.">visionOS 앱의 모든 인터랙티브 RealityKit Entity — 버튼·슬라이더·선택 가능한 객체·탐색 가능한 웨이포인트. AccessibilityComponent 없이는 VoiceOver가 포커스 탐색에서 엔티티를 완전히 건너뛴다. 컴포넌트는 .isToggle, .isSelected, .allowsDirectInteraction, 커스텀 접근성 동작도 지원한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="visionOS music app with 3D album art spheres floating in space. Each sphere is tappable to play the album. VoiceOver user navigates — no 3D objects are announced. The entire spatial music interface is inaccessible.">공간에 떠 있는 3D 앨범 아트 구체가 있는 visionOS 음악 앱. 각 구체를 탭하면 앨범을 재생한다. VoiceOver 사용자가 탐색한다 — 3D 객체가 알림되지 않는다. 전체 공간 음악 인터페이스가 접근 불가능하다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="AccessibilityComponent added to each sphere: label = album name + artist, traits = [.isButton], customActions = [play, addToQueue]. VoiceOver focuses each sphere with a cubic highlight, announces &quot;Midnight Rain, Taylor Swift. Button.&quot; Pinch activates playback.">각 구체에 AccessibilityComponent 추가: label = 앨범명 + 아티스트, traits = [.isButton], customActions = [재생, 대기열에 추가]. VoiceOver가 각 구체를 큐빅 강조로 포커스하고 "Midnight Rain, Taylor Swift. 버튼."을 알린다. 핀치로 재생을 활성화한다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="allowsDirectInteraction — spatial gestures in accessible mode">접근 가능 모드의 공간 제스처</span>
+      <code class="impl-sig">a11y.traits.insert(.allowsDirectInteraction)</code>
+    </div>
+    <p class="impl-when" data-en="Spatial apps where users manipulate 3D objects with hand gestures (pinch, grab, rotate) that can't be reduced to a simple activate/deactivate. allowsDirectInteraction tells VoiceOver to pass raw hand gestures through to the entity rather than intercepting them for VoiceOver navigation — the user can interact directly while VoiceOver still describes the object.">사용자가 단순한 활성화/비활성화로 줄일 수 없는 손 제스처(핀치·잡기·회전)로 3D 객체를 조작하는 공간 앱. allowsDirectInteraction이 VoiceOver에게 탐색을 위해 가로채는 대신 원시 손 제스처를 엔티티에 직접 전달하라고 알린다 — 사용자가 VoiceOver가 객체를 설명하는 동안 직접 인터랙션할 수 있다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="visionOS 3D puzzle game: pieces are rotated and placed using hand gestures. With VoiceOver on, all hand gestures are intercepted for VoiceOver navigation — the puzzle pieces can't be rotated. The game is unplayable for blind users.">visionOS 3D 퍼즐 게임: 조각이 손 제스처로 회전하고 배치된다. VoiceOver가 켜져 있으면 모든 손 제스처가 VoiceOver 탐색을 위해 가로채진다 — 퍼즐 조각을 회전할 수 없다. 시각 장애인 사용자에게 게임을 플레이할 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="AccessibilityComponent with .allowsDirectInteraction on each puzzle piece. VoiceOver announces the piece (&quot;Corner piece, 3 sides matched&quot;) and then passes hand gestures directly through. The user can rotate, snap, and place pieces while still hearing accessibility feedback.">각 퍼즐 조각에 .allowsDirectInteraction이 있는 AccessibilityComponent. VoiceOver가 조각을 알리고("모서리 조각, 3면 일치") 손 제스처를 직접 전달한다. 사용자가 접근성 피드백을 들으면서 조각을 회전·맞추고 배치할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="tvos-focus" data-cat="motor">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-motor">Mobility</span>
+      <span class="feat-platforms">tvOS</span>
+    </div>
+    <div class="feat-name">tvOS Focus Engine</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="tvOS is navigated exclusively via the Siri Remote directional pad — there are no touch gestures. The Focus Engine automatically moves focus between focusable elements, but custom views don't participate unless they explicitly opt in. A UIKit custom control, a collection cell with internal subviews, or a SwiftUI canvas may be entirely unfocusable.">tvOS는 Siri 리모컨 방향 패드로만 탐색된다 — 터치 제스처가 없다. Focus Engine이 포커스 가능 요소 사이에서 자동으로 포커스를 이동하지만 커스텀 뷰가 명시적으로 참여하지 않으면 포커스되지 않는다. UIKit 커스텀 컨트롤, 내부 서브뷰가 있는 컬렉션 셀, SwiftUI 캔버스가 완전히 포커스 불가능할 수 있다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Adopt UIFocusEnvironment and UIFocusItem protocols in custom UIKit views. Override canBecomeFocused (return true), implement didUpdateFocus(in:with:) to update visual state, and use preferredFocusEnvironments to guide initial focus. In SwiftUI, use .focusable(), .focused(), and .onMoveCommand to handle remote directional input.">커스텀 UIKit 뷰에서 UIFocusEnvironment와 UIFocusItem 프로토콜을 채택한다. canBecomeFocused(true 반환)를 재정의하고 didUpdateFocus(in:with:)를 구현해 시각적 상태를 업데이트하며 preferredFocusEnvironments로 초기 포커스를 안내한다. SwiftUI에서는 .focusable(), .focused(), .onMoveCommand를 사용해 리모컨 방향 입력을 처리한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="canBecomeFocused — make custom views focusable">커스텀 뷰 포커스 가능하게</span>
+      <code class="impl-sig">override var canBecomeFocused: Bool { return true }</code>
+    </div>
+    <p class="impl-when" data-en="Any custom UIView subclass on tvOS that needs to be part of the focus traversal — custom buttons, cards, cells, menu items. Standard UIButton, UIControl, and UICollectionViewCell are focusable by default; custom UIView subclasses are not.">포커스 탐색에 참여해야 하는 tvOS의 모든 커스텀 UIView 서브클래스 — 커스텀 버튼·카드·셀·메뉴 항목. 표준 UIButton, UIControl, UICollectionViewCell은 기본적으로 포커스 가능하다; 커스텀 UIView 서브클래스는 그렇지 않다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="tvOS streaming app with custom UIView cards showing movie posters. Remote directional swipes skip over the cards entirely — the Focus Engine can't see them. Users can only reach standard UIButton elements.">영화 포스터를 보여주는 커스텀 UIView 카드가 있는 tvOS 스트리밍 앱. 리모컨 방향 스와이프가 카드를 완전히 건너뛴다 — Focus Engine이 카드를 볼 수 없다. 사용자가 표준 UIButton 요소에만 도달할 수 있다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="override var canBecomeFocused: Bool { return true } + didUpdateFocus(in:with:) { transform = context.isFocused ? CGAffineTransform(scaleX: 1.1, y: 1.1) : .identity } — cards receive focus, scale up on selection per tvOS convention, and are navigable via directional swipes.">override var canBecomeFocused: Bool { return true } + didUpdateFocus(in:with:) { transform = context.isFocused ? CGAffineTransform(scaleX: 1.1, y: 1.1) : .identity } — 카드가 포커스를 받고 tvOS 관례에 따라 선택 시 확대되며 방향 스와이프로 탐색할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="preferredFocusEnvironments — set initial and restored focus">초기 및 복원 포커스 설정</span>
+      <code class="impl-sig">override var preferredFocusEnvironments: [UIFocusEnvironment] { return [resumeButton] }</code>
+    </div>
+    <p class="impl-when" data-en="Any tvOS screen where the initial focus position should be non-default — e.g., resume playback button should be pre-focused when returning to a detail screen, or the first unread message in a list. Also use setNeedsFocusUpdate() + updateFocusIfNeeded() to programmatically shift focus when content changes.">초기 포커스 위치가 기본값이 아니어야 하는 모든 tvOS 화면 — 예: 세부 화면으로 돌아올 때 재생 재개 버튼이 미리 포커스되어야 하거나 목록의 첫 번째 읽지 않은 메시지. setNeedsFocusUpdate() + updateFocusIfNeeded()를 사용해 콘텐츠 변경 시 프로그래밍적으로 포커스를 이동한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="tvOS video detail screen with &quot;Play&quot;, &quot;Resume&quot;, &quot;Add to List&quot;, and &quot;More Info&quot; buttons. Focus always starts at &quot;Play&quot;. A user 45 minutes into a movie navigates to the screen — they must swipe right to reach &quot;Resume&quot; every time.">tvOS 비디오 세부 화면에 "재생", "재개", "목록에 추가", "추가 정보" 버튼이 있다. 포커스가 항상 "재생"에서 시작한다. 영화를 45분 시청한 사용자가 화면으로 이동한다 — 매번 "재개"에 도달하려면 오른쪽으로 스와이프해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="preferredFocusEnvironments returns [resumeButton] when watchProgress &gt; 0. Navigating to the detail screen automatically focuses &quot;Resume&quot; for returning viewers, &quot;Play&quot; for new ones — no extra swipes needed.">watchProgress > 0일 때 preferredFocusEnvironments가 [resumeButton]을 반환한다. 세부 화면으로 이동하면 다시 보는 시청자에게는 자동으로 "재개"가, 새 시청자에게는 "재생"이 포커스된다 — 추가 스와이프가 필요 없다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="UIFocusMovementHint — parallax and spatial feedback">패럴랙스와 공간 피드백</span>
+      <code class="impl-sig">func didHintFocusMovement(_ hint: UIFocusMovementHint)</code>
+    </div>
+    <p class="impl-when" data-en="Custom focusable views that should animate with the tvOS parallax effect as the user touches the remote's trackpad surface. UIFocusMovementHint provides a movement vector (0–1 in x and y) representing remote finger position — use it to apply a 3D transform or offset subviews for a depth effect matching system cells.">사용자가 리모컨 트랙패드 표면을 터치할 때 tvOS 패럴랙스 효과로 애니메이션되어야 하는 커스텀 포커스 가능 뷰. UIFocusMovementHint가 리모컨 손가락 위치를 나타내는 이동 벡터(x와 y에서 0–1)를 제공한다 — 3D 변환을 적용하거나 시스템 셀과 일치하는 깊이 효과를 위해 서브뷰를 오프셋하는 데 사용한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom movie poster card: focusable, scales up on focus. But as users slide their finger on the remote trackpad to explore, the card stays perfectly still — no parallax depth effect. Feels flat and inconsistent with system UI.">커스텀 영화 포스터 카드: 포커스 가능하고 포커스 시 확대된다. 그러나 사용자가 리모컨 트랙패드에서 손가락을 밀어 탐색할 때 카드가 완전히 정지해 있다 — 패럴랙스 깊이 효과가 없다. 평평하고 시스템 UI와 일관성 없게 느껴진다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="didHintFocusMovement(_ hint:) applies layer.transform = CATransform3DRotate based on hint.movementVector — the card tilts toward the finger position, creating a 3D depth impression. Matches the parallax behavior of system TV show cells exactly.">didHintFocusMovement(_ hint:)가 hint.movementVector 기반으로 layer.transform = CATransform3DRotate를 적용한다 — 카드가 손가락 위치 쪽으로 기울어져 3D 깊이 인상을 만든다. 시스템 TV 쇼 셀의 패럴랙스 동작과 정확히 일치한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="macos-accessibility" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">macOS</span>
+    </div>
+    <div class="feat-name">macOS NSAccessibility</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="On macOS, assistive technologies (VoiceOver, third-party screen readers, Dragon, Switch Access) communicate with apps through the Accessibility API — a different protocol from iOS UIAccessibility. Custom AppKit views (NSView subclasses, custom NSCell, custom drawing) are silent to VoiceOver unless they implement the NSAccessibility protocol family.">macOS에서 보조 기술(VoiceOver, 서드파티 스크린 리더, Dragon, Switch Access)이 Accessibility API를 통해 앱과 통신한다 — iOS UIAccessibility와 다른 프로토콜이다. 커스텀 AppKit 뷰(NSView 서브클래스, 커스텀 NSCell, 커스텀 드로잉)는 NSAccessibility 프로토콜 패밀리를 구현하지 않으면 VoiceOver에 침묵한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Adopt the appropriate NSAccessibility role-specific protocol: NSAccessibilityButton, NSAccessibilityGroup, NSAccessibilityList, NSAccessibilityTable, NSAccessibilityOutline, NSAccessibilitySlider, NSAccessibilityCheckBox, NSAccessibilityRadioButton, NSAccessibilityStaticText, NSAccessibilityNavigableStaticText, NSAccessibilityImage, NSAccessibilityComboBox, NSAccessibilityRow, NSAccessibilityCell, NSAccessibilityStepper, NSAccessibilityProgressIndicator. Each protocol requires implementing a specific set of properties that map to what VoiceOver reads and announces.">적절한 NSAccessibility 역할별 프로토콜을 채택한다: NSAccessibilityButton, NSAccessibilityGroup, NSAccessibilityList, NSAccessibilityTable, NSAccessibilityOutline, NSAccessibilitySlider, NSAccessibilityCheckBox, NSAccessibilityRadioButton, NSAccessibilityStaticText, NSAccessibilityNavigableStaticText, NSAccessibilityImage, NSAccessibilityComboBox, NSAccessibilityRow, NSAccessibilityCell, NSAccessibilityStepper, NSAccessibilityProgressIndicator. 각 프로토콜은 VoiceOver가 읽고 알리는 것에 매핑되는 특정 속성 집합 구현을 요구한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="NSAccessibilityButton — custom clickable view">커스텀 클릭 가능 뷰</span>
+      <code class="impl-sig">func accessibilityLabel() -&gt; String? { "Save" }; func accessibilityPerformPress() -&gt; Bool { save(); return true }</code>
+    </div>
+    <p class="impl-when" data-en="Any custom NSView that acts as a button — custom toolbar items, canvas-drawn buttons, game UI. Adopt NSAccessibilityButton and implement accessibilityLabel() (what VoiceOver reads) and accessibilityPerformPress() (what activates on Space/Return or VoiceOver activation). Without this, VoiceOver announces nothing and the button cannot be keyboard-activated.">커스텀 툴바 항목·캔버스로 그린 버튼·게임 UI처럼 버튼 역할을 하는 모든 커스텀 NSView. NSAccessibilityButton을 채택하고 accessibilityLabel()(VoiceOver가 읽는 것)과 accessibilityPerformPress()(Space/Return 또는 VoiceOver 활성화 시 작동하는 것)를 구현한다. 없으면 VoiceOver가 아무것도 알리지 않고 버튼을 키보드로 활성화할 수 없다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom NSView drawing a circular record button using Core Graphics. VoiceOver moves to the view area and announces nothing — the button is invisible to the accessibility tree. Keyboard users cannot activate it.">Core Graphics로 원형 녹화 버튼을 그리는 커스텀 NSView. VoiceOver가 뷰 영역으로 이동하고 아무것도 알리지 않는다 — 버튼이 접근성 트리에 보이지 않는다. 키보드 사용자가 활성화할 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Adopting NSAccessibilityButton: accessibilityLabel() returns &quot;Record&quot;, accessibilityPerformPress() starts recording. VoiceOver announces &quot;Record, button&quot; and pressing Space activates it. Dragon users say &quot;Click Record&quot; to activate.">NSAccessibilityButton 채택: accessibilityLabel()이 "녹화"를 반환하고 accessibilityPerformPress()가 녹화를 시작한다. VoiceOver가 "녹화, 버튼"을 알리고 Space를 누르면 활성화된다. Dragon 사용자가 "Click Record"라고 말해 활성화한다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="NSAccessibilityTable — custom data grid">커스텀 데이터 그리드</span>
+      <code class="impl-sig">func accessibilityRows() -&gt; [Any]? { ... }; func accessibilityColumns() -&gt; [Any]? { ... }</code>
+    </div>
+    <p class="impl-when" data-en="Custom NSView that draws a data grid or spreadsheet-like table. Adopt NSAccessibilityTable and implement accessibilityRows(), accessibilityColumns(), and accessibilitySelectedRows(). Each row should adopt NSAccessibilityRow and each cell NSAccessibilityCell — this lets VoiceOver navigate by row/column and announce &quot;Row 3, Column 2: $1,200&quot;.">데이터 그리드나 스프레드시트형 표를 그리는 커스텀 NSView. NSAccessibilityTable을 채택하고 accessibilityRows(), accessibilityColumns(), accessibilitySelectedRows()를 구현한다. 각 행은 NSAccessibilityRow를, 각 셀은 NSAccessibilityCell을 채택해야 한다 — VoiceOver가 행/열로 탐색하고 "3행, 2열: $1,200"을 알릴 수 있다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom financial data grid with 50 rows × 8 columns drawn using Core Graphics. VoiceOver reads the entire view as a single element — &quot;Grid&quot;. There is no way to navigate to a specific cell or hear its value.">Core Graphics로 그린 50행 × 8열 커스텀 금융 데이터 그리드. VoiceOver가 전체 뷰를 단일 요소 "그리드"로 읽는다. 특정 셀로 이동하거나 값을 들을 방법이 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="NSAccessibilityTable with row/column/cell objects. VoiceOver announces &quot;Table, 50 rows, 8 columns.&quot; VO+Right moves across columns, VO+Down moves down rows. Each cell announces its column header + value: &quot;Revenue, $1.2M.&quot; The grid is fully keyboard and VoiceOver navigable.">행/열/셀 객체가 있는 NSAccessibilityTable. VoiceOver가 "표, 50행, 8열."을 알린다. VO+Right으로 열을 이동하고 VO+Down으로 행을 내려간다. 각 셀이 열 헤더 + 값을 알린다: "Revenue, $1.2M." 그리드를 완전히 키보드와 VoiceOver로 탐색할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="isAccessibilityElement — exclude decorative AppKit views">장식적 AppKit 뷰 제외</span>
+      <code class="impl-sig">override var isAccessibilityElement: Bool { return false }</code>
+    </div>
+    <p class="impl-when" data-en="Decorative NSView subclasses — background textures, separator lines, drop shadows, ambient animations — that add no information and create noise in the VoiceOver element traversal. Override isAccessibilityElement to return false. For NSView, also use setAccessibilityElement(false) or set accessibilityRole() to .unknown.">배경 텍스처·구분선·드롭 쉐도우·주변 애니메이션처럼 정보를 추가하지 않고 VoiceOver 요소 탐색에 노이즈를 만드는 장식적 NSView 서브클래스. isAccessibilityElement를 재정의해 false를 반환한다. NSView의 경우 setAccessibilityElement(false) 사용하거나 accessibilityRole()을 .unknown으로 설정한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Sidebar with 12 decorative separator views and 8 background gradient layers. VoiceOver traversal: separator, separator, gradient, separator, actual menu item, separator, gradient... Users must navigate through ~20 meaningless elements to reach the 8 actual menu items.">12개의 장식 구분선 뷰와 8개의 배경 그라디언트 레이어가 있는 사이드바. VoiceOver 탐색: 구분선, 구분선, 그라디언트, 구분선, 실제 메뉴 항목, 구분선, 그라디언트... 사용자가 8개의 실제 메뉴 항목에 도달하려면 ~20개의 무의미한 요소를 탐색해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="All separator and gradient views override isAccessibilityElement = false. VoiceOver traversal goes directly to the 8 menu items. Navigation is clean, fast, and matches the visual structure perfectly.">모든 구분선과 그라디언트 뷰가 isAccessibilityElement = false를 재정의한다. VoiceOver 탐색이 8개의 메뉴 항목으로 바로 이동한다. 탐색이 깔끔하고 빠르며 시각적 구조와 완벽히 일치한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="media-accessibility" data-cat="hearing">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-hearing">Hearing</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS</span>
+    </div>
+    <div class="feat-name">MediaAccessibility Framework</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Caption appearance preferences — font size, color, background opacity, edge style — set system-wide in Settings › Accessibility › Subtitles &amp; Captioning are ignored by apps that render captions with hardcoded styles. Users who need large white-on-black captions at 200% size are forced to use app-specific settings that reset across app updates.">설정 › 접근성 › 자막 및 캡션에서 시스템 전체에 설정한 캡션 모양 기본 설정 — 글꼴 크기, 색상, 배경 불투명도, 엣지 스타일 — 이 하드코딩된 스타일로 캡션을 렌더링하는 앱에서 무시된다. 200% 크기의 흰 글씨 검정 배경 캡션이 필요한 사용자가 앱 업데이트 시 초기화되는 앱별 설정을 사용해야 한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Use the MediaAccessibility framework (MACaptionAppearance*) to query the user's system caption style preferences and apply them to your caption rendering. For photosensitivity protection, use MAFlashingLightsProcessor (iOS 17+) to post-process video frames and reduce potentially seizure-triggering flashing content.">MediaAccessibility 프레임워크(MACaptionAppearance*)를 사용해 사용자의 시스템 캡션 스타일 기본 설정을 쿼리하고 캡션 렌더링에 적용한다. 광과민성 보호를 위해 MAFlashingLightsProcessor(iOS 17+)를 사용해 비디오 프레임을 후처리하고 발작을 유발할 수 있는 플래싱 콘텐츠를 줄인다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="MACaptionAppearance — respect system caption style">시스템 캡션 스타일 존중</span>
+      <code class="impl-sig">MACaptionAppearanceCopyFontDescriptorForStyle(.default, nil, .default)</code>
+    </div>
+    <p class="impl-when" data-en="Any app that renders subtitles or captions with a custom renderer — video players, streaming apps, educational video platforms, conference recording apps. Use MACaptionAppearanceCopyFontDescriptorForStyle to get the user's preferred font, MACaptionAppearanceGetForegroundColor for text color, MACaptionAppearanceGetBackgroundColor and GetBackgroundOpacity for the caption background.">커스텀 렌더러로 자막이나 캡션을 렌더링하는 모든 앱 — 비디오 플레이어, 스트리밍 앱, 교육 비디오 플랫폼, 회의 녹화 앱. MACaptionAppearanceCopyFontDescriptorForStyle로 사용자의 선호 글꼴을, MACaptionAppearanceGetForegroundColor로 텍스트 색상을, MACaptionAppearanceGetBackgroundColor와 GetBackgroundOpacity로 캡션 배경을 가져온다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Video player renders captions in Helvetica 16pt white text on black background with 60% opacity — hardcoded, ignoring system preferences. A deaf user has set their system caption style to 36pt bold yellow on black, opaque. The app shows tiny white text instead.">비디오 플레이어가 캡션을 60% 불투명도의 검정 배경에 흰색 Helvetica 16pt 텍스트로 렌더링한다 — 하드코딩되어 시스템 기본 설정을 무시한다. 청각 장애인 사용자가 시스템 캡션 스타일을 검정 배경에 36pt 굵은 노란색으로 불투명하게 설정했다. 앱이 대신 작은 흰색 텍스트를 표시한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Caption renderer uses MACaptionAppearance to query all style properties. The same video now shows the user's 36pt bold yellow captions. System caption preferences work app-wide and persist across updates — one setting, every video.">캡션 렌더러가 MACaptionAppearance를 사용해 모든 스타일 속성을 쿼리한다. 동일한 비디오가 이제 사용자의 36pt 굵은 노란색 캡션을 표시한다. 시스템 캡션 기본 설정이 앱 전체에서 작동하고 업데이트에 걸쳐 유지된다 — 한 번 설정으로 모든 비디오.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="MAFlashingLightsProcessor — reduce seizure-trigger flashing">발작 유발 플래싱 감소</span>
+      <code class="impl-sig">MAFlashingLightsProcessor.process(pixelBuffer, frameTimestamp: ts, outPixelBuffer: &amp;output)</code>
+    </div>
+    <p class="impl-when" data-en="Apps that play video content — including game recordings, sports highlights, music videos, and user-generated video — where some content may contain photosensitive seizure-triggering flash patterns (&gt;3 Hz, high luminance change). MAFlashingLightsProcessor (iOS/macOS 17+, tvOS 17+) post-processes CVPixelBuffers in your rendering pipeline. Check MAFlashingLightsProcessor.isAvailable before using.">게임 녹화·스포츠 하이라이트·뮤직 비디오·사용자 생성 비디오 등 일부 콘텐츠에 광과민성 발작 유발 플래시 패턴(>3Hz, 높은 밝기 변화)이 포함될 수 있는 비디오 콘텐츠를 재생하는 앱. MAFlashingLightsProcessor(iOS/macOS 17+, tvOS 17+)가 렌더링 파이프라인에서 CVPixelBuffer를 후처리한다. 사용 전에 MAFlashingLightsProcessor.isAvailable을 확인한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Live music concert stream: strobe light sequences at 8 Hz play back unmodified. A photosensitive epileptic user watches the stream — the strobe triggers a seizure. The app has no way to warn or mitigate.">라이브 음악 콘서트 스트림: 8Hz의 스트로보 조명 시퀀스가 수정 없이 재생된다. 광과민성 간질 사용자가 스트림을 시청한다 — 스트로보가 발작을 유발한다. 앱이 경고하거나 완화할 방법이 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="MAFlashingLightsProcessor integrated into the video render pipeline. Detected strobe sequences are automatically tone-mapped to reduce luminance variance below the seizure-trigger threshold. The concert looks nearly identical but the hazardous flash pattern is eliminated.">MAFlashingLightsProcessor가 비디오 렌더 파이프라인에 통합된다. 감지된 스트로보 시퀀스가 자동으로 톤 매핑되어 발작 유발 임계값 아래로 밝기 분산을 줄인다. 콘서트가 거의 동일하게 보이지만 위험한 플래시 패턴이 제거된다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="watchos-accessibility" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">watchOS</span>
+    </div>
+    <div class="feat-name">watchOS Accessibility</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Apple Watch has a tiny display with unique input constraints — the Digital Crown for scrolling, Force Touch (older models), and a limited gesture set. Custom watchOS complications, glances, and WKInterfaceObject-based UI that don't expose accessibility metadata are invisible to VoiceOver on watchOS, which is navigated by tapping and using the Digital Crown.">Apple Watch는 고유한 입력 제약이 있는 작은 화면을 가진다 — 스크롤을 위한 Digital Crown, Force Touch(구형 모델), 제한된 제스처 세트. 접근성 메타데이터를 노출하지 않는 커스텀 watchOS 컴플리케이션·글랜스·WKInterfaceObject 기반 UI는 탭핑과 Digital Crown을 사용해 탐색하는 watchOS VoiceOver에 보이지 않는다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="WKInterfaceObject exposes setAccessibilityLabel(), setAccessibilityValue(), setAccessibilityHint(), setAccessibilityTraits(), and setIsAccessibilityElement() — use these on custom interface objects. In SwiftUI watchOS apps, standard modifiers (.accessibilityLabel, .accessibilityValue, .accessibilityAdjustableAction for Digital Crown input) work the same as iOS.">WKInterfaceObject가 setAccessibilityLabel(), setAccessibilityValue(), setAccessibilityHint(), setAccessibilityTraits(), setIsAccessibilityElement()를 노출한다 — 커스텀 인터페이스 객체에 사용한다. SwiftUI watchOS 앱에서 표준 수정자(.accessibilityLabel, .accessibilityValue, Digital Crown 입력을 위한 .accessibilityAdjustableAction)가 iOS와 동일하게 작동한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="WKInterfaceObject — label custom watch elements">커스텀 워치 요소 레이블</span>
+      <code class="impl-sig">interfaceObject.setAccessibilityLabel("Heart rate: 72 BPM")</code>
+    </div>
+    <p class="impl-when" data-en="Custom WKInterfaceObject subclasses (WKInterfaceGroup, WKInterfaceImage, WKInterfaceLabel) in WatchKit Interface Builder scenes that display data without meaningful text. Use setAccessibilityLabel() to provide a spoken description, setAccessibilityValue() for changing values, and setAccessibilityHint() for non-obvious actions.">의미 있는 텍스트 없이 데이터를 표시하는 WatchKit Interface Builder 장면의 커스텀 WKInterfaceObject 서브클래스(WKInterfaceGroup, WKInterfaceImage, WKInterfaceLabel). setAccessibilityLabel()로 음성 설명을, setAccessibilityValue()로 변화하는 값을, setAccessibilityHint()로 명확하지 않은 동작을 제공한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="watchOS heart rate complication shows a red heart icon + &quot;72&quot; as separate WKInterfaceImage and WKInterfaceLabel. VoiceOver reads: &quot;Image&quot;, then &quot;72&quot; — no context. The user doesn't know it's a heart rate or what the unit is.">watchOS 심박수 컴플리케이션이 빨간 하트 아이콘 + "72"를 별도의 WKInterfaceImage와 WKInterfaceLabel로 표시한다. VoiceOver가 읽는다: "이미지", "72" — 맥락 없음. 사용자가 이것이 심박수인지 단위가 무엇인지 알지 못한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Container WKInterfaceGroup: setAccessibilityLabel(&quot;Heart rate&quot;), setAccessibilityValue(&quot;72 beats per minute&quot;). Child image and label: setIsAccessibilityElement(false). VoiceOver reads the group as one element: &quot;Heart rate: 72 beats per minute.&quot;">컨테이너 WKInterfaceGroup: setAccessibilityLabel("심박수"), setAccessibilityValue("분당 72회"). 자식 이미지와 레이블: setIsAccessibilityElement(false). VoiceOver가 그룹을 하나의 요소로 읽는다: "심박수: 분당 72회."</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Digital Crown — adjustable SwiftUI views">조정 가능한 SwiftUI 뷰</span>
+      <code class="impl-sig">.accessibilityAdjustableAction { direction in direction == .increment ? value += 1 : value -= 1 }</code>
+    </div>
+    <p class="impl-when" data-en="watchOS SwiftUI views that respond to Digital Crown input for value adjustment — workout target heart rate pickers, timer duration selectors, music volume controls. .accessibilityAdjustableAction maps the VoiceOver Digital Crown scroll to increment/decrement callbacks, letting VoiceOver users adjust values the same way sighted users do.">운동 목표 심박수 선택기·타이머 시간 선택기·음악 볼륨 컨트롤처럼 값 조정을 위해 Digital Crown 입력에 반응하는 watchOS SwiftUI 뷰. .accessibilityAdjustableAction이 VoiceOver Digital Crown 스크롤을 증가/감소 콜백에 매핑해 VoiceOver 사용자가 시각 사용자와 동일한 방식으로 값을 조정할 수 있게 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="watchOS workout app: heart rate zone picker uses Digital Crown for sighted users. VoiceOver user focuses the picker — Digital Crown scroll changes the VoiceOver reading speed instead of the picker value. The workout target is inaccessible to set.">watchOS 운동 앱: 심박수 구역 선택기가 시각 사용자를 위해 Digital Crown을 사용한다. VoiceOver 사용자가 선택기에 포커스한다 — Digital Crown 스크롤이 선택기 값 대신 VoiceOver 읽기 속도를 변경한다. 운동 목표를 설정하는 것이 접근 불가능하다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en=".accessibilityAdjustableAction on the picker: direction == .increment ? zone += 1 : zone -= 1. VoiceOver on the element: Digital Crown up says &quot;Zone 3: 140–160 BPM&quot;, Crown down says &quot;Zone 2: 120–140 BPM&quot;. Picker works identically for VoiceOver and sighted users.">.accessibilityAdjustableAction on the picker: direction == .increment ? zone += 1 : zone -= 1. 요소의 VoiceOver: Digital Crown 위로 "구역 3: 140–160 BPM", 아래로 "구역 2: 120–140 BPM". 선택기가 VoiceOver와 시각 사용자 모두 동일하게 작동한다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="WKAccessibilityImageRegions — complication zone descriptions">컴플리케이션 구역 설명</span>
+      <code class="impl-sig">setAccessibilityImageRegions([WKAccessibilityImageRegion(frame: ..., label: "12 o'clock")])</code>
+    </div>
+    <p class="impl-when" data-en="watchOS clock face complications and custom WKInterfaceImage views that display image-based data with multiple meaningful regions — analog clock faces, radial progress indicators, weather radar images. WKAccessibilityImageRegions lets VoiceOver describe specific regions of an image independently rather than reading the whole image as a single label.">아날로그 시계 페이스·방사형 진행 표시기·날씨 레이더 이미지처럼 여러 의미 있는 영역이 있는 이미지 기반 데이터를 표시하는 watchOS 시계 페이스 컴플리케이션과 커스텀 WKInterfaceImage 뷰. WKAccessibilityImageRegions로 VoiceOver가 이미지 전체를 단일 레이블로 읽는 대신 이미지의 특정 영역을 독립적으로 설명할 수 있다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom analog watch face complication rendered as a WKInterfaceImage. VoiceOver reads: &quot;10:47&quot; — only the alt text. The complication's weather data shown in the 6 o'clock region (rain, 60%) is not communicated.">WKInterfaceImage로 렌더링된 커스텀 아날로그 시계 페이스 컴플리케이션. VoiceOver가 읽는다: "10:47" — alt 텍스트만. 6시 영역에 표시된 컴플리케이션의 날씨 데이터(비, 60%)가 전달되지 않는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="WKAccessibilityImageRegions defines 3 regions: hour/minute hands (&quot;10:47&quot;), date window (&quot;Wednesday 21&quot;), complication region (&quot;Rain 60%, 18°C&quot;). VoiceOver navigates each region independently — the full watch face is readable.">WKAccessibilityImageRegions가 3개 영역을 정의한다: 시/분침("10:47"), 날짜 창("수요일 21일"), 컴플리케이션 영역("비 60%, 18°C"). VoiceOver가 각 영역을 독립적으로 탐색한다 — 전체 시계 페이스를 읽을 수 있다.</span>
       </div>
     </div>
   </div>
