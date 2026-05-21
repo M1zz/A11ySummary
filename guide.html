@@ -520,6 +520,126 @@
       </div>
     </div>
 
+    <!-- Implementation 4: accessibilityHint -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Hint — outcome preview before activation">활성화 전 결과 미리보기</span>
+        <code class="impl-sig">.accessibilityHint("Opens navigation sidebar")</code>
+      </div>
+      <p class="impl-when" data-en="Use only when the outcome of double-tapping is non-obvious from the label alone. Never restate the label in a hint. VoiceOver reads hint last — after label, value, and traits — and users can disable hints globally in Settings.">더블탭 결과가 라벨만으로 명확하지 않을 때만 사용한다. 힌트에 라벨을 다시 언급하지 않는다. VoiceOver는 힌트를 마지막에 읽으며 — 라벨·값·Trait 이후 — 사용자가 설정에서 전역으로 비활성화할 수 있다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en='"Menu button." — double-tapping opens a sidebar, but the user has no way to know this before committing.'>"메뉴 버튼." — 더블탭이 사이드바를 여는데, 사용자는 실행하기 전에 이 사실을 알 방법이 없다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en='"Menu button. Opens navigation sidebar." — the outcome is declared upfront; no trial-and-error required.'>"메뉴 버튼. 탐색 사이드바를 엽니다." — 결과가 사전에 선언되어 시행착오가 필요 없다.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation 5: accessibilitySortPriority -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Order — override VoiceOver reading sequence">읽기 순서 재정의</span>
+        <code class="impl-sig">.accessibilitySortPriority(1)</code>
+      </div>
+      <p class="impl-when" data-en="ZStacks, overlapping views, badge overlays, and two-column grids where visual reading order differs from the view hierarchy order. Higher priority numbers are read first. Only use when the natural DOM order is provably wrong.">ZStack, 겹치는 뷰, 배지 오버레이, 시각적 읽기 순서가 뷰 계층 순서와 다른 2열 그리드. 높은 우선순위 숫자가 먼저 읽힌다. 자연스러운 DOM 순서가 명백히 잘못될 때만 사용한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Card with &quot;New&quot; badge overlay: VoiceOver reads &quot;New&quot; first (last in ZStack = top of hit test) then the card title — semantically reversed.">배지 오버레이가 있는 카드: VoiceOver가 "New"를 먼저 읽는다(ZStack의 마지막 = 히트 테스트 상단) 그런 다음 카드 제목을 읽는다 — 의미상 역순이다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="Card gets `.accessibilitySortPriority(1)`, badge gets `0`. VoiceOver reads card title first, then badge — matching how a sighted user scans the layout.">카드는 `.accessibilitySortPriority(1)`, 배지는 `0`. VoiceOver가 카드 제목을 먼저 읽고 배지를 나중에 읽는다 — 시각 사용자가 레이아웃을 스캔하는 방식과 일치한다.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation 6: AXCustomContent / accessibilityCustomContent -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Rotor — secondary metadata on demand">로터 — 요청 시 보조 메타데이터</span>
+        <code class="impl-sig">.accessibilityCustomContent("Price", "$149")</code>
+      </div>
+      <p class="impl-when" data-en="List items or cards with multiple metadata fields (price, rating, distance, date) that would create noise if read on every focus. Custom content appears only when the user selects the &quot;More Content&quot; rotor option — zero friction for users who don't need it.">가격·평점·거리·날짜처럼 여러 메타데이터 필드가 있어 매번 포커스 시 읽으면 소음이 될 항목이나 카드. 커스텀 콘텐츠는 사용자가 로터에서 "추가 콘텐츠" 옵션을 선택할 때만 나타난다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Label: &quot;Nike Air Max. Product. $149. 4.5 stars. 2.1 km away.&quot; — read in full on every swipe through a 50-item list. Exhausting.">라벨: "Nike Air Max. 상품. ₩189,000. 별 4.5. 2.1km." — 50개 항목 목록을 스와이프할 때마다 전체를 읽는다. 피로하다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="Label: &quot;Nike Air Max. Product.&quot; Rotor → More Content → Price: $149 / Rating: 4.5 stars / Distance: 2.1 km — each revealed individually on demand.">라벨: "Nike Air Max. 상품." 로터 → 추가 콘텐츠 → 가격: ₩189,000 / 평점: 별 4.5 / 거리: 2.1km — 요청 시 각각 개별로 표시.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation 7: accessibilityRepresentation -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Representation — proxy view for complex controls">복잡한 컨트롤에 프록시 뷰</span>
+        <code class="impl-sig">.accessibilityRepresentation { Slider(value: $rating, in: 1...5) }</code>
+      </div>
+      <p class="impl-when" data-en="Fully custom-drawn controls — star pickers, canvas sliders, segmented bars, circular progress rings — where the view hierarchy carries no semantic meaning. The proxy view is never displayed; it only defines how VoiceOver interprets the custom control.">별점 선택기, 캔버스 슬라이더, 세그먼트 바, 원형 진행 링처럼 완전히 커스텀으로 그린 컨트롤 — 뷰 계층이 시맨틱 의미를 전혀 갖지 않는 경우. 프록시 뷰는 표시되지 않는다. VoiceOver가 커스텀 컨트롤을 해석하는 방식만 정의한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Custom 5-star rating control: 5 Shape views. VoiceOver reads each as &quot;circle&quot; — no role, no value, no way to change the rating.">커스텀 5점 별점 컨트롤: Shape 뷰 5개. VoiceOver가 각각 "circle"로 읽는다 — 역할 없음, 값 없음, 별점 변경 방법 없음.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="`.accessibilityRepresentation { Slider(value: $r, in: 1...5, step: 1) }` — VoiceOver announces &quot;Rating: 3. Adjust by swiping up or down.&quot; Full slider semantics, zero visual change.">"별점: 3. 위아래로 밀어 조정하세요." — 전체 슬라이더 시맨틱이 적용된다. 시각적 변경 없음.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation 8: accessibilityActivationPoint -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Activation — redirect the virtual double-tap point">가상 더블탭 위치 이동</span>
+        <code class="impl-sig">.accessibilityActivationPoint(CGPoint(x: frame.maxX - 20, y: frame.maxY - 20))</code>
+      </div>
+      <p class="impl-when" data-en="Views where the geometric center does not forward taps to the intended target — cards with a corner action button, map annotation bubbles, tooltip overlays. VoiceOver double-tap fires at the activation point, not the element center.">기하학적 중심이 의도한 타겟으로 탭을 전달하지 않는 뷰 — 모서리 동작 버튼이 있는 카드, 지도 주석 버블, 툴팁 오버레이. VoiceOver 더블탭은 요소 중심이 아닌 활성화 지점에서 발동된다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Card has &quot;Open&quot; button in the bottom-right corner. VoiceOver double-tap fires at the center — hits decorative art. The card is selected but nothing opens.">카드의 "열기" 버튼이 우하단 모서리에 있다. VoiceOver 더블탭이 중앙에서 발동 — 장식 이미지에 닿는다. 카드는 선택되지만 아무것도 열리지 않는다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="Setting the activation point to the button's location ensures double-tap always hits &quot;Open&quot; — regardless of where VoiceOver focus draws its highlight rectangle.">활성화 지점을 버튼 위치로 설정하면 더블탭이 항상 "열기"에 닿는다 — VoiceOver 포커스 강조 사각형 위치와 무관하게.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation 9: accessibilityElements (UIAccessibilityContainer) -->
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Container — define explicit focus traversal order">명시적 포커스 탐색 순서 정의</span>
+        <code class="impl-sig">view.accessibilityElements = [cell0, cell1, cell2, ...]</code>
+      </div>
+      <p class="impl-when" data-en="Custom collection views, game boards, canvas layouts, or any container where auto-traversal produces wrong order. Set `accessibilityElements` on the container to an ordered array of the child views VoiceOver should visit.">커스텀 컬렉션 뷰, 게임 보드, 캔버스 레이아웃, 자동 탐색이 잘못된 순서를 생성하는 모든 컨테이너. 컨테이너의 `accessibilityElements`를 VoiceOver가 방문해야 하는 자식 뷰의 순서 있는 배열로 설정한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="3×3 photo grid: VoiceOver traverses in Z-order — bottom row first, then middle, then top. Reads as column 3 bottom → column 3 middle → column 3 top → column 2 bottom… completely unintuitive.">3×3 사진 그리드: VoiceOver가 Z 순서로 탐색 — 아래 행 먼저, 그다음 중간, 마지막으로 위. 완전히 직관적이지 않다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="`accessibilityElements` set to cells in row-major order: top-left → top-center → top-right → middle-left… VoiceOver traverses left-to-right, top-to-bottom — matching visual reading.">행 우선 순서로 셀을 설정: 좌상단 → 상단 중앙 → 우상단 → 중간 좌측… VoiceOver가 왼쪽에서 오른쪽, 위에서 아래로 탐색 — 시각적 읽기와 일치.</span>
+        </div>
+      </div>
+    </div>
+
   </article><!-- /VoiceOver -->
 
 
@@ -585,6 +705,44 @@
       </div>
     </div>
 
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Spacing — scale with Dynamic Type">여백 Dynamic Type 연동</span>
+        <code class="impl-sig">@ScaledMetric(relativeTo: .body) var iconSize: CGFloat = 24</code>
+      </div>
+      <p class="impl-when" data-en="Custom spacing values, icon sizes, padding constants that should grow alongside text. Without this, layout breaks when text reaches AX sizes because text overflows fixed-size containers.">텍스트와 함께 커야 하는 커스텀 여백·아이콘 크기·패딩 상수. 없으면 텍스트가 AX 크기에 도달했을 때 고정 크기 컨테이너를 넘쳐 레이아웃이 깨진다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Icon frame is fixed Image(...).frame(width: 24, height: 24). At AX5 the adjacent label is 53pt but the icon stays 24pt — proportionally tiny and visually broken.">아이콘 프레임이 고정 Image(...).frame(width: 24, height: 24). AX5에서 인접 라벨은 53pt지만 아이콘은 24pt로 유지 — 비례적으로 작고 시각적으로 파괴된다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="@ScaledMetric(relativeTo: .body) var iconSize: CGFloat = 24 scales the icon to ~74pt at AX5, maintaining the same visual ratio as default size.">@ScaledMetric(relativeTo: .body) var iconSize: CGFloat = 24이 AX5에서 아이콘을 ~74pt로 확대해 기본 크기와 동일한 시각적 비율을 유지한다.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Layout — collapse at large text sizes">대형 텍스트 시 레이아웃 축소</span>
+        <code class="impl-sig">ViewThatFits { HStack {...} VStack {...} }</code>
+      </div>
+      <p class="impl-when" data-en="Side-by-side layouts (HStack with label + value) that break when text is very large. ViewThatFits tries each child in order and uses the first one that fits without clipping.">텍스트가 매우 클 때 깨지는 나란히 배치 레이아웃(라벨+값 HStack). ViewThatFits는 각 자식을 순서대로 시도해 클리핑 없이 맞는 첫 번째를 사용한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="HStack with product name + price side-by-side. At AX5 the name truncates to &quot;…&quot; — critical information is lost.">상품명 + 가격이 나란한 HStack. AX5에서 상품명이 "…"으로 잘린다 — 핵심 정보가 손실된다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="ViewThatFits tries HStack first, falls back to VStack when text is large. Both pieces of text remain fully readable at every Dynamic Type size.">ViewThatFits가 HStack을 먼저 시도하고 텍스트가 크면 VStack으로 폴백. 모든 Dynamic Type 크기에서 두 텍스트 모두 완전히 읽을 수 있다.</span>
+        </div>
+      </div>
+    </div>
+
   </article><!-- /Dynamic Type -->
 
 
@@ -627,6 +785,44 @@
         <div class="ba-cell ba-after">
           <div class="ba-tag" data-en="After">적용 후</div>
           <span data-en=".animation(reduce ? nil : .spring, value: scale) — the spring plays for standard users, instant snap for reduced-motion users.">.animation(reduce ? nil : .spring, value: scale) — 일반 사용자는 스프링, Reduce Motion 사용자는 즉각 전환.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="UIKit — check reduce motion state">UIKit Reduce Motion 상태 확인</span>
+        <code class="impl-sig">UIAccessibility.isReduceMotionEnabled</code>
+      </div>
+      <p class="impl-when" data-en="UIKit view controllers or UIView subclasses that add animations via UIView.animate or CAAnimation. Register for UIAccessibility.reduceMotionStatusDidChangeNotification to react dynamically when the user toggles the setting.">UIView.animate 또는 CAAnimation으로 애니메이션을 추가하는 UIKit 뷰 컨트롤러 또는 UIView 서브클래스. 사용자가 설정을 토글할 때 동적으로 반응하려면 UIAccessibility.reduceMotionStatusDidChangeNotification을 등록한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="UIView.animate(withDuration: 0.4) { view.alpha = 1 } — runs even when Reduce Motion is on.">UIView.animate(withDuration: 0.4) { view.alpha = 1 } — Reduce Motion이 켜진 상태에서도 실행된다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="guard !UIAccessibility.isReduceMotionEnabled else { view.alpha = 1; return } — instant without animation when reduce motion is enabled.">guard !UIAccessibility.isReduceMotionEnabled else { view.alpha = 1; return } — reduce motion 활성화 시 애니메이션 없이 즉시 전환.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="impl-block">
+      <div class="impl-meta">
+        <span class="purpose-chip" data-en="Transition — cross-fade instead of slide">슬라이드 대신 크로스페이드 전환</span>
+        <code class="impl-sig">.transition(reduceMotion ? .opacity : .slide)</code>
+      </div>
+      <p class="impl-when" data-en="Navigation transitions, tab switches, and any content replacement where the content itself must change. A cross-fade (opacity) conveys the transition without triggering vestibular symptoms.">내비게이션 전환, 탭 전환, 콘텐츠가 바뀌어야 하는 모든 콘텐츠 교체. 크로스페이드(opacity)는 전정 증상을 유발하지 않고 전환을 전달한다.</p>
+      <div class="ba-row">
+        <div class="ba-cell ba-before">
+          <div class="ba-tag" data-en="Before">적용 전</div>
+          <span data-en="Tab switch uses .slide — the entire screen flies in from the side at full velocity. Users with vestibular disorders report nausea.">탭 전환이 .slide를 사용 — 전체 화면이 전속력으로 옆에서 날아온다. 전정 장애 사용자가 메스꺼움을 보고한다.</span>
+        </div>
+        <div class="ba-divider">→</div>
+        <div class="ba-cell ba-after">
+          <div class="ba-tag" data-en="After">적용 후</div>
+          <span data-en="When reduceMotion is true, .opacity fades the old content out and the new content in — change is communicated without movement.">reduceMotion이 true이면 .opacity가 이전 콘텐츠를 페이드 아웃하고 새 콘텐츠를 페이드 인 — 움직임 없이 변화가 전달된다.</span>
         </div>
       </div>
     </div>
@@ -688,6 +884,60 @@
       </div>
     </div>
   </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Selection — selected state trait">선택 상태 trait</span>
+      <code class="impl-sig">.accessibilityAddTraits(isChosen ? .isSelected : [])</code>
+    </div>
+    <p class="impl-when" data-en="Custom tab bars, segmented controls, filter chips, or any element that can be in a selected/unselected state but is not a standard SwiftUI Picker. VoiceOver announces &quot;selected&quot; automatically when the trait is set.">커스텀 탭 바, 세그먼트 컨트롤, 필터 칩, 또는 표준 SwiftUI Picker가 아니지만 선택/비선택 상태를 가질 수 있는 요소. Trait이 설정되면 VoiceOver가 자동으로 "선택됨"을 발화한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom tab bar pill: tapping &quot;Photos&quot; highlights it visually. VoiceOver reads &quot;Photos. Button.&quot; — no mention that this tab is now active.">커스텀 탭 바 pill: "사진" 탭이 시각적으로 강조된다. VoiceOver가 "사진. 버튼."을 읽는다 — 이 탭이 현재 활성화됐다는 언급이 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Active tab has .isSelected trait. VoiceOver reads &quot;Photos. Selected. Button.&quot; — the user knows which tab is current without exploring further.">활성 탭에 .isSelected trait이 있다. VoiceOver가 "사진. 선택됨. 버튼."을 읽는다 — 사용자가 더 탐색하지 않아도 어떤 탭이 현재인지 안다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Live data — updates frequently trait">라이브 데이터 trait</span>
+      <code class="impl-sig">.accessibilityAddTraits(.updatesFrequently)</code>
+    </div>
+    <p class="impl-when" data-en="Live counters, stock prices, sports scores, or any numeric value that changes faster than VoiceOver can speak. This hint tells VoiceOver not to re-read the element on every change, preventing an endless stream of interrupting announcements.">라이브 카운터, 주식 가격, 스포츠 점수, 또는 VoiceOver가 말하는 것보다 빠르게 변하는 숫자값. 이 힌트는 VoiceOver에게 모든 변경마다 요소를 다시 읽지 않도록 알려 끊임없는 방해 발화를 방지한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Live bid price updates every 2 seconds. VoiceOver tries to read each update and interrupts itself continuously — the user hears a garbled stream of partial numbers.">라이브 입찰가가 2초마다 업데이트된다. VoiceOver가 각 업데이트를 읽으려 하고 계속 스스로를 방해한다 — 사용자가 부분 숫자들의 뒤섞인 흐름을 듣는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en=".updatesFrequently tells VoiceOver to batch updates. The user can swipe to focus and hear the latest value on demand, rather than being interrupted.">.updatesFrequently가 VoiceOver에게 업데이트를 일괄 처리하라고 알린다. 사용자가 방해받는 대신 포커스를 이동해 요청 시 최신 값을 들을 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Remove traits — strip unwanted system traits">원치 않는 시스템 trait 제거</span>
+      <code class="impl-sig">.accessibilityRemoveTraits(.isButton)</code>
+    </div>
+    <p class="impl-when" data-en="Views that inherit .isButton from a parent or system component but are purely informational in a specific context — e.g. a button rendered as a decorative summary tile that should not be announced as interactive.">부모 또는 시스템 컴포넌트에서 .isButton을 상속받지만 특정 맥락에서 순전히 정보 제공 목적인 뷰 — 예: 인터랙티브로 발화되지 않아야 하는 장식적 요약 타일로 렌더링된 버튼.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="A read-only summary card embedded inside a Button container reads &quot;Revenue: $4,200. Button.&quot; — the button role is misleading; tapping does nothing meaningful.">Button 컨테이너 안에 내장된 읽기 전용 요약 카드가 "매출: $4,200. 버튼."을 읽는다 — 버튼 역할이 오해를 준다; 탭해도 의미 있는 동작이 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en=".accessibilityRemoveTraits(.isButton) removes the role. VoiceOver reads &quot;Revenue: $4,200.&quot; — no incorrect interaction affordance is implied.">.accessibilityRemoveTraits(.isButton)이 역할을 제거한다. VoiceOver가 "매출: $4,200."을 읽는다 — 잘못된 상호작용 어포던스가 암시되지 않는다.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 <div class="feat-divider">· · ·</div>
@@ -742,6 +992,42 @@
       <div class="ba-cell ba-after">
         <div class="ba-tag" data-en="After">적용 후</div>
         <span data-en="The circle is invisible to VoiceOver — focus jumps directly to meaningful content.">원은 VoiceOver에서 보이지 않는다. 포커스가 바로 의미 있는 콘텐츠로 이동한다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Contain — preserve children but bound traversal">자식 보존 및 탐색 경계 설정</span>
+      <code class="impl-sig">.accessibilityElement(children: .contain)</code>
+    </div>
+    <p class="impl-when" data-en="A container where children must remain individually focusable (e.g. a form section with multiple fields), but VoiceOver should recognise the group as a navigational landmark. Unlike .combine, children are NOT merged — they each get their own focus stop, but the container is also labelled.">자식이 개별적으로 포커스 가능해야 하는 컨테이너(예: 여러 필드가 있는 양식 섹션)지만 VoiceOver가 그룹을 탐색 랜드마크로 인식해야 하는 경우. .combine과 달리 자식이 병합되지 않아 각자 포커스 정류장을 가지지만 컨테이너도 레이블된다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Settings form with &quot;Account&quot; section header and 4 fields below. VoiceOver has no concept of the section — it reads all fields as a flat list with no grouping context.">Settings 양식에 "계정" 섹션 헤더와 아래 4개 필드. VoiceOver가 섹션 개념이 없다 — 그룹화 맥락 없이 모든 필드를 평면 목록으로 읽는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en=".contain on the section VStack + .accessibilityLabel(&quot;Account settings&quot;) + .accessibilityAddTraits(.isHeader) lets rotor navigation jump directly to the section while keeping each field individually accessible.">섹션 VStack에 .contain + .accessibilityLabel(&quot;계정 설정&quot;) + .accessibilityAddTraits(.isHeader)로 각 필드를 개별 접근 가능하게 유지하면서 로터 탐색이 섹션으로 직접 이동할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Landmark — skip-nav for long pages">긴 페이지 건너뛰기 탐색</span>
+      <code class="impl-sig">.accessibilityElement(children: .contain).accessibilityLabel("Main content")</code>
+    </div>
+    <p class="impl-when" data-en="Long-scrolling pages where keyboard and switch users must traverse a header, nav bar, and promotional banner before reaching the content they want. Proper landmark grouping with named containers lets rotor Headings mode skip directly to sections.">키보드·스위치 사용자가 원하는 콘텐츠에 도달하기 전에 헤더, 내비게이션 바, 프로모션 배너를 탐색해야 하는 긴 스크롤 페이지. 명명된 컨테이너로 올바른 랜드마크 그룹화를 하면 로터 제목 모드가 섹션으로 직접 건너뛸 수 있다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="A news app page: logo, nav (7 items), hero banner, then 30 article cards. Each page load requires 40+ swipes to reach the first article.">뉴스 앱 페이지: 로고, 내비게이션(7개 항목), 히어로 배너, 그다음 기사 카드 30개. 페이지 로드마다 첫 번째 기사에 도달하기까지 40회 이상 스와이프가 필요하다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Header, nav, hero, and article list are each .contain groups with descriptive labels. VoiceOver rotor Headings shows &quot;Navigation&quot;, &quot;Hero&quot;, &quot;Top Stories&quot; — user jumps directly to articles in 1 swipe.">헤더, 내비게이션, 히어로, 기사 목록이 각각 설명 레이블이 있는 .contain 그룹. VoiceOver 로터 제목이 "내비게이션", "히어로", "주요 기사"를 표시 — 사용자가 1번 스와이프로 기사로 직접 이동한다.</span>
       </div>
     </div>
   </div>
@@ -802,6 +1088,24 @@
       </div>
     </div>
   </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Asset catalog — High Contrast color variant">에셋 카탈로그 고대비 색상 변형</span>
+      <code class="impl-sig">Color("BrandSecondary")</code>
+    </div>
+    <p class="impl-when" data-en="Brand colors that pass WCAG AA in normal conditions but fail in high-contrast mode. Xcode's asset catalog supports a &quot;High Contrast&quot; appearance slot — fill it with a darker/lighter variant and the system picks it automatically. No code branching required.">정상 조건에서 WCAG AA를 통과하지만 고대비 모드에서 실패하는 브랜드 색상. Xcode의 에셋 카탈로그는 "고대비" 외관 슬롯을 지원한다 — 더 어둡거나 밝은 변형으로 채우면 시스템이 자동으로 선택한다. 코드 분기 불필요.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Color(&quot;BrandSecondary&quot;) is #8A9BB2 — 3.1:1 contrast on white. The brand team approved it for normal use, but it fails WCAG AA under High Contrast.">Color("BrandSecondary")는 #8A9BB2 — 흰색 위 3.1:1 대비. 브랜드 팀이 일반 사용에서 승인했지만 고대비에서 WCAG AA를 실패한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Add a High Contrast slot in the asset catalog with #3A5F8A. When the user enables Increase Contrast, the system automatically serves the high-contrast swatch — the brand color adapts without any code change.">에셋 카탈로그의 고대비 슬롯에 #3A5F8A를 추가한다. 사용자가 대비 증가를 활성화하면 시스템이 자동으로 고대비 색상을 제공한다 — 브랜드 색상이 코드 변경 없이 적응한다.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 <div class="feat-divider">· · ·</div>
@@ -841,6 +1145,42 @@
       </div>
     </div>
   </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Charts — pattern fills alongside color">차트 패턴 채우기 추가</span>
+      <code class="impl-sig">chartForegroundStyleScale(mapping: { category in noDiffColor ? AnyShapeStyle(patterns[category]) : AnyShapeStyle(colors[category]) })</code>
+    </div>
+    <p class="impl-when" data-en="Any chart (bar, pie, line) where segments are distinguished only by hue. When noDiffColor is true, add hatching, dots, or diagonal stripes to each segment so meaning is conveyed by texture, not just color.">색조만으로 세그먼트를 구별하는 모든 차트(막대, 원형, 선). noDiffColor가 true이면 해칭, 점, 대각선 줄무늬를 각 세그먼트에 추가해 색상뿐 아니라 질감으로도 의미를 전달한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Pie chart: revenue breakdown by region in red/green/blue. A protanopia user sees three similar brownish segments with no way to distinguish them.">파이 차트: 빨강/초록/파랑으로 지역별 매출 분석. 적색맹 사용자는 구별할 방법 없이 비슷한 갈색 세그먼트 세 개를 본다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="When noDiffColor is true, segments get distinct patterns (solid / diagonal stripes / dots). The legend shows both color and pattern — meaning survives complete color blindness.">noDiffColor가 true이면 세그먼트가 고유한 패턴(단색/대각선 줄무늬/점)을 얻는다. 범례가 색상과 패턴을 모두 표시한다 — 완전한 색맹에서도 의미가 살아남는다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="SF Symbols — monochrome vs multicolor">SF Symbols 단색 vs 다색</span>
+      <code class="impl-sig">Image(systemName: icon).symbolRenderingMode(noDiffColor ? .monochrome : .multicolor)</code>
+    </div>
+    <p class="impl-when" data-en="Multicolor SF Symbols (e.g. checkmark.circle.fill in green, xmark.circle.fill in red) used to indicate pass/fail states. In monochrome mode all symbols render in the tint color — status must be conveyed by symbol shape, not color.">통과/실패 상태를 나타내는 데 사용되는 다색 SF Symbols(예: 초록색 checkmark.circle.fill, 빨간색 xmark.circle.fill). 단색 모드에서 모든 심볼이 틴트 색상으로 렌더링된다 — 상태가 색상이 아닌 심볼 모양으로 전달되어야 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Green checkmark.circle.fill and red xmark.circle.fill are indistinguishable to a deuteranopia user — both appear identical yellow-brown.">초록색 checkmark.circle.fill과 빨간색 xmark.circle.fill이 적록색맹 사용자에게 구별되지 않는다 — 둘 다 동일한 황갈색으로 보인다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="When noDiffColor is true, switch to .monochrome + distinct shapes: checkmark.circle (outline) vs xmark.circle.fill (filled). Shape alone carries the pass/fail meaning.">noDiffColor가 true이면 .monochrome + 고유한 형태로 전환: checkmark.circle(윤곽선) vs xmark.circle.fill(채워진). 형태만으로 통과/실패 의미가 전달된다.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 <div class="feat-divider">· · ·</div>
@@ -877,6 +1217,42 @@
       <div class="ba-cell ba-after">
         <div class="ba-tag" data-en="After">적용 후</div>
         <span data-en="Photo renders in natural color. The surrounding UI (nav bar, buttons) continues to honor the inversion — only the image layer is exempt.">사진이 자연색으로 렌더링된다. 주변 UI(내비게이션 바, 버튼)는 계속 반전을 따른다. 이미지 레이어만 제외된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="UIKit — ignore invert colors">UIKit 색상 반전 무시</span>
+      <code class="impl-sig">imageView.accessibilityIgnoresInvertColors = true</code>
+    </div>
+    <p class="impl-when" data-en="UIKit UIImageView, WKWebView, MKMapView, AVPlayerLayer containers, or any UIView subclass showing photos, maps, or video. This is the UIKit equivalent of SwiftUI's .accessibilityIgnoresInvertColors(true).">UIKit UIImageView, WKWebView, MKMapView, AVPlayerLayer 컨테이너, 또는 사진·지도·영상을 표시하는 모든 UIView 서브클래스. SwiftUI의 .accessibilityIgnoresInvertColors(true)에 해당하는 UIKit 방법이다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="UIImageView showing a product photo inverts under Smart Invert — the product appears as a negative. The customer cannot evaluate color or appearance.">제품 사진을 표시하는 UIImageView가 Smart Invert에서 반전된다 — 제품이 네거티브로 보인다. 고객이 색상이나 외관을 평가할 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="imageView.accessibilityIgnoresInvertColors = true exempts the image layer from the inversion compositing pass. The photo stays in natural color while surrounding UI inverts normally.">imageView.accessibilityIgnoresInvertColors = true가 이미지 레이어를 반전 합성 단계에서 제외한다. 사진이 자연색을 유지하면서 주변 UI는 정상적으로 반전된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="WKWebView — CSS prefers-color-scheme">WKWebView CSS 색상 스키마</span>
+      <code class="impl-sig">prefers-color-scheme: dark</code>
+    </div>
+    <p class="impl-when" data-en="WKWebView content that contains photos, diagrams, or branded assets. Smart Invert on iOS triggers a dark-like environment; web content should use prefers-color-scheme: dark media queries to serve correct assets and avoid double-inversion artifacts.">사진·다이어그램·브랜드 에셋을 포함하는 WKWebView 콘텐츠. iOS의 Smart Invert가 다크와 유사한 환경을 트리거하므로 웹 콘텐츠는 prefers-color-scheme: dark 미디어 쿼리를 사용해 올바른 에셋을 제공하고 이중 반전 아티팩트를 방지해야 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="WKWebView renders a white-background article. Smart Invert inverts it to dark — but also inverts every photo inside, producing negative images within the already-inverted page.">WKWebView가 흰 배경 기사를 렌더링한다. Smart Invert가 다크로 반전하지만 내부의 모든 사진도 반전하여 이미 반전된 페이지 안에 네거티브 이미지를 생성한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="CSS @media (prefers-color-scheme: dark) loads dark-background styles and marks img elements with filter: none where needed — photos stay natural-color regardless of Smart Invert state.">CSS @media (prefers-color-scheme: dark)가 다크 배경 스타일을 로드하고 필요한 경우 img 요소에 filter: none을 표시한다 — Smart Invert 상태와 무관하게 사진이 자연색을 유지한다.</span>
       </div>
     </div>
   </div>
@@ -937,6 +1313,24 @@
       </div>
     </div>
   </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Caption track — manual selection">자막 트랙 수동 선택</span>
+      <code class="impl-sig">asset.loadMediaSelectionGroup(for: .legible) { group in player.select(option, in: group) }</code>
+    </div>
+    <p class="impl-when" data-en="Apps that offer their own caption track picker UI — language selection, SDH vs non-SDH, forced subtitles. Rather than relying on AVPlayerViewController's built-in selector, query AVMediaCharacteristic.legible directly to enumerate and activate tracks programmatically.">자체 자막 트랙 선택기 UI를 제공하는 앱 — 언어 선택, SDH vs 비SDH, 강제 자막. AVPlayerViewController의 내장 선택기에 의존하는 대신 AVMediaCharacteristic.legible을 직접 쿼리해 트랙을 프로그래밍적으로 열거하고 활성화한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App has a custom settings panel with a &quot;Captions&quot; section, but it only toggles on/off rather than letting users choose language or SDH variant.">앱에 "자막" 섹션이 있는 커스텀 설정 패널이 있지만 사용자가 언어나 SDH 변형을 선택하게 하는 대신 켜기/끄기만 토글한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="asset.loadMediaSelectionGroup(for: .legible) returns all available tracks. The settings panel lists them by locale and SDH flag — the user selects Korean SDH and player.select(option, in: group) activates it immediately.">asset.loadMediaSelectionGroup(for: .legible)가 사용 가능한 모든 트랙을 반환한다. 설정 패널이 로케일과 SDH 플래그별로 목록을 표시한다 — 사용자가 한국어 SDH를 선택하면 player.select(option, in: group)가 즉시 활성화한다.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 <div class="feat-divider">· · ·</div>
@@ -991,6 +1385,42 @@
       <div class="ba-cell ba-after">
         <div class="ba-tag" data-en="After">적용 후</div>
         <span data-en="A `.medium` impact fires on drop — the interaction feels real; deaf users get the same tactile cue sighted users get from sound.">드롭 시 `.medium` 충격이 발생한다. 상호작용이 실재하는 느낌이 든다. 청각장애 사용자도 소리 대신 같은 촉각 신호를 받는다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Selection — picker snap haptic">피커 스냅 햅틱</span>
+      <code class="impl-sig">UISelectionFeedbackGenerator().selectionChanged()</code>
+    </div>
+    <p class="impl-when" data-en="Scroll wheels, custom pickers, segmented sliders, or any UI where the user drags through discrete steps. Fire once per step change — this creates the characteristic detent-click feel that confirms the value changed without implying a final result.">스크롤 휠, 커스텀 피커, 세그먼트 슬라이더, 또는 사용자가 이산적 단계를 드래그하는 UI. 단계 변경마다 한 번 발동 — 최종 결과를 암시하지 않고 값이 변경됐음을 확인하는 특유의 디텐트 클릭 느낌을 생성한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom drum-roll date picker scrolls silently. Users with tremors cannot feel when a value has snapped to a new date — they must stop and look at the display.">커스텀 드럼롤 날짜 피커가 소리 없이 스크롤된다. 떨림이 있는 사용자가 값이 새 날짜로 스냅됐을 때 느낄 수 없다 — 멈추고 디스플레이를 봐야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="selectionChanged() fires on each date-snap during scroll. The tactile detent click lets the user feel each value change without looking, matching the physical feel of a mechanical picker.">selectionChanged()가 스크롤 중 각 날짜 스냅에서 발동된다. 촉각 디텐트 클릭으로 사용자가 보지 않고도 각 값 변경을 느낄 수 있어 기계식 피커의 물리적 느낌과 일치한다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="CoreHaptics — custom haptic patterns">CoreHaptics 커스텀 햅틱 패턴</span>
+      <code class="impl-sig">CHHapticEngine().makePlayer(with: CHHapticPattern(...))</code>
+    </div>
+    <p class="impl-when" data-en="Branded or gameplay interactions requiring a haptic signature distinct from the standard Apple generators — a unique &quot;unlock&quot; pattern, a heartbeat pulse, or a Morse-code style notification. CoreHaptics gives full control over intensity, sharpness, and timing curves.">표준 Apple 생성기와 다른 햅틱 서명이 필요한 브랜드 또는 게임플레이 상호작용 — 고유한 "잠금 해제" 패턴, 심박동 펄스, 모스 부호 스타일 알림. CoreHaptics가 강도, 선명도, 타이밍 곡선을 완전히 제어한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App uses .success haptic for all notifications — purchase confirmed, message received, level completed all feel identical. Users relying on haptic feedback alone cannot distinguish event types.">앱이 모든 알림에 .success 햅틱을 사용한다 — 구매 확인, 메시지 수신, 레벨 완료가 모두 동일하게 느껴진다. 햅틱 피드백만 의존하는 사용자가 이벤트 유형을 구별할 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Each event has a distinct CHHapticPattern: purchase = single sharp tap, message = double soft pulse, level complete = rising intensity ramp. Tactile differentiation matches the visual variety.">각 이벤트에 고유한 CHHapticPattern: 구매 = 단일 날카로운 탭, 메시지 = 이중 부드러운 펄스, 레벨 완료 = 강도 상승 램프. 촉각적 구분이 시각적 다양성과 일치한다.</span>
       </div>
     </div>
   </div>
@@ -1051,6 +1481,24 @@
       </div>
     </div>
   </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Disambiguation — unique labels per repeated element">반복 요소별 고유 레이블</span>
+      <code class="impl-sig">.accessibilityLabel("Delete photo 1")</code>
+    </div>
+    <p class="impl-when" data-en="Lists or grids where multiple items share the same action label — &quot;Delete&quot;, &quot;Share&quot;, &quot;Edit&quot; repeated per row. Voice Control shows number overlays when labels are ambiguous, but assigning unique labels allows direct voice commands without disambiguation UI.">여러 항목이 동일한 동작 레이블을 공유하는 목록이나 그리드 — 행마다 반복되는 "삭제", "공유", "편집". Voice Control은 레이블이 모호할 때 숫자 오버레이를 표시하지만 고유한 레이블을 지정하면 구별 UI 없이 직접 음성 명령이 가능하다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Photo grid with a &quot;Delete&quot; button on each thumbnail. Saying &quot;tap Delete&quot; causes Voice Control to overlay numbers on all Delete buttons — the user must say &quot;tap 3&quot; as a second step.">각 썸네일에 "삭제" 버튼이 있는 사진 그리드. "삭제 탭"을 말하면 Voice Control이 모든 삭제 버튼에 숫자를 오버레이한다 — 사용자가 두 번째 단계로 "3 탭"을 말해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Each delete button gets .accessibilityLabel(&quot;Delete photo of beach&quot;) from the photo's description. Saying &quot;tap Delete photo of beach&quot; activates the correct button in one command.">각 삭제 버튼이 사진 설명에서 .accessibilityLabel("해변 사진 삭제")를 얻는다. "해변 사진 삭제 탭"을 말하면 한 번의 명령으로 올바른 버튼이 활성화된다.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 <div class="feat-divider">· · ·</div>
@@ -1108,6 +1556,42 @@
       </div>
     </div>
   </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Keyboard shortcuts — UIKeyCommand">UIKeyCommand 키보드 단축키</span>
+      <code class="impl-sig">UIKeyCommand(input: "n", modifierFlags: .command, action: #selector(newItem))</code>
+    </div>
+    <p class="impl-when" data-en="Any frequently-used action in an iPad or Mac Catalyst app. Full Keyboard Access users and power users benefit from shortcuts that bypass navigation. Add key commands to UIViewController.keyCommands — they appear in the keyboard shortcut overlay (hold ⌘).">iPad 또는 Mac Catalyst 앱의 자주 사용하는 동작. Full Keyboard Access 사용자와 파워 유저가 탐색을 우회하는 단축키의 혜택을 받는다. UIViewController.keyCommands에 키 명령을 추가한다 — ⌘을 길게 누르면 키보드 단축키 오버레이에 나타난다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Creating a new note requires: navigate to Notes list (Tab×4) → activate Add button (Space). For a keyboard-only user who creates dozens of notes daily, this is exhausting.">새 메모 만들기: 메모 목록으로 이동(Tab×4) → 추가 버튼 활성화(Space). 매일 수십 개의 메모를 만드는 키보드 전용 사용자에게 이는 지치는 일이다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="⌘N is registered as a key command. Pressing it from anywhere in the app creates a new note instantly — zero navigation required. The shortcut appears in the ⌘ overlay for discoverability.">⌘N이 키 명령으로 등록된다. 앱 어디서든 누르면 새 메모가 즉시 만들어진다 — 탐색 0회. 단축키가 발견 가능성을 위해 ⌘ 오버레이에 나타난다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Custom key handling — pressesBegan">커스텀 키 처리</span>
+      <code class="impl-sig">override func pressesBegan(_ presses: Set&lt;UIPress&gt;, with event: UIPressesEvent?)</code>
+    </div>
+    <p class="impl-when" data-en="Custom interactive views — game boards, canvas editors, music sequencers — that must respond to specific keys (arrow keys, space bar, escape) for navigation or action. Standard controls handle this automatically; custom views must override pressesBegan and pressesEnded.">탐색이나 동작을 위해 특정 키(방향키, 스페이스 바, 이스케이프)에 응답해야 하는 커스텀 인터랙티브 뷰 — 게임 보드, 캔버스 편집기, 음악 시퀀서. 표준 컨트롤은 자동으로 처리하지만 커스텀 뷰는 pressesBegan과 pressesEnded를 재정의해야 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom grid puzzle: arrow keys do nothing. Full Keyboard Access user must use Tab to reach each cell individually — navigating a 9×9 grid takes 81 Tab presses.">커스텀 그리드 퍼즐: 방향키가 아무것도 하지 않는다. Full Keyboard Access 사용자가 각 셀에 개별적으로 Tab을 사용해야 한다 — 9×9 그리드 탐색에 81번의 Tab 누름이 필요하다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="pressesBegan maps arrow keys to directional cell movement. The user navigates the puzzle grid with arrow keys at normal speed — same experience as a sighted user using a trackpad.">pressesBegan이 방향키를 방향성 셀 이동에 매핑한다. 사용자가 정상 속도로 방향키로 퍼즐 그리드를 탐색한다 — 트랙패드를 사용하는 시각 사용자와 동일한 경험.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 <div class="feat-divider">· · ·</div>
@@ -1147,6 +1631,1111 @@
       </div>
     </div>
   </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="UIKit — button shapes enabled check">UIKit 버튼 형태 활성화 확인</span>
+      <code class="impl-sig">UIAccessibility.buttonShapesEnabled</code>
+    </div>
+    <p class="impl-when" data-en="UIKit apps with custom text-only interactive views — UILabel with UITapGestureRecognizer, custom cell footers, inline &quot;more&quot; links. Register for UIAccessibility.buttonShapesEnabledStatusDidChangeNotification to react dynamically.">커스텀 텍스트 전용 인터랙티브 뷰가 있는 UIKit 앱 — UITapGestureRecognizer가 있는 UILabel, 커스텀 셀 푸터, 인라인 "더보기" 링크. 동적으로 반응하려면 UIAccessibility.buttonShapesEnabledStatusDidChangeNotification을 등록한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="UILabel &quot;Forgot password?&quot; has a UITapGestureRecognizer. When Button Shapes is on, nothing changes — it looks identical to surrounding static text.">UILabel "비밀번호를 잊으셨나요?"에 UITapGestureRecognizer가 있다. Button Shapes가 켜지면 아무것도 변하지 않는다 — 주변 정적 텍스트와 동일하게 보인다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Check UIAccessibility.buttonShapesEnabled in layoutSubviews. When true, add a CALayer border or underline to the label — the interactive affordance is unambiguously visible.">layoutSubviews에서 UIAccessibility.buttonShapesEnabled를 확인한다. true이면 레이블에 CALayer 테두리나 밑줄을 추가한다 — 인터랙티브 어포던스가 명확하게 보인다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Links — underline as shape alternative">링크 밑줄 대안</span>
+      <code class="impl-sig">Text("Privacy Policy").underline(showShapes)</code>
+    </div>
+    <p class="impl-when" data-en="Text-only links within a body of text (terms of service, help articles, footnote references) where a border would look visually wrong. An underline is a universal, typography-native affordance that reads as a link in any context.">테두리가 시각적으로 어색해 보이는 본문 텍스트 내 텍스트 전용 링크(이용약관, 도움말 기사, 각주 참조). 밑줄은 어떤 맥락에서도 링크로 읽히는 범용적이고 타이포그래피에 자연스러운 어포던스다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="&quot;By continuing you agree to our Privacy Policy.&quot; — &quot;Privacy Policy&quot; is tappable but looks identical to surrounding body text. Button Shapes on does nothing because it's a custom Text + TapGesture.">"계속하면 개인정보 처리방침에 동의하게 됩니다." — "개인정보 처리방침"이 탭 가능하지만 주변 본문 텍스트와 동일하게 보인다. 커스텀 Text + TapGesture이기 때문에 Button Shapes를 켜도 아무것도 변하지 않는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="When showShapes is true, .underline(true) makes &quot;Privacy Policy&quot; clearly a link. It matches the browser convention — no explanation needed.">showShapes가 true이면 .underline(true)이 "개인정보 처리방침"을 명확한 링크로 만든다. 브라우저 관례와 일치한다 — 설명이 필요 없다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="announcement" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS · visionOS</span>
+    </div>
+    <div class="feat-name">Accessibility Notifications</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Dynamic UI changes — a toast message, a loading state, an inline validation error — are invisible to VoiceOver if focus is elsewhere. The user hears nothing when content they cannot see changes.">토스트 메시지, 로딩 상태, 인라인 유효성 오류처럼 동적으로 변하는 UI는 포커스가 다른 곳에 있으면 VoiceOver에 전달되지 않는다. 보이지 않는 곳이 변해도 사용자는 아무것도 듣지 못한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Post a `.announcement` or `.layoutChanged` notification to push a message directly to VoiceOver's speech queue — without moving focus. Use `.screenChanged` when the entire view replaces itself.">`.announcement` 또는 `.layoutChanged` 알림을 전송해 포커스를 이동하지 않고 VoiceOver 발화 큐에 메시지를 직접 전달한다. 화면 전체가 교체될 때는 `.screenChanged`를 사용한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Status — push message to speech queue">발화 큐로 메시지 전송</span>
+      <code class="impl-sig">UIAccessibility.post(notification: .announcement, argument: "Saved")</code>
+    </div>
+    <p class="impl-when" data-en="After any state change the user triggered but cannot see: form saved, item added to cart, upload complete, error appeared. Do not overuse — every announcement interrupts the current VoiceOver reading.">사용자가 트리거했지만 볼 수 없는 모든 상태 변경 후: 양식 저장, 장바구니 추가, 업로드 완료, 오류 표시. 남용 금지 — 모든 Announcement는 현재 VoiceOver 읽기를 중단시킨다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="&quot;Save&quot; tapped → spinner appears → &quot;Saved!&quot; banner fades in. VoiceOver focus is still on the Save button; the banner is never announced.">"저장" 탭 → 스피너 표시 → "저장됨!" 배너 페이드인. VoiceOver 포커스는 여전히 저장 버튼에 있어 배너가 절대 발화되지 않는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="On success, post `.announcement` with &quot;Saved&quot;. VoiceOver immediately says &quot;Saved&quot; — the user knows the action completed without losing their current position.">성공 시 `.announcement`에 "저장됨"을 전달한다. VoiceOver가 즉시 "저장됨"을 발화한다. 현재 위치를 잃지 않고 동작 완료를 안다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="layoutChanged — shift focus to new content">새 콘텐츠로 포커스 이동</span>
+      <code class="impl-sig">UIAccessibility.post(notification: .layoutChanged, argument: targetView)</code>
+    </div>
+    <p class="impl-when" data-en="A new section of content was inserted inline (e.g. search results appeared below a search bar, validation errors appeared under a field) and focus should move to the first new element. Pass the target view as argument to direct focus.">새 콘텐츠 섹션이 인라인으로 삽입됐을 때(예: 검색 결과가 검색 바 아래에 나타나거나, 유효성 오류가 필드 아래에 나타남) 포커스가 첫 번째 새 요소로 이동해야 한다. 포커스를 지시하기 위해 대상 뷰를 argument로 전달한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Search returns 12 results inserted below the search bar. VoiceOver focus stays on the search bar — the user must swipe down 12+ times to discover that results appeared.">검색이 검색 바 아래에 삽입된 12개 결과를 반환한다. VoiceOver 포커스가 검색 바에 유지된다 — 사용자가 결과가 나타났음을 발견하려면 12회 이상 아래로 스와이프해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en=".layoutChanged with the first result cell as argument moves focus directly to &quot;Result 1: …&quot; — the user is immediately oriented to the new content.">.layoutChanged에 첫 번째 결과 셀을 argument로 전달하면 포커스가 "결과 1: …"로 직접 이동한다 — 사용자가 즉시 새 콘텐츠로 방향을 잡는다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="screenChanged — full view replacement">전체 뷰 교체 알림</span>
+      <code class="impl-sig">UIAccessibility.post(notification: .screenChanged, argument: firstElement)</code>
+    </div>
+    <p class="impl-when" data-en="Replacing the entire visible content without a navigation push — modal-like transitions, full-screen video switching, wizard step replacement. .screenChanged signals VoiceOver that a new &quot;screen&quot; is active and moves focus to firstElement.">탐색 푸시 없이 전체 가시 콘텐츠를 교체할 때 — 모달 유사 전환, 전체 화면 영상 전환, 마법사 단계 교체. .screenChanged가 VoiceOver에 새 "화면"이 활성화됐음을 신호하고 포커스를 firstElement로 이동한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Onboarding wizard replaces step 1 content with step 2 using a withAnimation opacity transition. VoiceOver focus remains on a now-invisible step 1 element — all subsequent swipes hit invisible content.">온보딩 마법사가 withAnimation opacity 전환으로 1단계 콘텐츠를 2단계로 교체한다. VoiceOver 포커스가 이제 보이지 않는 1단계 요소에 유지된다 — 이후 모든 스와이프가 보이지 않는 콘텐츠에 닿는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="After the transition, .screenChanged with the step 2 title view as argument moves VoiceOver focus to &quot;Step 2 of 4: Choose your plan.&quot; — user is immediately oriented to the new context.">전환 후 .screenChanged에 2단계 제목 뷰를 argument로 전달하면 VoiceOver 포커스가 "4단계 중 2단계: 플랜 선택"으로 이동한다 — 사용자가 즉시 새 맥락으로 방향을 잡는다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="pageScrolled — scroll position feedback">스크롤 위치 피드백</span>
+      <code class="impl-sig">UIAccessibility.post(notification: .pageScrolled, argument: "Page 3 of 7")</code>
+    </div>
+    <p class="impl-when" data-en="Custom paged scroll views, carousels, or paginated lists where the user cannot see the scroll indicator. Post .pageScrolled after each page change so VoiceOver announces the current position — preventing the disorientation of scrolling &quot;into the dark.&quot;">사용자가 스크롤 표시기를 볼 수 없는 커스텀 페이지형 스크롤 뷰, 캐러셀, 페이지네이션 목록. 각 페이지 변경 후 .pageScrolled를 전송해 VoiceOver가 현재 위치를 발화하도록 한다 — "어둠 속에서 스크롤"하는 혼란을 방지한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Horizontal photo carousel: VoiceOver user swipes via the scroll gesture. After 3 swipes, they have no idea how far through the carousel they are or how many photos remain.">수평 사진 캐러셀: VoiceOver 사용자가 스크롤 제스처로 스와이프한다. 3번 스와이프 후 캐러셀에서 얼마나 진행했는지, 사진이 얼마나 남았는지 전혀 모른다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Each page change fires .pageScrolled with &quot;Photo 3 of 7&quot;. VoiceOver announces &quot;Page 3 of 7&quot; — the user has full positional context without any visual indicator.">각 페이지 변경이 "사진 3/7"과 함께 .pageScrolled를 발동한다. VoiceOver가 "7페이지 중 3페이지"를 발화한다 — 시각적 표시기 없이 사용자가 완전한 위치 맥락을 얻는다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="zoom-support" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS</span>
+    </div>
+    <div class="feat-name">Zoom &amp; Magnification</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="System Zoom enlarges the entire screen, but custom scroll views that clip or transform their content can break under magnification — images pixelate, layouts collapse, or the zoom region clips to the wrong area.">시스템 Zoom은 전체 화면을 확대하지만, 클리핑이나 변환을 적용하는 커스텀 스크롤 뷰는 배율 변경 시 깨진다 — 이미지가 픽셀화되고, 레이아웃이 무너지거나 확대 영역이 잘못 잘린다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="For in-app magnification, implement `UIScrollViewDelegate.viewForZooming(in:)` and set `minimumZoomScale` / `maximumZoomScale`. For text-only content, use Dynamic Type instead of manual zoom.">앱 내 확대·축소에는 `UIScrollViewDelegate.viewForZooming(in:)`을 구현하고 `minimumZoomScale` / `maximumZoomScale`을 설정한다. 텍스트 전용 콘텐츠에는 직접 줌 대신 Dynamic Type을 사용한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Pinch zoom — scrollView delegate">핀치 줌 스크롤뷰 델리게이트</span>
+      <code class="impl-sig">scrollView.minimumZoomScale = 1; scrollView.maximumZoomScale = 5</code>
+    </div>
+    <p class="impl-when" data-en="Image detail views, PDF viewers, maps, diagrams, or any content where pixel-level inspection matters. Do not apply to ordinary text layouts — Dynamic Type is the correct tool there.">이미지 상세 뷰, PDF 뷰어, 지도, 다이어그램처럼 픽셀 수준의 검사가 필요한 콘텐츠. 일반 텍스트 레이아웃에는 적용하지 말 것 — 그 경우 Dynamic Type이 올바른 도구다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Diagram image is fixed at display size. Low-vision users cannot zoom in to read fine detail — System Zoom blurs the fixed-resolution raster.">다이어그램 이미지가 표시 크기로 고정되어 있다. 저시력 사용자가 세부 사항을 읽기 위해 확대할 수 없다. 시스템 Zoom이 고정 해상도 래스터를 흐리게 만든다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Pinch gesture zooms to 5× within a UIScrollView container. For SVG/vector content, the image stays crisp at any zoom level.">UIScrollView 컨테이너 안에서 핀치 제스처로 5배까지 확대한다. SVG/벡터 콘텐츠는 어떤 배율에서도 선명하게 유지된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Pinch gesture — lightweight magnification">핀치 제스처 경량 확대</span>
+      <code class="impl-sig">UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))</code>
+    </div>
+    <p class="impl-when" data-en="Views that aren't UIScrollView subclasses but need pinch-to-zoom — a custom annotation overlay, a data visualization canvas, or a document preview. Apply the gesture's scale to view.transform with min/max clamping.">UIScrollView 서브클래스가 아니지만 핀치-투-줌이 필요한 뷰 — 커스텀 주석 오버레이, 데이터 시각화 캔버스, 문서 미리보기. 제스처의 스케일을 min/max 클램핑으로 view.transform에 적용한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom map annotation layer is a CALayer drawn on a UIView. System zoom blurs it — there's no in-app zoom and the vector paths pixelate.">커스텀 지도 주석 레이어가 UIView에 그려진 CALayer다. 시스템 줌이 흐리게 만든다 — 앱 내 줌이 없고 벡터 경로가 픽셀화된다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="UIPinchGestureRecognizer applies CGAffineTransform(scaleX: scale, y: scale) clamped to 0.5×–5×. The vector annotations stay crisp at all scales and redraw on gestureRecognizer.state == .ended.">UIPinchGestureRecognizer가 0.5×–5× 범위로 클램핑된 CGAffineTransform(scaleX: scale, y: scale)을 적용한다. 벡터 주석이 모든 스케일에서 선명하게 유지되고 gestureRecognizer.state == .ended에서 다시 그린다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="scrollViewDidZoom — announce zoom level">확대 수준 발화</span>
+      <code class="impl-sig">func scrollViewDidZoom(_ scrollView: UIScrollView)</code>
+    </div>
+    <p class="impl-when" data-en="Any UIScrollView-based zoom implementation. Announce the new zoom level to VoiceOver after the zoom gesture ends so blind users who use zoom for magnification know the current state.">모든 UIScrollView 기반 줌 구현. 줌 제스처가 끝난 후 VoiceOver에 새 줌 수준을 발화해 확대를 위해 줌을 사용하는 시각장애 사용자가 현재 상태를 알 수 있도록 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="User zooms a PDF to 3×. VoiceOver says nothing — there's no confirmation of the new zoom level and no indication of the current magnification.">사용자가 PDF를 3배로 확대한다. VoiceOver가 아무 말도 하지 않는다 — 새 줌 수준의 확인도 현재 배율의 표시도 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="scrollViewDidZoom posts .announcement with &quot;Zoomed to 300%&quot;. VoiceOver announces &quot;Zoomed to 300%&quot; after each zoom gesture completes.">scrollViewDidZoom이 "300%로 확대"와 함께 .announcement를 전송한다. 각 줌 제스처 완료 후 VoiceOver가 "300%로 확대"를 발화한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="speech-synthesis" data-cat="vision">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-vision">Vision</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS</span>
+    </div>
+    <div class="feat-name">Speak Selection / In-App TTS</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Reading-heavy apps — articles, e-books, instructions — assume the user can read silently. Low-literacy, dyslexic, and low-vision users benefit enormously from hearing text read aloud, but Speak Selection only works when users know to long-press.">기사·전자책·설명서처럼 읽기 중심의 앱은 사용자가 묵독할 수 있다고 가정한다. 낮은 문해력·난독증·저시력 사용자는 텍스트를 소리로 듣는 것에서 큰 혜택을 받지만, Speak Selection은 사용자가 길게 누르는 방법을 알아야만 작동한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Add an explicit &quot;Read aloud&quot; button powered by `AVSpeechSynthesizer`. Control rate, pitch, language, and pause/resume from within the app — no external gesture required.">앱 내에 `AVSpeechSynthesizer`로 구동되는 명시적인 "소리 내어 읽기" 버튼을 추가한다. 외부 제스처 없이 앱 내에서 속도·음정·언어·일시정지/재개를 제어한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="TTS — speak article text">기사 텍스트 읽기</span>
+      <code class="impl-sig">AVSpeechSynthesizer().speak(AVSpeechUtterance(string: text))</code>
+    </div>
+    <p class="impl-when" data-en="Article readers, recipe steps, turn-by-turn directions, form instructions — anywhere the user benefits from audio alongside visual content. Prefer in-app TTS over relying on Speak Selection.">기사 리더, 레시피 단계, 경로 안내, 양식 안내 — 시각 콘텐츠와 함께 오디오가 도움이 되는 모든 곳. Speak Selection에 의존하기보다 앱 내 TTS를 선호한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Long article with no read-aloud option. VoiceOver can read it, but only by swiping one paragraph at a time — flow is broken.">소리 내어 읽기 옵션이 없는 긴 기사. VoiceOver로 읽을 수 있지만 한 번에 한 단락씩 스와이프해야 한다 — 흐름이 끊긴다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="&quot;▶ Listen&quot; button speaks the full article continuously. Pause/resume and playback-rate controls let the user follow at their own pace.">"▶ 듣기" 버튼이 전체 기사를 연속으로 읽는다. 일시정지/재개 및 재생 속도 컨트롤로 사용자가 자신의 속도에 맞게 따라갈 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Voice — language and quality selection">음성 언어 및 품질 선택</span>
+      <code class="impl-sig">AVSpeechSynthesisVoice(language: "ko-KR")</code>
+    </div>
+    <p class="impl-when" data-en="Any TTS implementation where language must match content. Always specify voice language explicitly — the default voice uses the device locale, which may not match the content language. Prefer .enhanced or .premium quality voices for longer reading sessions.">언어가 콘텐츠와 일치해야 하는 모든 TTS 구현. 항상 음성 언어를 명시적으로 지정한다 — 기본 음성이 콘텐츠 언어와 일치하지 않을 수 있는 기기 로케일을 사용한다. 긴 읽기 세션에는 .enhanced 또는 .premium 품질 음성을 선호한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App speaks Korean article text using AVSpeechUtterance(string: text) with no voice set. On a device set to English, the TTS engine reads Korean text with an English voice — completely unintelligible.">앱이 음성 설정 없이 AVSpeechUtterance(string: text)를 사용해 한국어 기사 텍스트를 말한다. 영어로 설정된 기기에서 TTS 엔진이 영어 음성으로 한국어 텍스트를 읽는다 — 완전히 알아들을 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="AVSpeechSynthesisVoice(language: &quot;ko-KR&quot;) forces the correct language voice. Filtering for .enhanced quality selects the higher-fidelity Siri voice where available — more natural for long-form reading.">AVSpeechSynthesisVoice(language: "ko-KR")가 올바른 언어 음성을 강제한다. .enhanced 품질로 필터링하면 가능한 경우 고충실도 Siri 음성이 선택된다 — 장문 읽기에 더 자연스럽다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Delegate — word-by-word highlight">단어별 강조 델리게이트</span>
+      <code class="impl-sig">speechSynthesizer(_:willSpeakRangeOfSpeechString:utterance:)</code>
+    </div>
+    <p class="impl-when" data-en="E-reader, subtitles, or teleprompter apps where showing the currently spoken word helps users with dyslexia or reading difficulties follow along. The delegate receives a NSRange for each word before it is spoken.">전자책 리더, 자막, 텔레프롬프터 앱에서 현재 말하는 단어를 표시하면 난독증이나 읽기 어려움이 있는 사용자가 따라갈 수 있다. 델리게이트가 각 단어가 말해지기 전에 NSRange를 받는다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="TTS reads a paragraph while the user stares at a wall of static text. Users with dyslexia lose their place — the audio and the text are not synchronized.">TTS가 단락을 읽는 동안 사용자가 정적 텍스트 벽을 바라본다. 난독증 사용자가 위치를 잃는다 — 오디오와 텍스트가 동기화되지 않는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="willSpeakRangeOfSpeechString highlights the current word in the attributed string. The user sees word-by-word karaoke-style highlighting — audio and visual channels are perfectly synchronized.">willSpeakRangeOfSpeechString이 어트리뷰트 문자열에서 현재 단어를 강조한다. 사용자가 단어별 노래방 스타일 강조를 본다 — 오디오와 시각 채널이 완벽하게 동기화된다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="sound-recognition" data-cat="hearing">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-hearing">Hearing</span>
+      <span class="feat-platforms">iOS · iPadOS</span>
+    </div>
+    <div class="feat-name">Sound Recognition</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Deaf and hard-of-hearing users miss environmental audio events — a doorbell, a baby crying, a smoke alarm — that sighted hearing users take for granted. Purely audio-signaled apps are effectively inaccessible to this audience.">청각장애·난청 사용자는 현관 벨, 아기 울음, 화재 경보기처럼 청각이 정상인 사용자가 당연히 듣는 환경 음향 이벤트를 놓친다. 순수하게 오디오로만 신호를 보내는 앱은 이 사용자에게 사실상 접근 불가다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Use the Sound Analysis framework (`SNClassifySoundRequest`) to detect significant audio events and surface them visually — flash the screen, show a persistent banner, or trigger a haptic. This supplements the system Sound Recognition feature.">Sound Analysis 프레임워크(`SNClassifySoundRequest`)를 사용해 중요한 오디오 이벤트를 감지하고 시각적으로 표시한다 — 화면 깜박임, 지속 배너 표시, 햅틱 발생. 시스템 Sound Recognition 기능을 보완한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Sound — classify and surface visually">오디오 분류 및 시각 표시</span>
+      <code class="impl-sig">SNClassifyRequest() + SNAudioStreamAnalyzer</code>
+    </div>
+    <p class="impl-when" data-en="Apps that rely on audio alerts — baby monitors, pet trackers, home security — where the user might have audio off or be deaf. Pair every sound alert with a visual equivalent.">오디오 알림에 의존하는 앱 — 베이비 모니터, 반려동물 추적기, 홈 보안 — 에서 사용자가 오디오를 끄거나 청각장애일 수 있다. 모든 소리 알림에 시각적 동등 항목을 함께 제공한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Baby crying detected → app plays a chime. With phone on silent or user deaf, the alert is completely missed.">아기 울음 감지 → 앱이 알림음을 재생한다. 무음 모드이거나 사용자가 청각장애인 경우 알림을 완전히 놓친다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Chime + full-screen flash + notification banner + haptic simultaneously. Deaf user receives three independent sensory channels, guaranteeing detection.">알림음 + 전체 화면 깜박임 + 알림 배너 + 햅틱이 동시에 발생한다. 청각장애 사용자가 세 가지 독립적인 감각 채널을 통해 반드시 감지할 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Multiple sounds — SNClassifyRequest observers">다중 소리 분류 옵저버</span>
+      <code class="impl-sig">try request.addObserver(self, forSoundIdentifier: SNClassifierIdentifier.siren)</code>
+    </div>
+    <p class="impl-when" data-en="Safety-critical apps — smoke alarm detection, baby monitors, door bell apps — that must alert users to multiple distinct sounds. Add observers for each SNClassifierIdentifier (.siren, .smokeSmokeAlarm, .glassBraking, .coughing) and handle each distinctly.">여러 고유한 소리에 대해 사용자에게 경고해야 하는 안전 필수 앱 — 화재 경보기 감지, 베이비 모니터, 도어벨 앱. 각 SNClassifierIdentifier(.siren, .smokeSmokeAlarm, .glassBraking, .coughing)에 옵저버를 추가하고 각각 고유하게 처리한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App listens for smoke alarms only. A user whose building evacuates to an air-raid siren receives no alert — a potentially life-threatening gap.">앱이 화재 경보기만 듣는다. 건물이 공습 사이렌으로 대피하는 상황에서 사용자가 경고를 받지 못한다 — 잠재적으로 생명을 위협하는 공백.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Observers for .siren, .smokeSmokeAlarm, and .fireAlarm each trigger a distinct visual alert and haptic pattern. Every critical sound type is handled with a unique response.">.siren, .smokeSmokeAlarm, .fireAlarm에 대한 옵저버가 각각 고유한 시각적 경고와 햅틱 패턴을 트리거한다. 모든 중요한 소리 유형이 고유한 응답으로 처리된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Confidence — threshold filtering">신뢰도 임계값 필터링</span>
+      <code class="impl-sig">func request(_ request: SNRequest, didProduce result: SNResult)</code>
+    </div>
+    <p class="impl-when" data-en="Implementing SNResultsObserving.request(_:didProduce:) — filter by result.classifications.first?.confidence (0.0–1.0). Only trigger alerts above 0.7 to avoid false positives from similar-sounding ambient noise.">SNResultsObserving.request(_:didProduce:)를 구현할 때 result.classifications.first?.confidence(0.0–1.0)로 필터링한다. 유사한 주변 소음에서 오탐을 방지하기 위해 0.7 이상의 경우에만 경고를 트리거한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Fire alarm app fires a full-screen alert for any loud noise. Cooking sounds, a dropped pot, and a TV playing action movies all trigger the alarm — alert fatigue causes the user to ignore real alerts.">화재 경보 앱이 모든 큰 소음에 전체 화면 경고를 발동한다. 요리 소리, 떨어진 냄비, 액션 영화를 트는 TV가 모두 경보를 트리거한다 — 경보 피로로 사용자가 실제 경보를 무시하게 된다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="SNResultsObserving filters for confidence &gt; 0.7 and smoke-alarm-specific identifiers. Only genuine high-confidence detections trigger an alert — false positive rate drops dramatically.">SNResultsObserving이 confidence &gt; 0.7과 화재 경보기 특정 식별자로 필터링한다. 진짜 고신뢰도 감지만 경고를 트리거한다 — 오탐률이 극적으로 감소한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="live-captions" data-cat="hearing">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-hearing">Hearing</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS</span>
+    </div>
+    <div class="feat-name">Live Captions / Speech Recognition</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Live spoken content — video calls, live events, podcasts — is inaccessible to deaf users if captions are not pre-generated. Real-time conversations have no script to caption from.">화상 통화, 라이브 이벤트, 팟캐스트처럼 실시간 음성 콘텐츠는 자막이 사전 생성되지 않으면 청각장애 사용자에게 접근 불가다. 실시간 대화에는 자막을 만들 대본이 없다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Integrate `SFSpeechRecognizer` to transcribe live audio in real time. Pipe the recognized text into a persistent on-screen overlay. The system's Live Captions feature does this globally; in-app integration gives you style control.">실시간으로 오디오를 전사하기 위해 `SFSpeechRecognizer`를 통합한다. 인식된 텍스트를 화면에 지속적으로 표시하는 오버레이에 전달한다. 시스템 Live Captions 기능이 전역으로 이 작업을 수행하지만, 앱 내 통합은 스타일 제어를 제공한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Transcription — real-time speech to text">실시간 음성-텍스트 변환</span>
+      <code class="impl-sig">SFSpeechAudioBufferRecognitionRequest + SFSpeechRecognizer</code>
+    </div>
+    <p class="impl-when" data-en="Any app that streams audio from a microphone or network — video calls, voice messages, live streams. Request speech recognition authorization early; the user must explicitly grant access.">마이크 또는 네트워크에서 오디오를 스트리밍하는 모든 앱 — 화상 통화, 음성 메시지, 라이브 스트림. 음성 인식 권한을 미리 요청한다. 사용자가 명시적으로 허용해야 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Voice call app: audio-only. Deaf participant has no way to follow the conversation — must rely on system Live Captions which lag and have no styling.">음성 통화 앱: 오디오 전용. 청각장애 참여자가 대화를 따라갈 방법이 없다. 지연이 있고 스타일링이 없는 시스템 Live Captions에 의존해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="In-app live transcript panel appears alongside video. Text is styled in high-contrast large type, persists for 30s, and can be scrolled back.">영상 옆에 앱 내 실시간 전사 패널이 나타난다. 텍스트는 고대비 큰 글씨로 스타일링되고 30초간 유지되며 스크롤하여 이전 내용을 볼 수 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Authorization — permission flow">권한 흐름</span>
+      <code class="impl-sig">SFSpeechRecognizer.requestAuthorization { status in ... }</code>
+    </div>
+    <p class="impl-when" data-en="Any app integrating speech recognition. Authorization must be requested before creating a recognition task, and the app must gracefully handle .denied and .restricted states — offering manual caption input or linking to Settings.">음성 인식을 통합하는 모든 앱. 인식 작업을 생성하기 전에 권한을 요청해야 하며 앱이 .denied와 .restricted 상태를 우아하게 처리해야 한다 — 수동 자막 입력을 제공하거나 설정으로 연결한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App tries to start SFSpeechAudioBufferRecognitionRequest without checking authorization. On denied permission, recognition silently fails — deaf user sees a blank caption panel with no explanation.">앱이 권한 확인 없이 SFSpeechAudioBufferRecognitionRequest를 시작하려 한다. 권한이 거부되면 인식이 자동으로 실패한다 — 청각장애 사용자가 설명 없이 빈 자막 패널을 본다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="requestAuthorization checks status first. .authorized → start recognition. .denied → show &quot;Enable Speech Recognition in Settings&quot; with a UIApplication.openSettingsURLString link. .restricted → offer manual text input fallback.">requestAuthorization이 먼저 상태를 확인한다. .authorized → 인식 시작. .denied → UIApplication.openSettingsURLString 링크와 함께 "설정에서 음성 인식 활성화" 표시. .restricted → 수동 텍스트 입력 폴백 제공.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Segments — word-level timing for synchronized display">단어 수준 타이밍 동기화</span>
+      <code class="impl-sig">result.bestTranscription.segments</code>
+    </div>
+    <p class="impl-when" data-en="Building a live caption display that highlights the current word or shows a rolling transcript with timestamps. Each SFTranscriptionSegment has timestamp, duration, and substring — use these to synchronize caption display with audio playback.">현재 단어를 강조하거나 타임스탬프가 있는 롤링 전사를 표시하는 라이브 자막 디스플레이를 구축할 때. 각 SFTranscriptionSegment에는 timestamp, duration, substring이 있다 — 이를 사용해 자막 표시를 오디오 재생과 동기화한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Live captions dump all recognized text into a single UILabel. The label updates in bursts — long silence then a wall of text appears. Users cannot follow the natural cadence of speech.">라이브 자막이 인식된 모든 텍스트를 단일 UILabel에 덤프한다. 레이블이 폭발적으로 업데이트된다 — 긴 침묵 후 텍스트 벽이 나타난다. 사용자가 자연스러운 말의 리듬을 따라갈 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="SFTranscriptionSegment timing data animates each word into the caption display at its natural spoken timestamp. Caption output feels like subtitle overlay — timed, readable, and synchronized.">SFTranscriptionSegment 타이밍 데이터가 각 단어를 자연스러운 발화 타임스탬프에 자막 디스플레이에 애니메이션으로 표시한다. 자막 출력이 자막 오버레이처럼 느껴진다 — 타이밍이 맞고 읽기 쉬우며 동기화된다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="switch-control" data-cat="motor">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-motor">Mobility</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · tvOS · watchOS</span>
+    </div>
+    <div class="feat-name">Switch Control</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Switch Control users navigate using one or two physical switches — a single tap cycles focus, a second tap activates. Custom controls that implement non-standard interactions cannot be operated if they don't override the accessibility activation and increment methods.">스위치 제어 사용자는 하나 또는 두 개의 물리적 스위치로 탐색한다 — 탭 한 번으로 포커스 이동, 두 번째 탭으로 활성화. 비표준 인터랙션을 구현하는 커스텀 컨트롤은 접근성 활성화·증감 메서드를 재정의하지 않으면 조작할 수 없다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Override `accessibilityActivate()` for custom tap actions. Override `accessibilityIncrement()` and `accessibilityDecrement()` for steppers, sliders, and carousels. Return `true` to confirm the action was handled.">커스텀 탭 동작에 `accessibilityActivate()`를 재정의한다. 스텝퍼·슬라이더·캐러셀에 `accessibilityIncrement()`와 `accessibilityDecrement()`를 재정의한다. 동작이 처리됐음을 확인하려면 `true`를 반환한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Activation — handle switch select">스위치 선택 처리</span>
+      <code class="impl-sig">override func accessibilityActivate() -&gt; Bool</code>
+    </div>
+    <p class="impl-when" data-en="Custom UIView subclasses that respond to UITapGestureRecognizer or have their own hit-test logic. Standard SwiftUI Buttons and UIButtons handle this automatically.">UITapGestureRecognizer에 반응하거나 자체 히트 테스트 로직을 가진 커스텀 UIView 서브클래스. 표준 SwiftUI Button과 UIButton은 이를 자동으로 처리한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom card view responds to UITapGestureRecognizer. Switch Control selects it → activates → nothing happens. The gesture recognizer is never fired by the accessibility system.">커스텀 카드 뷰가 UITapGestureRecognizer에 반응한다. 스위치 제어로 선택 → 활성화 → 아무 일도 일어나지 않는다. 접근성 시스템이 제스처 인식기를 발동하지 않는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Override returns `true` and calls the same action handler used by the tap gesture. Switch Control activation is indistinguishable from a finger tap.">재정의가 `true`를 반환하고 탭 제스처와 동일한 액션 핸들러를 호출한다. 스위치 제어 활성화가 손가락 탭과 구별되지 않는다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Increment/Decrement — stepper and slider support">스텝퍼·슬라이더 증감 지원</span>
+      <code class="impl-sig">override func accessibilityIncrement() { value = min(value + step, max) }</code>
+    </div>
+    <p class="impl-when" data-en="Custom steppers, circular dials, rating controls, or any custom adjustable view. Switch Control and VoiceOver both use these methods to increment/decrement value when the user swipes up (increment) or down (decrement) after focusing an .isAdjustable element.">커스텀 스텝퍼, 원형 다이얼, 평점 컨트롤, 또는 커스텀 조절 가능 뷰. Switch Control과 VoiceOver 모두 .isAdjustable 요소에 포커스 후 사용자가 위로(증가) 또는 아래로(감소) 스와이프할 때 이 메서드를 사용해 값을 증감한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom volume dial responds to drag gestures. Switch Control selects it → swipe up → nothing happens. The only way to change the volume is through a drag the Switch Control user cannot perform.">커스텀 볼륨 다이얼이 드래그 제스처에 반응한다. Switch Control이 선택 → 위로 스와이프 → 아무것도 일어나지 않는다. 볼륨을 변경하는 유일한 방법은 Switch Control 사용자가 수행할 수 없는 드래그다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="accessibilityIncrement() increases volume by one step; accessibilityDecrement() decreases it. Switch Control swipe-up/down maps directly to volume changes — the control is fully operable.">accessibilityIncrement()가 볼륨을 한 단계 높인다; accessibilityDecrement()가 낮춘다. Switch Control 위/아래 스와이프가 직접 볼륨 변경에 매핑된다 — 컨트롤이 완전히 조작 가능하다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="accessibilityScroll — custom scroll container">커스텀 스크롤 컨테이너</span>
+      <code class="impl-sig">override func accessibilityScroll(_ direction: UIAccessibilityScrollDirection) -&gt; Bool</code>
+    </div>
+    <p class="impl-when" data-en="Custom scroll containers that don't inherit from UIScrollView — a UIView driven by a UIPanGestureRecognizer, a CAScrollLayer, or a custom SwiftUI DragGesture scroll. Switch Control uses accessibilityScroll to page through content.">UIScrollView를 상속받지 않는 커스텀 스크롤 컨테이너 — UIPanGestureRecognizer로 구동되는 UIView, CAScrollLayer, 또는 커스텀 SwiftUI DragGesture 스크롤. Switch Control이 콘텐츠를 페이지로 이동하기 위해 accessibilityScroll을 사용한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom horizontal card carousel driven by DragGestureRecognizer. Switch Control user cannot swipe through cards — the gesture recognizer ignores accessibility scroll events.">DragGestureRecognizer로 구동되는 커스텀 수평 카드 캐러셀. Switch Control 사용자가 카드를 스와이프할 수 없다 — 제스처 인식기가 접근성 스크롤 이벤트를 무시한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="accessibilityScroll(.right) advances to the next card; .left goes back. Returns true with a .pageScrolled notification announcing &quot;Card 2 of 5&quot; — Switch Control users navigate the carousel normally.">accessibilityScroll(.right)가 다음 카드로 이동; .left가 뒤로 간다. "카드 2/5"를 발화하는 .pageScrolled 알림과 함께 true를 반환한다 — Switch Control 사용자가 캐러셀을 정상적으로 탐색한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="touch-targets" data-cat="motor">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-motor">Mobility</span>
+      <span class="feat-platforms">iOS · iPadOS · watchOS · visionOS</span>
+    </div>
+    <div class="feat-name">Touch Target Size</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Small interactive targets — icon-only buttons, inline links, tab bar items under 44×44 pt — are disproportionately hard to hit for users with tremors, motor impairments, or large fingers. Missing causes accidental activations and frustration.">44×44pt 미만의 아이콘 전용 버튼, 인라인 링크, 탭 바 항목 같은 작은 인터랙티브 타겟은 떨림·운동 장애 또는 손가락이 굵은 사용자에게 명중이 불균형하게 어렵다. 빗나가면 의도치 않은 활성화와 좌절감을 유발한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Keep visual size and hit area independent. Use `.contentEdgeInsets` in UIKit or a transparent overlay in SwiftUI to expand the tappable zone to at least 44×44 pt without changing the visual design.">시각적 크기와 히트 영역을 독립적으로 유지한다. UIKit에서는 `.contentEdgeInsets`, SwiftUI에서는 투명 오버레이를 사용해 시각 디자인을 변경하지 않고 탭 가능한 영역을 최소 44×44pt로 확장한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Hit area — expand without visual change">시각 변경 없이 히트 영역 확장</span>
+      <code class="impl-sig">.frame(width: 44, height: 44).contentShape(Rectangle())</code>
+    </div>
+    <p class="impl-when" data-en="Any tappable element smaller than 44×44 pt visually — icons, close buttons (&quot;✕&quot;), collapse arrows, segment items. Apple HIG requires 44×44 pt minimum for all interactive elements.">시각적으로 44×44pt 미만인 모든 탭 가능 요소 — 아이콘, 닫기 버튼("✕"), 접기 화살표, 세그먼트 항목. Apple HIG는 모든 인터랙티브 요소에 최소 44×44pt를 요구한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Close button is a 20×20 &quot;✕&quot; icon. Users with motor impairments must tap precisely in a tiny area — repeated misses close the wrong view or nothing.">닫기 버튼이 20×20 "✕" 아이콘이다. 운동 장애 사용자가 작은 영역에 정확히 탭해야 한다. 반복적인 빗나감이 잘못된 뷰를 닫거나 아무 일도 일어나지 않게 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Icon stays 20×20 visually. `.frame(width: 44, height: 44).contentShape(Rectangle())` makes the entire 44pt square tappable. Visually identical, functionally accessible.">아이콘은 시각적으로 20×20으로 유지된다. `.frame(width: 44, height: 44).contentShape(Rectangle())`이 전체 44pt 사각형을 탭 가능하게 만든다. 시각적으로 동일하고 기능적으로 접근 가능하다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="UIKit — expand hit area with contentInsets">contentInsets로 히트 영역 확장</span>
+      <code class="impl-sig">button.configuration?.contentInsets = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)</code>
+    </div>
+    <p class="impl-when" data-en="UIKit UIButton instances that are visually small — icon buttons in toolbars, navigation bar items, inline action buttons. contentEdgeInsets (deprecated iOS 15+) or UIButton.Configuration.contentInsets expands the tappable area without changing visual size.">시각적으로 작은 UIKit UIButton 인스턴스 — 툴바의 아이콘 버튼, 내비게이션 바 항목, 인라인 동작 버튼. contentEdgeInsets(iOS 15+ 폐기) 또는 UIButton.Configuration.contentInsets가 시각적 크기를 변경하지 않고 탭 가능한 영역을 확장한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Toolbar icon button: 24×24pt visual size, 24×24pt hit area. Users with tremors frequently miss and trigger adjacent buttons.">툴바 아이콘 버튼: 24×24pt 시각적 크기, 24×24pt 히트 영역. 떨림이 있는 사용자가 자주 빗나가 인접 버튼을 트리거한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="configuration.contentInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10) makes the hit area 44×44pt while the icon stays 24×24pt. Adjacent buttons remain unaffected.">configuration.contentInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)이 아이콘을 24×24pt로 유지하면서 히트 영역을 44×44pt로 만든다. 인접 버튼은 영향을 받지 않는다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Irregular shapes — override point(inside:with:)">불규칙 형태 히트 테스트 재정의</span>
+      <code class="impl-sig">override func point(inside point: CGPoint, with event: UIEvent?) -&gt; Bool</code>
+    </div>
+    <p class="impl-when" data-en="Custom-shaped interactive views — circular buttons, diamond-shaped game targets, map pins — where the bounding rect is large but only part of it should respond to taps. Override point(inside:with:) to define an expanded OR restricted hit area programmatically.">원형 버튼, 다이아몬드형 게임 타겟, 지도 핀처럼 경계 rect는 크지만 일부만 탭에 반응해야 하는 커스텀 형태의 인터랙티브 뷰. point(inside:with:)를 재정의해 확장된 또는 제한된 히트 영역을 프로그래밍적으로 정의한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Circular play button: 36pt diameter drawn inside a 36×36pt view. The corner areas of the bounding rect are transparent but tappable — users accidentally trigger the button by tapping near it.">원형 재생 버튼: 36×36pt 뷰 안에 그려진 36pt 지름. 경계 rect의 모서리 영역이 투명하지만 탭 가능하다 — 사용자가 근처를 탭해 실수로 버튼을 트리거한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="override func point(inside point: CGPoint, with event: UIEvent?) -&gt; Bool { return bounds.insetBy(dx: -4, dy: -4).contains(point) } — expands the hit area by 4pt on all sides for a net 44×44pt target while restricting off-circle hits.">override func point(inside point: CGPoint, with event: UIEvent?) -&gt; Bool { return bounds.insetBy(dx: -4, dy: -4).contains(point) } — 모든 면에서 히트 영역을 4pt 확장해 원 밖의 히트를 제한하면서 순 44×44pt 타겟을 만든다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="pointer-interaction" data-cat="motor">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-motor">Mobility</span>
+      <span class="feat-platforms">iPadOS · macOS</span>
+    </div>
+    <div class="feat-name">Pointer Interaction</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Users who rely on a trackpad, mouse, or head pointer instead of touch (motor impairments, keyboard-centric workflows) get no hover feedback from custom views — buttons don't lift, cards don't highlight, the cursor doesn't change shape.">터치 대신 트랙패드·마우스·헤드 포인터에 의존하는 사용자(운동 장애, 키보드 중심 워크플로)는 커스텀 뷰에서 호버 피드백을 받지 못한다 — 버튼이 올라가지 않고, 카드가 강조되지 않으며, 커서 모양이 변하지 않는다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Add `UIPointerInteraction` to UIKit views or use `.hoverEffect()` / `.pointerStyle()` in SwiftUI. Define pointer regions that lift, highlight, or reshape the cursor to communicate interactivity without a tap.">UIKit 뷰에 `UIPointerInteraction`을 추가하거나 SwiftUI에서 `.hoverEffect()` / `.pointerStyle()`을 사용한다. 탭 없이 인터랙티브성을 전달하기 위해 커서를 올리거나 강조하거나 모양을 바꾸는 포인터 영역을 정의한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Hover — lift effect on interactive card">인터랙티브 카드 리프트 효과</span>
+      <code class="impl-sig">.hoverEffect(.lift)</code>
+    </div>
+    <p class="impl-when" data-en="Any tappable card, list row, or icon button in an iPad or Mac Catalyst app. The `.highlight` effect works for inline links; `.lift` suits card surfaces.">iPad 또는 Mac Catalyst 앱의 모든 탭 가능한 카드, 리스트 행, 아이콘 버튼. `.highlight` 효과는 인라인 링크에, `.lift`는 카드 표면에 적합하다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Trackpad user moves cursor over a card grid — cursor stays as default arrow, no visual response. Impossible to tell which cards are tappable without trying each.">트랙패드 사용자가 카드 그리드 위로 커서를 이동 — 커서가 기본 화살표로 유지되고 시각적 반응이 없다. 각각 시도하지 않으면 어떤 카드가 탭 가능한지 알 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Hovering a card: it lifts with a subtle shadow and the cursor becomes a pointer hand. The user instantly knows it is interactive — no tap required.">카드를 호버하면 미묘한 그림자와 함께 올라오고 커서가 포인터 손 모양으로 바뀐다. 사용자가 탭 없이 즉시 인터랙티브임을 안다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Pointer region — custom region shape">커스텀 포인터 영역 형태</span>
+      <code class="impl-sig">UIPointerRegion(rect: button.bounds.insetBy(dx: -4, dy: -4), identifier: "playBtn")</code>
+    </div>
+    <p class="impl-when" data-en="Views that need a pointer interaction region that differs from the view's bounds — non-rectangular controls, overflow hit areas, or views where the visual element is smaller than the interaction area. UIPointerRegion defines the exact rect (in the view's coordinate space) that triggers the effect.">뷰의 경계와 다른 포인터 상호작용 영역이 필요한 뷰 — 비직사각형 컨트롤, 오버플로 히트 영역, 또는 시각적 요소가 상호작용 영역보다 작은 뷰. UIPointerRegion이 효과를 트리거하는 정확한 rect를 뷰의 좌표 공간으로 정의한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Icon button with a 20pt icon inside a 44pt tap target. Hovering anywhere in the 44pt zone activates a .lift effect on the entire 44pt area — the visual lift doesn't match the 20pt visual button.">44pt 탭 타겟 안에 20pt 아이콘이 있는 아이콘 버튼. 44pt 영역 어디서나 호버하면 전체 44pt 영역에 .lift 효과가 활성화된다 — 시각적 리프트가 20pt 시각 버튼과 일치하지 않는다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="UIPointerRegion(rect: iconBounds) limits the lift effect to the 20pt icon area. The hover effect precisely matches the visual button — pointer interaction feels physically accurate.">UIPointerRegion(rect: iconBounds)가 리프트 효과를 20pt 아이콘 영역으로 제한한다. 호버 효과가 시각 버튼과 정확히 일치한다 — 포인터 상호작용이 물리적으로 정확하게 느껴진다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Highlight — inline text links">인라인 텍스트 링크 강조</span>
+      <code class="impl-sig">UIPointerStyle(effect: .highlight(UITargetedPreview(view: linkLabel)))</code>
+    </div>
+    <p class="impl-when" data-en="Inline text links inside a body of text. The .highlight effect (as opposed to .lift) dims and rounds the background of the element without lifting it — appropriate for text-level elements that don't have a card-like affordance.">본문 텍스트 내 인라인 텍스트 링크. .highlight 효과(.lift와 달리)는 요소를 들어올리지 않고 배경을 어둡게 하고 둥글게 만든다 — 카드 유사 어포던스가 없는 텍스트 수준 요소에 적합하다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Inline &quot;Read more →&quot; text inside an article body. Hovering shows the arrow cursor — no visual response. The user cannot tell whether the text is interactive until they click.">기사 본문 안의 인라인 "더 읽기 →" 텍스트. 호버하면 화살표 커서가 표시된다 — 시각적 반응 없음. 사용자가 클릭하기 전까지 텍스트가 인터랙티브한지 알 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en=".highlight effect creates a rounded highlight around the link text on hover. The cursor changes to a pointer hand. The link is visually distinct as interactive — identical to browser link behavior.">.highlight 효과가 호버 시 링크 텍스트 주위에 둥근 강조를 생성한다. 커서가 포인터 손 모양으로 바뀐다. 링크가 인터랙티브로 시각적으로 구별된다 — 브라우저 링크 동작과 동일하다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="personal-voice" data-cat="speech">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-speech">Speech</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS</span>
+    </div>
+    <div class="feat-name">Personal Voice</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Users with ALS, Parkinson's, or progressive speech conditions often create a Personal Voice clone before they lose the ability to speak. Apps that only use generic TTS voices disregard the user's preserved digital voice identity.">ALS·파킨슨병·진행성 언어 장애가 있는 사용자는 종종 언어 능력을 잃기 전에 Personal Voice 클론을 만든다. 일반 TTS 음성만 사용하는 앱은 사용자의 보존된 디지털 음성 정체성을 무시한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Request authorization with `AVSpeechSynthesizer.requestPersonalVoiceAuthorization` and filter `AVSpeechSynthesisVoice.speechVoices()` for `.personalVoice` quality. Use the found voice in `AVSpeechUtterance` so the app speaks in the user's own voice."><code>AVSpeechSynthesizer.requestPersonalVoiceAuthorization</code>으로 권한을 요청하고 <code>AVSpeechSynthesisVoice.speechVoices()</code>에서 `.personalVoice` 품질을 필터링한다. 발견된 음성을 <code>AVSpeechUtterance</code>에 사용해 앱이 사용자 자신의 음성으로 말하게 한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Voice — use user's Personal Voice clone">사용자 Personal Voice 클론 사용</span>
+      <code class="impl-sig">AVSpeechSynthesizer.requestPersonalVoiceAuthorization { _ in }</code>
+    </div>
+    <p class="impl-when" data-en="Any app with a text-to-speech or communication feature — AAC apps, voice message composers, navigation apps. Always request authorization before attempting to enumerate personal voices.">텍스트 음성 변환 또는 커뮤니케이션 기능이 있는 모든 앱 — AAC 앱, 음성 메시지 작성기, 내비게이션 앱. Personal Voice를 열거하기 전에 항상 권한을 요청한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Communication app always speaks in a generic Siri voice. A user with ALS who trained a Personal Voice hears a stranger's voice representing them — a deeply personal failure.">커뮤니케이션 앱이 항상 일반 Siri 음성으로 말한다. Personal Voice를 훈련한 ALS 사용자가 자신을 대표하는 낯선 목소리를 듣는다 — 깊이 개인적인 실패다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="After authorization, the app finds and uses the `.personalVoice` quality voice. The user's words are spoken in their own preserved voice — dignity and identity intact.">권한 부여 후 앱이 `.personalVoice` 품질 음성을 찾아 사용한다. 사용자의 말이 자신의 보존된 목소리로 전해진다 — 존엄성과 정체성이 유지된다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Enumerate — find personal voice">Personal Voice 열거 및 선택</span>
+      <code class="impl-sig">AVSpeechSynthesisVoice.speechVoices().first { $0.voiceTraits.contains(.isPersonalVoice) }</code>
+    </div>
+    <p class="impl-when" data-en="After receiving .authorized from requestPersonalVoiceAuthorization, enumerate available voices and select the one with .isPersonalVoice trait. Store the voice identifier for reuse — re-enumerating on every utterance is expensive.">requestPersonalVoiceAuthorization에서 .authorized를 받은 후 사용 가능한 음성을 열거하고 .isPersonalVoice trait이 있는 음성을 선택한다. 재사용을 위해 음성 식별자를 저장한다 — 매번 발화마다 다시 열거하는 것은 비용이 크다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App calls requestPersonalVoiceAuthorization but doesn't filter voices — it still uses the default Siri voice. The authorization request confused the user who expected their own voice.">앱이 requestPersonalVoiceAuthorization을 호출하지만 음성을 필터링하지 않는다 — 여전히 기본 Siri 음성을 사용한다. 권한 요청이 자신의 목소리를 기대했던 사용자를 혼란스럽게 했다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="On .authorized, filter speechVoices() for .isPersonalVoice. Set utterance.voice to the found voice. If no personal voice is found (not trained yet), show in-app guidance to Settings → Accessibility → Personal Voice.">.authorized 시 .isPersonalVoice로 speechVoices()를 필터링한다. utterance.voice를 찾은 음성으로 설정한다. Personal Voice를 찾지 못하면(아직 훈련되지 않음) 설정 → 손쉬운 사용 → Personal Voice로의 앱 내 안내를 표시한다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Fallback chain — personal → enhanced → default">폴백 체인 구성</span>
+      <code class="impl-sig">utterance.voice = personalVoice ?? enhancedVoice ?? AVSpeechSynthesisVoice(language: locale)</code>
+    </div>
+    <p class="impl-when" data-en="Production TTS features where Personal Voice may not be set up. Always build a fallback chain: personal voice → enhanced quality system voice for the content language → default system voice. Never let the utterance fail silently with a nil voice.">Personal Voice가 설정되지 않을 수 있는 프로덕션 TTS 기능. 항상 폴백 체인을 구축한다: personal voice → 콘텐츠 언어에 맞는 enhanced 품질 시스템 음성 → 기본 시스템 음성. nil 음성으로 발화가 자동으로 실패하도록 두지 않는다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App sets utterance.voice = personalVoice — if the user hasn't trained a Personal Voice, this is nil. AVSpeechSynthesizer uses an unpredictable fallback voice, often the wrong language.">앱이 utterance.voice = personalVoice를 설정한다 — 사용자가 Personal Voice를 훈련하지 않았으면 이는 nil이다. AVSpeechSynthesizer가 예측 불가능한 폴백 음성을 사용하는데 종종 잘못된 언어다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Explicit fallback chain guarantees the best available voice for the content language. Users who haven't trained a Personal Voice get the enhanced Siri voice — still high quality, correct language, with a prompt to set up Personal Voice.">명시적 폴백 체인이 콘텐츠 언어에 사용 가능한 최선의 음성을 보장한다. Personal Voice를 훈련하지 않은 사용자가 enhanced Siri 음성을 얻는다 — 여전히 고품질, 올바른 언어, Personal Voice 설정 안내 포함.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="live-speech" data-cat="speech">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-speech">Speech</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · watchOS</span>
+    </div>
+    <div class="feat-name">Live Speech / AAC Integration</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Augmentative and Alternative Communication (AAC) users type what they want to say and have it spoken. Apps that only offer text-based output — chat bubbles, forms — exclude users who communicate via speech synthesis in face-to-face or phone interactions.">보완대체의사소통(AAC) 사용자는 말하고 싶은 것을 입력해 음성으로 출력한다. 채팅 버블·양식처럼 텍스트 기반 출력만 제공하는 앱은 대면·전화 상호작용에서 음성 합성으로 소통하는 사용자를 배제한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Add a &quot;Speak&quot; action to message composition views. System Live Speech (Settings → Accessibility → Live Speech) handles the global case; in-app TTS gives AAC users a faster, context-aware path that doesn't require switching apps.">메시지 작성 뷰에 "말하기" 동작을 추가한다. 시스템 Live Speech(설정 → 손쉬운 사용 → 라이브 스피치)가 전역 케이스를 처리하지만, 앱 내 TTS는 앱을 전환하지 않고도 AAC 사용자에게 더 빠르고 맥락에 맞는 경로를 제공한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Compose &amp; Speak — one tap to voice">작성 후 한 탭으로 음성 출력</span>
+      <code class="impl-sig">AVSpeechSynthesizer().speak(utterance)</code>
+    </div>
+    <p class="impl-when" data-en="Chat apps, note-taking apps, communication tools, or any text composition surface used in real-world conversation contexts — customer service kiosks, medical intake forms, restaurant ordering.">채팅 앱, 메모 앱, 커뮤니케이션 도구 또는 실제 대화 맥락에서 사용되는 모든 텍스트 작성 표면 — 고객 서비스 키오스크, 의료 접수 양식, 음식점 주문.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Chat app: type message → send as text. AAC user at a café counter must switch to a separate AAC app to voice their order — slow and conspicuous.">채팅 앱: 메시지 입력 → 텍스트로 전송. 카페 카운터의 AAC 사용자가 주문을 음성으로 전달하기 위해 별도의 AAC 앱으로 전환해야 한다 — 느리고 눈에 띈다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="&quot;🔊 Speak&quot; button next to Send voices the typed text through the speaker. User stays in the same app; interaction is seamless and dignified.">"🔊 말하기" 버튼이 전송 버튼 옆에 있어 입력한 텍스트를 스피커로 출력한다. 사용자가 동일한 앱에 머물며 상호작용이 원활하고 위엄 있다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Quick phrases — pre-loaded response library">사전 로드 빠른 응답 라이브러리</span>
+      <code class="impl-sig">let phrases = ["Yes", "No", "Thank you", "Please repeat that", "One moment"]</code>
+    </div>
+    <p class="impl-when" data-en="AAC-oriented apps or any communication feature where speed matters. Pre-loading common phrases as AVSpeechUtterance objects and calling speak() immediately avoids TTS initialization latency — the difference between a 50ms response and a 600ms delay is significant in face-to-face conversation.">AAC 지향 앱 또는 속도가 중요한 모든 커뮤니케이션 기능. 일반적인 구문을 AVSpeechUtterance 객체로 미리 로드하고 speak()를 즉시 호출하면 TTS 초기화 지연을 피한다 — 50ms 응답과 600ms 지연의 차이는 대면 대화에서 중요하다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="User must type every response. In a fast-paced conversation at a store, the typing latency causes the other party to assume the user is done and walk away mid-sentence.">사용자가 모든 응답을 타이핑해야 한다. 상점에서 빠른 대화에서 타이핑 지연으로 상대방이 사용자가 끝났다고 가정하고 문장 중간에 자리를 뜬다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="A quick-phrase bar shows 8 configurable one-tap phrases above the keyboard. Tapping &quot;One moment&quot; fires a pre-created AVSpeechUtterance instantly — no typing lag in time-sensitive exchanges.">빠른 구문 바가 키보드 위에 8개의 구성 가능한 원탭 구문을 표시한다. "잠깐만요"를 탭하면 미리 생성된 AVSpeechUtterance가 즉시 발동된다 — 시간 민감한 교환에서 타이핑 지연 없음.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Delegate — speaking indicator">말하기 표시기 델리게이트</span>
+      <code class="impl-sig">speechSynthesizer(_:didStart:) and speechSynthesizer(_:didFinish:)</code>
+    </div>
+    <p class="impl-when" data-en="Any in-app TTS feature. Show a visible &quot;Speaking…&quot; indicator while synthesis is active so the user (and those nearby) know audio output is in progress. Hide it in didFinish. This is critical for deaf-blind users relying on the system to signal when speech has completed.">모든 앱 내 TTS 기능. 합성이 활성화되는 동안 눈에 보이는 "말하는 중..." 표시기를 표시해 사용자(와 주변 사람들)가 오디오 출력이 진행 중임을 안다. didFinish에서 숨긴다. 이는 음성이 완료됐을 때 신호하기 위해 시스템에 의존하는 시청각장애 사용자에게 중요하다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="User taps &quot;Speak&quot;. The synthesizer starts — but there's no visual indicator. The user doesn't know if the speech finished, if it was heard, or if something went wrong.">사용자가 "말하기"를 탭한다. 합성기가 시작된다 — 하지만 시각적 표시기가 없다. 사용자가 음성이 끝났는지, 들렸는지, 무언가 잘못됐는지 알 수 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="didStart shows an animated waveform icon. didFinish hides it and optionally posts a .announcement notification (&quot;Done&quot;) for VoiceOver users. The TTS lifecycle is fully visible.">didStart가 애니메이션 파형 아이콘을 표시한다. didFinish가 숨기고 선택적으로 VoiceOver 사용자를 위한 .announcement 알림("완료")을 전송한다. TTS 생명주기가 완전히 보인다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="guided-access" data-cat="cog">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-cog">Cognitive</span>
+      <span class="feat-platforms">iOS · iPadOS</span>
+    </div>
+    <div class="feat-name">Guided Access</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Cognitive and developmental disabilities can make it hard to stay on task — a distraction-free kiosk or single-purpose mode prevents accidental navigation. Caregivers and educators also need to lock the device to a specific app or region.">인지·발달 장애는 과제에 집중하기 어렵게 만들 수 있다. 방해 요소 없는 키오스크 또는 단일 목적 모드가 실수로 다른 화면으로 이동하는 것을 방지한다. 보호자와 교육자도 특정 앱이나 영역으로 기기를 잠글 필요가 있다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Check `UIAccessibility.isGuidedAccessEnabled` to detect the mode and simplify your UI accordingly. Use `UIAccessibilityRequestGuidedAccessSession` to enter/exit programmatically for kiosk deployments.">모드를 감지하고 UI를 그에 맞게 단순화하기 위해 `UIAccessibility.isGuidedAccessEnabled`를 확인한다. 키오스크 배포에서 프로그래밍적으로 진입/종료하기 위해 `UIAccessibilityRequestGuidedAccessSession`을 사용한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Detection — simplify UI in Guided Access">Guided Access 시 UI 단순화</span>
+      <code class="impl-sig">UIAccessibility.isGuidedAccessEnabled</code>
+    </div>
+    <p class="impl-when" data-en="Educational apps, enterprise kiosk apps, therapy tools, or any single-purpose app deployed in a controlled environment. Register for `UIAccessibility.guidedAccessStatusDidChangeNotification` to react dynamically.">교육 앱, 엔터프라이즈 키오스크 앱, 치료 도구, 통제된 환경에서 배포되는 모든 단일 목적 앱. 동적으로 반응하려면 `UIAccessibility.guidedAccessStatusDidChangeNotification`을 등록한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Classroom app in Guided Access still shows a settings gear icon. Student taps it → settings UI appears inside the locked session. Caregiver's intent is bypassed.">Guided Access 상태의 교실 앱이 여전히 설정 기어 아이콘을 표시한다. 학생이 탭 → 잠긴 세션 내에서 설정 UI가 나타난다. 보호자의 의도가 우회된다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="When `isGuidedAccessEnabled` is true, the settings button is hidden and advanced navigation options disappear. Only the core task UI remains.">isGuidedAccessEnabled가 true이면 설정 버튼이 숨겨지고 고급 탐색 옵션이 사라진다. 핵심 과제 UI만 남는다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Kiosk lock — programmatic session control">키오스크 잠금 프로그래밍 세션 제어</span>
+      <code class="impl-sig">UIAccessibilityRequestGuidedAccessSession(true) { success in ... }</code>
+    </div>
+    <p class="impl-when" data-en="Kiosk apps (retail, healthcare, museum) that should enter Guided Access automatically on launch, preventing users from leaving the app. Requires the device to have a Guided Access passcode set. The completion handler indicates whether the session was successfully started.">시작 시 자동으로 Guided Access에 진입해 사용자가 앱을 떠나지 못하도록 해야 하는 키오스크 앱(소매, 의료, 박물관). 기기에 Guided Access 패스코드가 설정되어 있어야 한다. 완료 핸들러가 세션이 성공적으로 시작됐는지 나타낸다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Museum exhibit iPad: staff must manually enable Guided Access via triple-click before handing the device to a visitor. If forgotten, visitors can exit the exhibit app and access the device.">박물관 전시 iPad: 직원이 방문객에게 기기를 건네기 전에 트리플 클릭으로 Guided Access를 수동으로 활성화해야 한다. 잊으면 방문객이 전시 앱을 종료하고 기기에 접근할 수 있다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="UIAccessibilityRequestGuidedAccessSession(true) is called in applicationDidBecomeActive. The exhibit app locks itself on every launch — no staff action required. Visitors cannot leave the app.">UIAccessibilityRequestGuidedAccessSession(true)이 applicationDidBecomeActive에서 호출된다. 전시 앱이 모든 시작 시 스스로 잠긴다 — 직원 조치 불필요. 방문객이 앱을 떠날 수 없다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Custom restrictions — feature gating">커스텀 기능 게이팅 제한</span>
+      <code class="impl-sig">UIAccessibilityGuidedAccessRestrictionDelegate.accessibilityGuidedAccessRestriction(withIdentifier:)</code>
+    </div>
+    <p class="impl-when" data-en="Apps with features that should be optionally disabled during Guided Access sessions — touch input, specific tabs, keyboard input, external URL links. Implement the delegate to define named restrictions that appear in the Guided Access settings UI alongside the built-in touch and motion restrictions.">Guided Access 세션 중 선택적으로 비활성화해야 하는 기능이 있는 앱 — 터치 입력, 특정 탭, 키보드 입력, 외부 URL 링크. 델리게이트를 구현해 내장된 터치 및 모션 제한과 함께 Guided Access 설정 UI에 나타나는 명명된 제한을 정의한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Educational app in Guided Access: the teacher wants to disable the &quot;share&quot; button and external links during class, but Guided Access only offers touch/motion/time limits. Teachers work around this by hiding the buttons manually.">Guided Access의 교육 앱: 교사가 수업 중 "공유" 버튼과 외부 링크를 비활성화하고 싶지만 Guided Access가 터치/모션/시간 제한만 제공한다. 교사가 버튼을 수동으로 숨겨 이를 우회한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Custom restrictions &quot;Sharing&quot; and &quot;External links&quot; appear in the Guided Access UI. Teachers toggle them per session — the app reads the restriction state and hides the relevant controls accordingly.">커스텀 제한 "공유"와 "외부 링크"가 Guided Access UI에 나타난다. 교사가 세션마다 토글한다 — 앱이 제한 상태를 읽고 관련 컨트롤을 그에 따라 숨긴다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="assistive-access" data-cat="cog">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-cog">Cognitive</span>
+      <span class="feat-platforms">iOS · iPadOS</span>
+    </div>
+    <div class="feat-name">Assistive Access</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="The standard iOS UI is dense and complex — small icons, multi-level navigation, ambiguous gestures. For users with intellectual disabilities, Down syndrome, or dementia, this complexity is a barrier that makes independent device use impossible.">표준 iOS UI는 밀도가 높고 복잡하다 — 작은 아이콘, 다단계 탐색, 모호한 제스처. 지적 장애·다운 증후군·치매가 있는 사용자에게 이 복잡성은 독립적인 기기 사용을 불가능하게 만드는 장벽이다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="When Assistive Access is active, apps run in a simplified fullscreen mode. Detect it via `UIAccessibility.isAssistiveTouchRunning` (indirect proxy) or check for the `UIAccessibilityAssistiveAccessIsEnabled` notification. Provide a stripped-down layout: large buttons, minimal text, single-step flows.">Assistive Access가 활성화되면 앱이 단순화된 전체 화면 모드로 실행된다. `UIAccessibility.isAssistiveTouchRunning`(간접 프록시)으로 감지하거나 `UIAccessibilityAssistiveAccessIsEnabled` 알림을 확인한다. 간소화된 레이아웃 제공: 큰 버튼, 최소 텍스트, 단계별 흐름.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Layout — simplified mode for cognitive accessibility">인지 접근성 단순화 모드</span>
+      <code class="impl-sig">UIAccessibility.isAssistiveTouchRunning</code>
+    </div>
+    <p class="impl-when" data-en="Any consumer app whose core flows involve forms, navigation menus, or multi-step wizards — shopping, banking, health apps. Provide a configuration flag users or caregivers can enable for a large-button mode.">쇼핑·뱅킹·건강 앱처럼 핵심 흐름이 양식·탐색 메뉴·다단계 마법사를 포함하는 모든 소비자 앱. 사용자나 보호자가 큰 버튼 모드를 활성화할 수 있는 설정 플래그를 제공한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Shopping app: 3-tab bottom bar, small product grid, multi-step checkout. For a user with an intellectual disability, each screen is cognitively overwhelming.">쇼핑 앱: 3탭 하단 바, 작은 상품 그리드, 다단계 결제. 지적 장애 사용자에게 각 화면이 인지적으로 압도적이다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Assistive Access mode: full-screen product cards, large &quot;Add to bag&quot; button, one-step confirmation. Same purchase flow, drastically reduced complexity.">Assistive Access 모드: 전체 화면 상품 카드, 큰 "장바구니에 추가" 버튼, 한 단계 확인. 동일한 구매 흐름, 급격히 줄어든 복잡성.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Notification — detect Assistive Access toggle">Assistive Access 토글 감지</span>
+      <code class="impl-sig">NotificationCenter.default.addObserver(forName: UIAccessibility.assistiveTouchStatusDidChangeNotification, ...)</code>
+    </div>
+    <p class="impl-when" data-en="Apps that want to react dynamically when Assistive Access is toggled while the app is running (rare but possible on supervised devices). Rebuild the UI to the simplified layout without requiring an app restart.">앱이 실행 중인 동안 Assistive Access가 토글될 때 동적으로 반응하고 싶은 앱(드물지만 감독 기기에서 가능). 앱 재시작 없이 단순화된 레이아웃으로 UI를 재구축한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App only checks Assistive Access state at launch. A caregiver enables Assistive Access remotely via MDM while the app is open — the complex UI remains until the user force-quits and relaunches.">앱이 시작 시에만 Assistive Access 상태를 확인한다. 앱이 열려 있는 동안 보호자가 MDM을 통해 원격으로 Assistive Access를 활성화한다 — 사용자가 강제 종료하고 다시 시작할 때까지 복잡한 UI가 유지된다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Observing assistiveTouchStatusDidChangeNotification triggers rebuildUI() dynamically. The simplified layout appears within seconds of the MDM command — no app restart needed.">assistiveTouchStatusDidChangeNotification을 관찰하면 rebuildUI()가 동적으로 트리거된다. MDM 명령 후 몇 초 내에 단순화된 레이아웃이 나타난다 — 앱 재시작 불필요.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="In-app simplified mode — caregiver-controlled">보호자 제어 앱 내 단순 모드</span>
+      <code class="impl-sig">@AppStorage("simplifiedMode") var simplifiedMode: Bool = false</code>
+    </div>
+    <p class="impl-when" data-en="Consumer apps (banking, shopping, health) where a caregiver or family member sets up the device for someone with cognitive needs. Provide an in-app &quot;Simplified Mode&quot; toggle in Settings, protected by Face ID or a passcode, that the caregiver can enable without relying on system Assistive Access.">보호자나 가족이 인지적 필요가 있는 사람을 위해 기기를 설정하는 소비자 앱(뱅킹, 쇼핑, 건강). 시스템 Assistive Access에 의존하지 않고 보호자가 활성화할 수 있는 Face ID 또는 패스코드로 보호된 앱 내 "단순 모드" 토글을 설정에 제공한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Caregiver wants to simplify a banking app for an elderly parent with dementia. System Assistive Access changes the entire OS — too heavy-handed. The caregiver has no app-level option.">보호자가 치매가 있는 노부모를 위해 뱅킹 앱을 단순화하고 싶다. 시스템 Assistive Access가 전체 OS를 변경한다 — 너무 강압적이다. 보호자에게 앱 수준의 옵션이 없다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Settings → Simplified Mode (passcode-gated) switches to a layout with 3 large buttons: Check Balance, Transfer, Call Bank. The caregiver configures it once; the parent uses the app independently with confidence.">설정 → 단순 모드(패스코드 게이트)가 3개의 큰 버튼이 있는 레이아웃으로 전환: 잔액 확인, 이체, 은행 전화. 보호자가 한 번 설정하면 부모가 자신 있게 독립적으로 앱을 사용한다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="siri-shortcuts" data-cat="speech">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-speech">Speech</span>
+      <span class="feat-platforms">iOS · iPadOS · macOS · watchOS</span>
+    </div>
+    <div class="feat-name">Siri / Vocal Shortcuts</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Voice Control users and users with motor impairments benefit from voice-activated shortcuts that bypass navigation entirely. Without Siri intent donation, key app actions require multiple taps through a hierarchy the user may struggle to reach.">Voice Control 사용자와 운동 장애 사용자는 탐색을 완전히 우회하는 음성 활성화 단축키의 혜택을 받는다. Siri 인텐트 도네이션 없이는 주요 앱 동작이 사용자가 도달하기 어려울 수 있는 계층을 통해 여러 번 탭해야 한다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Donate `INShortcut` objects for frequent actions. When the user assigns a custom phrase via Siri Settings, speaking it launches the action directly — no app navigation required. `INVoiceShortcutCenter` manages the enrolled shortcuts.">자주 사용하는 동작에 `INShortcut` 객체를 도네이션한다. 사용자가 Siri 설정에서 커스텀 구문을 지정하면 이를 말하는 것만으로 동작이 바로 실행된다 — 앱 탐색 불필요. `INVoiceShortcutCenter`가 등록된 단축키를 관리한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Intent — donate action for voice invocation">음성 호출을 위한 동작 도네이션</span>
+      <code class="impl-sig">INInteraction(intent: intent, response: nil).donate()</code>
+    </div>
+    <p class="impl-when" data-en="Any action a user performs frequently and would benefit from skipping navigation for — starting a workout, ordering a regular coffee, sending a preset message. Donate on every successful user interaction, not just once.">사용자가 자주 수행하고 탐색을 건너뛰는 것이 도움이 되는 모든 동작 — 운동 시작, 단골 커피 주문, 사전 설정 메시지 전송. 한 번만이 아니라 성공적인 모든 사용자 상호작용 시 도네이션한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="To start a workout: open app → tap Today → tap Running → tap Start. For a user with limited hand mobility, 4 taps and 3 navigation layers is a significant barrier.">운동 시작: 앱 열기 → 오늘 탭 → 달리기 탭 → 시작 탭. 손 이동성이 제한된 사용자에게 4번의 탭과 3단계 탐색은 상당한 장벽이다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="After intent donation, user adds the phrase &quot;Start my run&quot; in Siri Settings. Saying it launches the workout immediately — 0 navigation taps, 1 voice command.">인텐트 도네이션 후, 사용자가 Siri 설정에서 "달리기 시작"을 추가한다. 이를 말하면 즉시 운동이 시작된다 — 탐색 탭 0회, 음성 명령 1회.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="NSUserActivity — lightweight intent donation">NSUserActivity 경량 인텐트 도네이션</span>
+      <code class="impl-sig">let activity = NSUserActivity(activityType: "com.app.viewRecipe"); view.userActivity = activity</code>
+    </div>
+    <p class="impl-when" data-en="Browsing and content-viewing actions that don't require parameters — reading an article, opening a specific screen, viewing a contact. NSUserActivity is simpler than full INIntent donation and sufficient for shortcut suggestions in Spotlight and Siri.">매개변수가 필요 없는 탐색 및 콘텐츠 보기 동작 — 기사 읽기, 특정 화면 열기, 연락처 보기. NSUserActivity는 전체 INIntent 도네이션보다 간단하며 Spotlight와 Siri의 단축키 제안에 충분하다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="User opens their &quot;Morning Smoothie&quot; recipe every day. Siri never suggests it because the app doesn't donate any activity — the user must navigate app → Recipes → Smoothies → Morning every time.">사용자가 매일 "아침 스무디" 레시피를 연다. 앱이 어떤 활동도 도네이션하지 않아 Siri가 제안하지 않는다 — 사용자가 매번 앱 → 레시피 → 스무디 → 아침으로 탐색해야 한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="NSUserActivity is donated when the recipe screen appears. After a few days, Siri proactively suggests &quot;Morning Smoothie&quot; at the user's habitual time — one tap from the lock screen.">레시피 화면이 나타날 때 NSUserActivity가 도네이션된다. 며칠 후 Siri가 사용자의 습관적인 시간에 "아침 스무디"를 선제적으로 제안한다 — 잠금 화면에서 한 번 탭.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="AddVoiceShortcutButton — in-app enrollment">앱 내 음성 단축키 등록 버튼</span>
+      <code class="impl-sig">INUIAddVoiceShortcutButton(shortcut: INShortcut(intent: intent))</code>
+    </div>
+    <p class="impl-when" data-en="After donating an intent, surface an &quot;Add to Siri&quot; button directly in the app so users can assign a custom phrase without navigating to Siri Settings. INUIAddVoiceShortcutButton handles the full enrollment sheet natively.">인텐트를 도네이션한 후 앱 내에 직접 "Siri에 추가" 버튼을 노출해 사용자가 Siri 설정으로 이동하지 않고 커스텀 구문을 지정할 수 있다. INUIAddVoiceShortcutButton이 전체 등록 시트를 기본적으로 처리한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="App donates shortcuts but never tells users how to use them. Users with motor impairments who would benefit most from voice activation never discover the feature.">앱이 단축키를 도네이션하지만 사용 방법을 사용자에게 알리지 않는다. 음성 활성화에서 가장 많은 혜택을 받을 운동 장애 사용자가 기능을 발견하지 못한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="An &quot;Add to Siri&quot; button appears in the relevant screen. Tapping it shows the system enrollment sheet — user records &quot;Start my run&quot; and the shortcut is active. Discovery and enrollment take under 10 seconds.">"Siri에 추가" 버튼이 관련 화면에 나타난다. 탭하면 시스템 등록 시트가 표시된다 — 사용자가 "달리기 시작"을 녹음하면 단축키가 활성화된다. 발견과 등록에 10초 미만이 걸린다.</span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<div class="feat-divider">· · ·</div>
+<article class="feat" id="eye-tracking" data-cat="motor">
+  <div class="feat-head">
+    <div class="feat-top">
+      <span class="cat-tag cat-motor">Mobility</span>
+      <span class="feat-platforms">iOS · iPadOS · visionOS</span>
+    </div>
+    <div class="feat-name">Eye Tracking &amp; Head Pointer</div>
+  </div>
+  <div class="ps-grid">
+    <div class="ps-cell">
+      <div class="section-label" data-en="Problem">문제 정의</div>
+      <p data-en="Users who cannot use their hands at all — due to paralysis, ALS, or severe motor disability — interact with iPadOS using eye-gaze tracking or head movement. Custom scroll views, game interfaces, and drag targets often fail to respond to pointer-based input.">마비·ALS·심각한 운동 장애로 손을 전혀 사용할 수 없는 사용자는 시선 추적이나 머리 움직임으로 iPadOS를 조작한다. 커스텀 스크롤 뷰, 게임 인터페이스, 드래그 타겟이 포인터 기반 입력에 응답하지 않는 경우가 많다.</p>
+    </div>
+    <div class="ps-cell">
+      <div class="section-label" data-en="Solution">솔루션</div>
+      <p data-en="Eye tracking and head pointer feed through the standard pointer event system. Ensure interactive elements respond to `UIPointerInteraction` and that dwell-to-click (hovering for a duration to activate) works via `UIHoverGestureRecognizer`.">시선 추적과 헤드 포인터는 표준 포인터 이벤트 시스템을 통해 전달된다. 인터랙티브 요소가 `UIPointerInteraction`에 응답하고 `UIHoverGestureRecognizer`를 통해 드웰 클릭(일정 시간 호버로 활성화)이 작동하도록 보장한다.</p>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Hover — enable dwell-to-click regions">드웰 클릭 영역 활성화</span>
+      <code class="impl-sig">UIHoverGestureRecognizer(target: self, action: #selector(hover(_:)))</code>
+    </div>
+    <p class="impl-when" data-en="Any custom interactive element in an iPad app. Standard SwiftUI buttons and UIKit UIButtons already respond — custom gesture-only interactions or canvas-drawn UI need explicit pointer support.">iPad 앱의 모든 커스텀 인터랙티브 요소. 표준 SwiftUI 버튼과 UIKit UIButton은 이미 응답한다 — 제스처 전용 인터랙션이나 캔버스로 그린 UI에 명시적인 포인터 지원이 필요하다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Custom drawing canvas in an art app only handles `touchesBegan`. Eye-tracking sends pointer events, not touch — the canvas is completely inoperable via gaze.">미술 앱의 커스텀 드로잉 캔버스가 `touchesBegan`만 처리한다. 시선 추적이 터치가 아닌 포인터 이벤트를 전송한다 — 캔버스가 시선으로 완전히 조작 불가능하다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Adding `UIHoverGestureRecognizer` allows gaze-dwelling to trigger drawing strokes and tool selections. The user creates art using only eye movement.">UIHoverGestureRecognizer를 추가하면 시선 드웰로 드로잉 스트로크와 도구 선택이 트리거된다. 사용자가 눈 움직임만으로 작품을 만든다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="UIPointerInteraction — eye-trackable targets">시선 추적 가능 타겟</span>
+      <code class="impl-sig">UIPointerInteraction(delegate: self)</code>
+    </div>
+    <p class="impl-when" data-en="Every tappable element in an iPad app that might be used with eye tracking or head pointer. Eye tracking sends pointer events — views without UIPointerInteraction give no hover feedback, making it impossible to tell where the eye gaze is landing before dwelling to activate.">시선 추적이나 헤드 포인터로 사용될 수 있는 iPad 앱의 모든 탭 가능 요소. 시선 추적이 포인터 이벤트를 전송한다 — UIPointerInteraction이 없는 뷰는 호버 피드백을 주지 않아 드웰 활성화 전에 시선이 어디 착지하는지 알 수 없다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="Grid of 20 instrument buttons in a music app. Eye-tracking user hovers over buttons — no visual response. They must dwell-click blindly, frequently activating the wrong instrument.">음악 앱의 20개 악기 버튼 그리드. 시선 추적 사용자가 버튼 위를 호버한다 — 시각적 반응 없음. 맹목적으로 드웰 클릭해야 해 자주 잘못된 악기를 활성화한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Each button has UIPointerInteraction with a .lift effect. The button lights up on gaze hover — the user sees clear confirmation of which element will activate before dwelling.">각 버튼에 .lift 효과가 있는 UIPointerInteraction이 있다. 시선 호버 시 버튼이 켜진다 — 드웰 전에 어떤 요소가 활성화될지 명확한 확인을 본다.</span>
+      </div>
+    </div>
+  </div>
+  <div class="impl-block">
+    <div class="impl-meta">
+      <span class="purpose-chip" data-en="Target size — minimum for gaze accuracy">시선 정확도를 위한 최소 크기</span>
+      <code class="impl-sig">.frame(minWidth: 60, minHeight: 60)</code>
+    </div>
+    <p class="impl-when" data-en="Apps designed for users with severe motor disabilities who rely exclusively on eye tracking. Eye gaze has ~2–3° accuracy (~30–40pt on a 10&quot; iPad) — Apple's 44pt minimum is insufficient for gaze-only interfaces. Target 60–80pt for primary actions.">심각한 운동 장애가 있어 시선 추적만 의존하는 사용자를 위해 설계된 앱. 시선 정확도는 약 2–3°(10인치 iPad에서 ~30–40pt) — Apple의 44pt 최소값이 시선 전용 인터페이스에 부족하다. 주요 동작에 60–80pt를 목표로 한다.</p>
+    <div class="ba-row">
+      <div class="ba-cell ba-before">
+        <div class="ba-tag" data-en="Before">적용 전</div>
+        <span data-en="44×44pt buttons in a gaze-operated AAC app. The user's natural eye tremor makes precise targeting unreliable — they hit adjacent buttons and trigger wrong words during critical conversations.">시선 조작 AAC 앱의 44×44pt 버튼. 사용자의 자연스러운 눈 떨림이 정확한 타겟팅을 불안정하게 만든다 — 중요한 대화 중 인접 버튼을 눌러 잘못된 단어를 트리거한다.</span>
+      </div>
+      <div class="ba-divider">→</div>
+      <div class="ba-cell ba-after">
+        <div class="ba-tag" data-en="After">적용 후</div>
+        <span data-en="Primary phrase buttons expanded to 72×72pt with 8pt gaps. The larger targets absorb natural eye tremor — selection accuracy improves from ~65% to ~95%, making the communication aid genuinely reliable.">주요 구문 버튼이 8pt 간격으로 72×72pt로 확장된다. 더 큰 타겟이 자연스러운 눈 떨림을 흡수한다 — 선택 정확도가 ~65%에서 ~95%로 향상되어 의사소통 보조기가 진정으로 신뢰할 수 있게 된다.</span>
+      </div>
+    </div>
+  </div>
 </article>
 
 </div><!-- /page -->
@@ -1160,6 +2749,10 @@ document.querySelectorAll('.filter-btn').forEach(function(btn) {
     btn.classList.add('active');
     document.querySelectorAll('.feat').forEach(function(card) {
       card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+    });
+    var showDividers = cat === 'all';
+    document.querySelectorAll('.feat-divider').forEach(function(div) {
+      div.style.display = showDividers ? '' : 'none';
     });
   });
 });
