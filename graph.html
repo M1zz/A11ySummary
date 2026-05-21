@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A11y API — Graph</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:       #0d1117;
+      --bg-panel: #161b22;
+      --bg-card:  #21262d;
+      --border:   #30363d;
+      --text:     #e6edf3;
+      --soft:     #8b949e;
+      --faint:    #484f58;
+
+      --vision:  #5ba3e0;
+      --hearing: #3dbf8a;
+      --motor:   #e8614a;
+      --speech:  #d49a4a;
+      --cog:     #a86dd4;
+
+      --vision-dim:  rgba(91,163,224,0.12);
+      --hearing-dim: rgba(61,191,138,0.12);
+      --motor-dim:   rgba(232,97,74,0.12);
+      --speech-dim:  rgba(212,154,74,0.12);
+      --cog-dim:     rgba(168,109,212,0.12);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+
+    body { display: flex; flex-direction: column; }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-panel);
+      flex-shrink: 0;
+    }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      color: var(--soft);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 8px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .back-link:hover { color: var(--text); border-color: #555; }
+    .back-link svg { width: 12px; height: 12px; }
+
+    .header-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .header-dot { color: var(--faint); }
+    .header-sub { font-size: 12px; color: var(--soft); }
+
+    .header-sep { width: 1px; height: 20px; background: var(--border); }
+
+    .stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+    }
+
+    .stat-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .stat-lbl {
+      font-size: 11px;
+      color: var(--soft);
+    }
+
+    .header-space { flex: 1; }
+
+    .view-group {
+      display: flex;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 3px;
+      gap: 2px;
+    }
+
+    .view-btn {
+      padding: 4px 12px;
+      font: 500 12px/1 'Inter', sans-serif;
+      border: none;
+      background: transparent;
+      color: var(--soft);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    .view-btn.active {
+      background: var(--bg-panel);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+
+    /* ── Filters ── */
+    .filters {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 20px;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+
+    .filter-lbl {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--faint);
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    .fbtn {
+      padding: 3px 11px;
+      font: 500 11px/1.6 'Inter', sans-serif;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--soft);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .fbtn:hover { color: var(--text); border-color: #555; }
+    .fbtn[data-cat="all"].active  { background: #374151; border-color: #4b5563; color: var(--text); }
+    .fbtn[data-cat="vision"].active  { background: var(--vision);  border-color: var(--vision);  color: #fff; }
+    .fbtn[data-cat="hearing"].active { background: var(--hearing); border-color: var(--hearing); color: #fff; }
+    .fbtn[data-cat="motor"].active   { background: var(--motor);   border-color: var(--motor);   color: #fff; }
+    .fbtn[data-cat="speech"].active  { background: var(--speech);  border-color: var(--speech);  color: #fff; }
+    .fbtn[data-cat="cog"].active     { background: var(--cog);     border-color: var(--cog);     color: #fff; }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #graph-view {
+      position: absolute;
+      inset: 0;
+    }
+
+    #treemap-view {
+      position: absolute;
+      inset: 0;
+      display: none;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    /* ── SVG / Graph ── */
+    #graph-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .link {
+      stroke: var(--border);
+      stroke-opacity: 0.5;
+      fill: none;
+      transition: stroke-opacity 0.2s;
+    }
+    .link.dimmed    { stroke-opacity: 0.06; }
+    .link.lit       { stroke-opacity: 0.9; }
+
+    .node { cursor: pointer; }
+
+    .node circle.halo {
+      fill: transparent;
+      stroke: transparent;
+      stroke-width: 6;
+      transition: stroke-opacity 0.2s;
+    }
+    .node:hover circle.halo { stroke-opacity: 0.25; }
+
+    .node circle.body {
+      stroke-width: 1.5;
+      transition: opacity 0.2s, r 0.3s;
+    }
+    .node.dimmed circle.body { opacity: 0.1; }
+    .node.dimmed text         { opacity: 0.1; }
+
+    .node text.node-label {
+      font: 500 10px/1.2 'Inter', sans-serif;
+      fill: var(--text);
+      text-anchor: middle;
+      dominant-baseline: middle;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .node text.node-count {
+      font: 700 9px/1 'JetBrains Mono', monospace;
+      fill: rgba(255,255,255,0.55);
+      text-anchor: middle;
+      pointer-events: none;
+    }
+
+    /* ── Tooltip ── */
+    #tooltip {
+      position: absolute;
+      top: 0; left: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      min-width: 210px;
+      max-width: 270px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.12s;
+      z-index: 50;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    }
+    #tooltip.show { opacity: 1; }
+
+    .tt-cat {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 5px;
+    }
+    .tt-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+      margin-bottom: 10px;
+    }
+    .tt-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .tt-num {
+      font: 700 22px/1 'JetBrains Mono', monospace;
+    }
+    .tt-unit { font-size: 11px; color: var(--soft); }
+    .tt-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 10px 0;
+    }
+    .tt-groups-title {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--faint);
+      margin-bottom: 6px;
+    }
+    .tt-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--soft);
+      margin-bottom: 3px;
+    }
+    .tt-group::before {
+      content: '';
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+    .tt-hint {
+      margin-top: 10px;
+      font-size: 9px;
+      color: var(--faint);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+    }
+
+    /* ── Legend ── */
+    .legend {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      pointer-events: none;
+    }
+
+    .leg-title {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--faint);
+      margin-bottom: 8px;
+    }
+    .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: var(--soft);
+      margin-bottom: 5px;
+    }
+    .leg-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .leg-sep { height: 1px; background: var(--border); margin: 8px 0; }
+    .leg-size-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+    }
+    .leg-circle {
+      border-radius: 50%;
+      background: #555;
+      flex-shrink: 0;
+    }
+    .leg-size-lbl { font-size: 9px; color: var(--faint); }
+
+    /* ── Treemap ── */
+    .tm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 12px;
+    }
+
+    .tm-cat {
+      break-inside: avoid;
+    }
+
+    .tm-cat-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .tm-cat-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+
+    .tm-cat-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tm-cat-count {
+      font: 700 11px/1 'JetBrains Mono', monospace;
+      color: var(--soft);
+      margin-left: auto;
+    }
+
+    .tm-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      text-decoration: none;
+      display: block;
+    }
+    .tm-card:hover { border-color: #555; background: var(--bg-card); }
+
+    .tm-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .tm-card-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .tm-impl-count {
+      font: 700 13px/1 'JetBrains Mono', monospace;
+      padding: 2px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      margin-left: 8px;
+    }
+
+    .tm-bar-bg {
+      height: 4px;
+      background: var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .tm-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.4s ease;
+    }
+
+    .tm-groups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .tm-group-chip {
+      font-size: 10px;
+      padding: 1px 7px;
+      border-radius: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--soft);
+    }
+
+    /* ── Zoom hint ── */
+    .zoom-hint {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      font-size: 10px;
+      color: var(--faint);
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header class="header">
+  <a class="back-link" href="guide.html">
+    <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M7.5 2L3.5 6l4 4"/>
+    </svg>
+    Guide
+  </a>
+  <span class="header-title">A11y API</span>
+  <span class="header-dot">·</span>
+  <span class="header-sub">Implementation Graph</span>
+
+  <div class="header-sep"></div>
+
+  <div class="stats">
+    <div class="stat-item">
+      <span class="stat-num" id="stat-cards">34</span>
+      <span class="stat-lbl">features</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="stat-impls">143</span>
+      <span class="stat-lbl">impl-blocks</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" id="stat-links">—</span>
+      <span class="stat-lbl">connections</span>
+    </div>
+  </div>
+
+  <div class="header-space"></div>
+
+  <div class="view-group">
+    <button class="view-btn active" id="btn-graph" onclick="setView('graph')">Network</button>
+    <button class="view-btn" id="btn-tree"  onclick="setView('tree')">Treemap</button>
+  </div>
+</header>
+
+<!-- ── Filters ── -->
+<div class="filters">
+  <span class="filter-lbl">Category</span>
+  <button class="fbtn active" data-cat="all"     onclick="setFilter('all')">All</button>
+  <button class="fbtn"        data-cat="vision"  onclick="setFilter('vision')">Vision</button>
+  <button class="fbtn"        data-cat="hearing" onclick="setFilter('hearing')">Hearing</button>
+  <button class="fbtn"        data-cat="motor"   onclick="setFilter('motor')">Mobility</button>
+  <button class="fbtn"        data-cat="speech"  onclick="setFilter('speech')">Speech</button>
+  <button class="fbtn"        data-cat="cog"     onclick="setFilter('cog')">Cognitive</button>
+</div>
+
+<!-- ── Main ── -->
+<div class="main">
+  <!-- Graph view -->
+  <div id="graph-view">
+    <svg id="graph-svg"></svg>
+    <div id="tooltip">
+      <div class="tt-cat" id="tt-cat"></div>
+      <div class="tt-name" id="tt-name"></div>
+      <div class="tt-row">
+        <span class="tt-num" id="tt-num"></span>
+        <span class="tt-unit">impl-blocks</span>
+      </div>
+      <div class="tt-divider" id="tt-div" style="display:none"></div>
+      <div id="tt-groups-wrap" style="display:none">
+        <div class="tt-groups-title">Sub-groups</div>
+        <div id="tt-groups"></div>
+      </div>
+      <div class="tt-hint">Click to open in guide →</div>
+    </div>
+
+    <div class="legend">
+      <div class="leg-title">Category</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--vision)"></div>Vision</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--hearing)"></div>Hearing</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--motor)"></div>Mobility</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--speech)"></div>Speech</div>
+      <div class="leg-item"><div class="leg-dot" style="background:var(--cog)"></div>Cognitive</div>
+      <div class="leg-sep"></div>
+      <div class="leg-title">Node size</div>
+      <div class="leg-size-row">
+        <div class="leg-circle" style="width:16px;height:16px;"></div>
+        <div class="leg-circle" style="width:24px;height:24px;"></div>
+        <div class="leg-circle" style="width:38px;height:38px;"></div>
+        <div class="leg-size-lbl" style="padding-bottom:4px">= impl count</div>
+      </div>
+    </div>
+
+    <div class="zoom-hint">Scroll to zoom · Drag to pan · Click node to open</div>
+  </div>
+
+  <!-- Treemap view -->
+  <div id="treemap-view">
+    <div class="tm-grid" id="tm-grid"></div>
+  </div>
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script>
+/* ────────────────────────── DATA ────────────────────────── */
+const CATS = {
+  vision:  { label: 'Vision',    color: '#5ba3e0' },
+  hearing: { label: 'Hearing',   color: '#3dbf8a' },
+  motor:   { label: 'Mobility',  color: '#e8614a' },
+  speech:  { label: 'Speech',    color: '#d49a4a' },
+  cog:     { label: 'Cognitive', color: '#a86dd4' },
+};
+
+const nodes = [
+  { id: 'voiceover',               name: 'VoiceOver',                  cat: 'vision',  count: 21, groups: ['Metadata & Speech', 'Navigation & Structure', 'Actions', 'Custom Rendering'] },
+  { id: 'accessibility-traits',    name: 'Accessibility Traits',        cat: 'vision',  count: 8,  groups: ['Role', 'State', 'Behavior'] },
+  { id: 'element-grouping',        name: 'Element Grouping',            cat: 'vision',  count: 6,  groups: ['Tree Reduction', 'Landmark & Container'] },
+  { id: 'dynamic-type',            name: 'Dynamic Type',                cat: 'vision',  count: 5,  groups: [] },
+  { id: 'announcement',            name: 'A11y Notifications',          cat: 'vision',  count: 5,  groups: [] },
+  { id: 'reduce-motion',           name: 'Reduce Motion',               cat: 'cog',     count: 4,  groups: [] },
+  { id: 'increase-contrast',       name: 'Increase Contrast',           cat: 'vision',  count: 3,  groups: [] },
+  { id: 'differentiate-without-color', name: 'Differentiate Without Color', cat: 'vision', count: 3, groups: [] },
+  { id: 'smart-invert',            name: 'Smart Invert',                cat: 'vision',  count: 3,  groups: [] },
+  { id: 'zoom-support',            name: 'Zoom & Magnification',        cat: 'vision',  count: 4,  groups: [] },
+  { id: 'speech-synthesis',        name: 'Speak Selection / TTS',       cat: 'vision',  count: 3,  groups: [] },
+  { id: 'charts-accessibility',    name: 'Charts (AXChartDescriptor)',  cat: 'vision',  count: 3,  groups: [] },
+  { id: 'visionos-accessibility',  name: 'visionOS Accessibility',      cat: 'vision',  count: 2,  groups: [] },
+  { id: 'macos-accessibility',     name: 'macOS NSAccessibility',       cat: 'vision',  count: 3,  groups: [] },
+  { id: 'watchos-accessibility',   name: 'watchOS Accessibility',       cat: 'vision',  count: 3,  groups: [] },
+  { id: 'closed-captions',         name: 'Closed Captions',             cat: 'hearing', count: 3,  groups: [] },
+  { id: 'haptic-feedback',         name: 'Haptic Feedback',             cat: 'hearing', count: 5,  groups: [] },
+  { id: 'sound-recognition',       name: 'Sound Recognition',           cat: 'hearing', count: 4,  groups: [] },
+  { id: 'live-captions',           name: 'Live Captions',               cat: 'hearing', count: 4,  groups: [] },
+  { id: 'media-accessibility',     name: 'MediaAccessibility',          cat: 'hearing', count: 2,  groups: [] },
+  { id: 'switch-control',          name: 'Switch Control',              cat: 'motor',   count: 6,  groups: ['Interaction', 'AT Detection'] },
+  { id: 'voice-control-labels',    name: 'Voice Control',               cat: 'motor',   count: 4,  groups: [] },
+  { id: 'keyboard-focus',          name: 'Full Keyboard Access',        cat: 'motor',   count: 5,  groups: [] },
+  { id: 'touch-targets',           name: 'Touch Target Size',           cat: 'motor',   count: 4,  groups: [] },
+  { id: 'pointer-interaction',     name: 'Pointer Interaction',         cat: 'motor',   count: 4,  groups: [] },
+  { id: 'eye-tracking',            name: 'Eye Tracking',                cat: 'motor',   count: 3,  groups: [] },
+  { id: 'tvos-focus',              name: 'tvOS Focus Engine',           cat: 'motor',   count: 3,  groups: [] },
+  { id: 'personal-voice',          name: 'Personal Voice',              cat: 'speech',  count: 4,  groups: [] },
+  { id: 'live-speech',             name: 'Live Speech / AAC',           cat: 'speech',  count: 3,  groups: [] },
+  { id: 'siri-shortcuts',          name: 'Siri / Vocal Shortcuts',      cat: 'speech',  count: 3,  groups: [] },
+  { id: 'button-shapes',           name: 'Button Shapes',               cat: 'cog',     count: 3,  groups: [] },
+  { id: 'guided-access',           name: 'Guided Access',               cat: 'cog',     count: 4,  groups: [] },
+  { id: 'assistive-access',        name: 'Assistive Access',            cat: 'cog',     count: 3,  groups: [] },
+];
+
+const links = [
+  /* VoiceOver → core metadata/traits */
+  { source: 'voiceover', target: 'accessibility-traits',    label: 'Traits feed VO' },
+  { source: 'voiceover', target: 'element-grouping',        label: 'Grouping shapes VO tree' },
+  { source: 'voiceover', target: 'announcement',            label: 'VO consumes notifications' },
+  { source: 'voiceover', target: 'speech-synthesis',        label: 'Speak Screen / TTS' },
+  { source: 'voiceover', target: 'charts-accessibility',    label: 'AXChartDescriptor → VO' },
+  { source: 'voiceover', target: 'zoom-support',            label: 'MagnificationChanged' },
+  /* VoiceOver → platform ports */
+  { source: 'voiceover', target: 'macos-accessibility',     label: 'NSAccessibility ≈ VO on Mac' },
+  { source: 'voiceover', target: 'visionos-accessibility',  label: 'VO on visionOS' },
+  { source: 'voiceover', target: 'watchos-accessibility',   label: 'VO on watchOS' },
+  /* Switch Control shares APIs */
+  { source: 'switch-control', target: 'voiceover',          label: 'UIAccessibilityCustomRotor' },
+  { source: 'switch-control', target: 'eye-tracking',       label: 'Alt-input methods' },
+  { source: 'switch-control', target: 'keyboard-focus',     label: 'Focus-based navigation' },
+  { source: 'switch-control', target: 'voice-control-labels', label: 'Input accessibility' },
+  /* Keyboard / pointer cluster */
+  { source: 'keyboard-focus',      target: 'voice-control-labels', label: 'Input labels' },
+  { source: 'keyboard-focus',      target: 'tvos-focus',     label: 'Focus engine' },
+  { source: 'eye-tracking',        target: 'pointer-interaction', label: 'Pointer/cursor' },
+  { source: 'touch-targets',       target: 'pointer-interaction', label: 'Hit area' },
+  /* Accessibility traits ↔ element grouping */
+  { source: 'accessibility-traits', target: 'element-grouping', label: 'Traits on containers' },
+  /* Vision display settings */
+  { source: 'increase-contrast',  target: 'differentiate-without-color', label: 'Color accessibility' },
+  { source: 'increase-contrast',  target: 'smart-invert',     label: 'Display modes' },
+  { source: 'reduce-motion',      target: 'smart-invert',     label: 'Visual display settings' },
+  { source: 'dynamic-type',       target: 'zoom-support',     label: 'Magnification' },
+  { source: 'button-shapes',      target: 'increase-contrast', label: 'Visual distinction' },
+  /* Hearing cluster */
+  { source: 'closed-captions',    target: 'media-accessibility', label: 'MACaptionAppearance' },
+  { source: 'closed-captions',    target: 'live-captions',    label: 'Caption output' },
+  { source: 'sound-recognition',  target: 'haptic-feedback',  label: 'Audio → haptic substitute' },
+  { source: 'sound-recognition',  target: 'live-captions',    label: 'Audio processing' },
+  /* Speech cluster */
+  { source: 'personal-voice',     target: 'live-speech',      label: 'Custom voice → Live Speech' },
+  { source: 'siri-shortcuts',     target: 'personal-voice',   label: 'Voice integration' },
+  { source: 'siri-shortcuts',     target: 'live-speech',      label: 'Shortcut phrases' },
+  /* Cognitive cluster */
+  { source: 'guided-access',      target: 'assistive-access', label: 'Restricted access modes' },
+];
+
+document.getElementById('stat-links').textContent = links.length;
+
+/* ────────────────────────── STATE ────────────────────────── */
+let activeFilter = 'all';
+let activeView   = 'graph';
+
+/* ────────────────────────── HELPERS ────────────────────────── */
+const catColor = id => CATS[id]?.color ?? '#666';
+const radius   = d => Math.sqrt(d.count) * 7.5 + 8;
+
+/* ────────────────────────── GRAPH ────────────────────────── */
+const svg = d3.select('#graph-svg');
+const gRoot = svg.append('g').attr('class', 'root');
+
+/* zoom */
+svg.call(
+  d3.zoom()
+    .scaleExtent([0.3, 3])
+    .on('zoom', e => gRoot.attr('transform', e.transform))
+);
+
+const gLinks = gRoot.append('g').attr('class', 'links');
+const gNodes = gRoot.append('g').attr('class', 'nodes');
+
+/* build simulation */
+const sim = d3.forceSimulation(nodes)
+  .force('link', d3.forceLink(links).id(d => d.id).distance(d => {
+    const base = radius(d.source) + radius(d.target) + 40;
+    return base;
+  }).strength(0.4))
+  .force('charge', d3.forceManyBody().strength(d => -radius(d) * 25))
+  .force('collision', d3.forceCollide().radius(d => radius(d) + 10).strength(0.8))
+  .force('center', d3.forceCenter(0, 0))
+  .force('x', d3.forceX(0).strength(0.04))
+  .force('y', d3.forceY(0).strength(0.04));
+
+/* link elements */
+const linkSel = gLinks.selectAll('line')
+  .data(links)
+  .join('line')
+  .attr('class', 'link');
+
+/* node elements */
+const nodeSel = gNodes.selectAll('g.node')
+  .data(nodes)
+  .join('g')
+  .attr('class', 'node')
+  .call(
+    d3.drag()
+      .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.3).restart(); d.fx = d.x; d.fy = d.y; })
+      .on('drag',  (e, d) => { d.fx = e.x; d.fy = e.y; })
+      .on('end',   (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; })
+  );
+
+/* halo (hover glow) */
+nodeSel.append('circle')
+  .attr('class', 'halo')
+  .attr('r', d => radius(d) + 8)
+  .style('stroke', d => catColor(d.cat))
+  .style('fill', d => catColor(d.cat) + '22');
+
+/* body */
+nodeSel.append('circle')
+  .attr('class', 'body')
+  .attr('r', d => radius(d))
+  .style('fill', d => catColor(d.cat) + '28')
+  .style('stroke', d => catColor(d.cat));
+
+/* count badge (inside circle) */
+nodeSel.append('text')
+  .attr('class', 'node-count')
+  .attr('dy', d => d.count < 10 ? 0 : 0)
+  .text(d => d.count);
+
+/* label below circle */
+nodeSel.append('text')
+  .attr('class', 'node-label')
+  .attr('dy', d => radius(d) + 14)
+  .text(d => {
+    const max = 18;
+    return d.name.length > max ? d.name.slice(0, max - 1) + '…' : d.name;
+  });
+
+/* ── tick ── */
+sim.on('tick', () => {
+  linkSel
+    .attr('x1', d => d.source.x)
+    .attr('y1', d => d.source.y)
+    .attr('x2', d => d.target.x)
+    .attr('y2', d => d.target.y);
+
+  nodeSel.attr('transform', d => `translate(${d.x},${d.y})`);
+});
+
+/* center on first stable frame */
+sim.on('end', centerGraph);
+
+function centerGraph() {
+  const svgEl = document.getElementById('graph-svg');
+  const w = svgEl.clientWidth, h = svgEl.clientHeight;
+  svg.call(
+    d3.zoom().transform,
+    d3.zoomIdentity.translate(w / 2, h / 2)
+  );
+  gRoot.attr('transform', `translate(${w / 2},${h / 2})`);
+}
+
+/* initial centering */
+setTimeout(() => {
+  const svgEl = document.getElementById('graph-svg');
+  const w = svgEl.clientWidth, h = svgEl.clientHeight;
+  gRoot.attr('transform', `translate(${w / 2},${h / 2})`);
+}, 0);
+
+/* ── Tooltip ── */
+const tooltip  = document.getElementById('tooltip');
+const ttCat    = document.getElementById('tt-cat');
+const ttName   = document.getElementById('tt-name');
+const ttNum    = document.getElementById('tt-num');
+const ttDiv    = document.getElementById('tt-div');
+const ttGWrap  = document.getElementById('tt-groups-wrap');
+const ttGroups = document.getElementById('tt-groups');
+
+nodeSel
+  .on('mouseenter', (e, d) => {
+    ttCat.textContent  = CATS[d.cat].label.toUpperCase();
+    ttCat.style.color  = catColor(d.cat);
+    ttName.textContent = d.name;
+    ttNum.textContent  = d.count;
+    ttNum.style.color  = catColor(d.cat);
+
+    if (d.groups.length) {
+      ttDiv.style.display   = '';
+      ttGWrap.style.display = '';
+      ttGroups.innerHTML = d.groups
+        .map(g => `<div class="tt-group">${g}</div>`)
+        .join('');
+    } else {
+      ttDiv.style.display   = 'none';
+      ttGWrap.style.display = 'none';
+    }
+
+    tooltip.classList.add('show');
+    highlightNode(d);
+  })
+  .on('mousemove', e => {
+    const svgEl  = document.getElementById('graph-svg');
+    const rect   = svgEl.getBoundingClientRect();
+    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    const tw = tooltip.offsetWidth, th = tooltip.offsetHeight;
+    const px = x + 16 + tw > rect.width  ? x - tw - 10 : x + 16;
+    const py = y + 16 + th > rect.height ? y - th - 10 : y + 16;
+    tooltip.style.transform = `translate(${px}px,${py}px)`;
+  })
+  .on('mouseleave', () => {
+    tooltip.classList.remove('show');
+    clearHighlight();
+  })
+  .on('click', (e, d) => {
+    window.open(`guide.html#${d.id}`, '_blank');
+  });
+
+function highlightNode(d) {
+  const connected = new Set([d.id]);
+  links.forEach(l => {
+    if (l.source.id === d.id) connected.add(l.target.id);
+    if (l.target.id === d.id) connected.add(l.source.id);
+  });
+
+  nodeSel.classed('dimmed', n => !connected.has(n.id));
+  linkSel
+    .classed('dimmed', l => l.source.id !== d.id && l.target.id !== d.id)
+    .classed('lit',    l => l.source.id === d.id || l.target.id === d.id);
+}
+
+function clearHighlight() {
+  nodeSel.classed('dimmed', false);
+  linkSel.classed('dimmed', false).classed('lit', false);
+  applyFilter(activeFilter);
+}
+
+/* ────────────────────────── FILTER ────────────────────────── */
+function setFilter(cat) {
+  activeFilter = cat;
+  document.querySelectorAll('.fbtn').forEach(b => {
+    b.classList.toggle('active', b.dataset.cat === cat);
+  });
+  applyFilter(cat);
+}
+
+function applyFilter(cat) {
+  if (cat === 'all') {
+    nodeSel.classed('dimmed', false);
+    linkSel.classed('dimmed', false);
+    return;
+  }
+  nodeSel.classed('dimmed', d => d.cat !== cat);
+  linkSel.classed('dimmed', l => l.source.cat !== cat && l.target.cat !== cat);
+}
+
+/* ────────────────────────── VIEW TOGGLE ────────────────────────── */
+function setView(v) {
+  activeView = v;
+  document.getElementById('btn-graph').classList.toggle('active', v === 'graph');
+  document.getElementById('btn-tree').classList.toggle('active', v === 'tree');
+  document.getElementById('graph-view').style.display = v === 'graph' ? '' : 'none';
+  document.getElementById('treemap-view').style.display = v === 'tree' ? '' : 'none';
+  if (v === 'tree') buildTreemap();
+}
+
+/* ────────────────────────── TREEMAP ────────────────────────── */
+function buildTreemap() {
+  const grid = document.getElementById('tm-grid');
+  if (grid.childElementCount) return; // already built
+
+  const maxCount = Math.max(...nodes.map(n => n.count));
+
+  const byCat = {};
+  nodes.forEach(n => {
+    if (!byCat[n.cat]) byCat[n.cat] = [];
+    byCat[n.cat].push(n);
+  });
+
+  Object.entries(byCat).forEach(([cat, catNodes]) => {
+    const col = CATS[cat].color;
+    const total = catNodes.reduce((s, n) => s + n.count, 0);
+
+    const catDiv = document.createElement('div');
+    catDiv.className = 'tm-cat';
+    catDiv.style.borderLeft = `3px solid ${col}`;
+    catDiv.style.paddingLeft = '12px';
+
+    catDiv.innerHTML = `
+      <div class="tm-cat-header">
+        <div class="tm-cat-dot" style="background:${col}"></div>
+        <div class="tm-cat-name">${CATS[cat].label}</div>
+        <div class="tm-cat-count">${total} impl</div>
+      </div>
+    `;
+
+    catNodes
+      .sort((a, b) => b.count - a.count)
+      .forEach(n => {
+        const pct = (n.count / maxCount * 100).toFixed(1);
+        const card = document.createElement('a');
+        card.className = 'tm-card';
+        card.href = `guide.html#${n.id}`;
+        card.target = '_blank';
+        card.innerHTML = `
+          <div class="tm-card-head">
+            <div class="tm-card-name">${n.name}</div>
+            <div class="tm-impl-count" style="background:${col}22;color:${col}">${n.count}</div>
+          </div>
+          <div class="tm-bar-bg">
+            <div class="tm-bar-fill" style="width:${pct}%;background:${col}"></div>
+          </div>
+          ${n.groups.length ? `
+            <div class="tm-groups">
+              ${n.groups.map(g => `<span class="tm-group-chip">${g}</span>`).join('')}
+            </div>` : ''}
+        `;
+        catDiv.appendChild(card);
+      });
+
+    grid.appendChild(catDiv);
+  });
+}
+</script>
+</body>
+</html>
