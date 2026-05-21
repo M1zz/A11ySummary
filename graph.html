@@ -314,6 +314,141 @@
       padding-top: 8px;
     }
 
+    /* ── Modal ── */
+    #modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    #modal-backdrop.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    #modal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.94);
+      z-index: 110;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 28px 24px;
+      width: min(380px, calc(100vw - 40px));
+      box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    #modal.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 16px;
+      width: 28px; height: 28px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: 50%;
+      font-size: 16px;
+      line-height: 1;
+      color: var(--soft);
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .modal-close:hover { color: var(--text); border-color: #555; }
+
+    .modal-cat {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      margin-bottom: 6px;
+    }
+    .modal-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 16px;
+    }
+    .modal-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      margin-bottom: 18px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-num {
+      font: 700 32px/1 'JetBrains Mono', monospace;
+    }
+    .modal-unit { font-size: 13px; color: var(--soft); }
+
+    .modal-section-title {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--faint);
+      margin-bottom: 8px;
+    }
+    .modal-groups {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 18px;
+    }
+    .modal-group-chip {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--soft);
+    }
+    .modal-connections {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 22px;
+    }
+    .modal-conn-chip {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--soft);
+      cursor: pointer;
+      transition: border-color 0.12s, color 0.12s;
+    }
+    .modal-conn-chip:hover { color: var(--text); border-color: #555; }
+
+    .modal-goto {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 13px;
+      border-radius: 9px;
+      font: 600 14px/1 'Inter', sans-serif;
+      color: #fff;
+      text-decoration: none;
+      transition: opacity 0.15s;
+    }
+    .modal-goto:hover { opacity: 0.82; }
+    .modal-goto svg { width: 14px; height: 14px; }
+
     /* ── Legend ── */
     .legend {
       position: absolute;
@@ -538,7 +673,7 @@
         <div class="tt-groups-title">Sub-groups</div>
         <div id="tt-groups"></div>
       </div>
-      <div class="tt-hint">Click to open in guide →</div>
+      <div class="tt-hint">클릭하면 상세 정보를 볼 수 있어요</div>
     </div>
 
     <div class="legend">
@@ -558,7 +693,33 @@
       </div>
     </div>
 
-    <div class="zoom-hint">Scroll to zoom · Drag to pan · Click node to open</div>
+    <div class="zoom-hint">스크롤: 줌 · 드래그: 이동 · 원 클릭: 상세 보기</div>
+  </div>
+
+  <!-- ── Modal ── -->
+  <div id="modal-backdrop" onclick="closeModal()"></div>
+  <div id="modal" role="dialog" aria-modal="true">
+    <button class="modal-close" onclick="closeModal()" aria-label="닫기">×</button>
+    <div class="modal-cat" id="modal-cat"></div>
+    <div class="modal-name" id="modal-name"></div>
+    <div class="modal-stat">
+      <span class="modal-num" id="modal-num"></span>
+      <span class="modal-unit">impl-blocks</span>
+    </div>
+    <div id="modal-groups-section">
+      <div class="modal-section-title">Sub-groups</div>
+      <div class="modal-groups" id="modal-groups"></div>
+    </div>
+    <div id="modal-conn-section">
+      <div class="modal-section-title">연결된 피쳐</div>
+      <div class="modal-connections" id="modal-connections"></div>
+    </div>
+    <a class="modal-goto" id="modal-goto" href="#" target="_blank">
+      이동하기
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 7h8M7 3l4 4-4 4"/>
+      </svg>
+    </a>
   </div>
 
   <!-- Treemap view -->
@@ -816,7 +977,8 @@ nodeSel
     clearHighlight();
   })
   .on('click', (e, d) => {
-    window.open(`guide.html#${d.id}`, '_blank');
+    e.stopPropagation();
+    openModal(d);
   });
 
 function highlightNode(d) {
@@ -837,6 +999,65 @@ function clearHighlight() {
   linkSel.classed('dimmed', false).classed('lit', false);
   applyFilter(activeFilter);
 }
+
+/* ────────────────────────── MODAL ────────────────────────── */
+const modal         = document.getElementById('modal');
+const modalBackdrop = document.getElementById('modal-backdrop');
+
+function openModal(d) {
+  const col = catColor(d.cat);
+
+  document.getElementById('modal-cat').textContent  = CATS[d.cat].label.toUpperCase();
+  document.getElementById('modal-cat').style.color  = col;
+  document.getElementById('modal-name').textContent = d.name;
+  document.getElementById('modal-num').textContent  = d.count;
+  document.getElementById('modal-num').style.color  = col;
+
+  /* groups */
+  const groupsSec = document.getElementById('modal-groups-section');
+  if (d.groups.length) {
+    groupsSec.style.display = '';
+    document.getElementById('modal-groups').innerHTML =
+      d.groups.map(g => `<span class="modal-group-chip">${g}</span>`).join('');
+  } else {
+    groupsSec.style.display = 'none';
+  }
+
+  /* connected nodes */
+  const connSec = document.getElementById('modal-conn-section');
+  const connected = links
+    .filter(l => l.source.id === d.id || l.target.id === d.id)
+    .map(l => l.source.id === d.id ? l.target : l.source);
+
+  if (connected.length) {
+    connSec.style.display = '';
+    document.getElementById('modal-connections').innerHTML =
+      connected.map(n =>
+        `<span class="modal-conn-chip" style="border-color:${catColor(n.cat)}44;color:${catColor(n.cat)}"
+          onclick="closeModal();setTimeout(()=>openModal(nodes.find(x=>x.id==='${n.id}')),180)"
+        >${n.name}</span>`
+      ).join('');
+  } else {
+    connSec.style.display = 'none';
+  }
+
+  /* goto button */
+  const gotoBtn = document.getElementById('modal-goto');
+  gotoBtn.href = `guide.html#${d.id}`;
+  gotoBtn.style.background = col;
+
+  modal.classList.add('show');
+  modalBackdrop.classList.add('show');
+}
+
+function closeModal() {
+  modal.classList.remove('show');
+  modalBackdrop.classList.remove('show');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
 
 /* ────────────────────────── FILTER ────────────────────────── */
 function setFilter(cat) {
